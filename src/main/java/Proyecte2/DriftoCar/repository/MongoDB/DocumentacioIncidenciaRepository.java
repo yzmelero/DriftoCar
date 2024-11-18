@@ -4,10 +4,11 @@
  */
 package Proyecte2.DriftoCar.repository.MongoDB;
 
+
 /**
  *
- * @author mario
+ * @author Anna
  */
-public class a {
+public class DocumentacioIncidenciaRepository {
     
 }
