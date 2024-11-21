@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
  * @author Anna
  */
 @Entity
-@Table(name = "reserves")
+@Table(name = "reserva")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
