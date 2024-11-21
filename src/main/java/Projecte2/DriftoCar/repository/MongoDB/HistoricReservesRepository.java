@@ -9,6 +9,6 @@ package Projecte2.DriftoCar.repository.MongoDB;
  *
  * @author Anna
  */
-public class HistoricReservesRepository {
+public interface HistoricReservesRepository {
     
 }

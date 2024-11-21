@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client /*extends Usuari*/{
+public class Client extends Usuari{
     
     @Id
     private String dni;
@@ -54,9 +54,6 @@ public class Client /*extends Usuari*/{
     
     @Column
     private String contrasenya;
-    
-    
-    
     
     
 }

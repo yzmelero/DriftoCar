@@ -10,6 +10,6 @@ package Projecte2.DriftoCar.repository.MySQL;
  *
  * @author Anna
  */
-public class LocalitzacioRepository {
+public interface LocalitzacioRepository {
     
 }
