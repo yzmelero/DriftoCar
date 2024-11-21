@@ -8,6 +8,6 @@ package Projecte2.DriftoCar.entity.MySQL;
  *
  * @author Yaiza
  */
-public enum Tipus {
+public enum TipusVehicle {
     COTXE, MOTO, FURGONETA, CAMIÓ
 }

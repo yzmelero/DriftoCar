@@ -59,7 +59,7 @@ public class Client {
     
     private String contrasenya;
     
-    //si es 1 sera premium
+    //1 = premium, 0 = normal
     private boolean reputacio;
     
     @OneToMany(mappedBy = "client")

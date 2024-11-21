@@ -4,9 +4,14 @@
  */
 package Projecte2.DriftoCar.entity.MySQL;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +29,7 @@ import lombok.NoArgsConstructor;
 public class Localitzacio {
     
     @Id
+    @Column(name = "codi_postal")
     private int codiPostal;
     
     private String ciutat;
@@ -35,6 +41,11 @@ public class Localitzacio {
     
     private String condicions;
     
+    @OneToMany(mappedBy = "localitzacio")
+    private List<Vehicle> vehicles = new ArrayList<>();
+
+    @OneToOne(mappedBy = "localitzacio")
+    private Agent agent;
     
     
     
