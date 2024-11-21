@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,15 +24,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client extends Usuari{
+@Table(name = "client")
+public class Client {
     
     @Id
     private String dni;
     
-    @Column
     private String nom;
     
-    @Column
     private String cognoms;
     
     @Column(unique = true)
@@ -49,11 +49,10 @@ public class Client extends Usuari{
     @Column(name = "num_tarjeta_credit", unique = true)
     private int numTarjetaCredit;
     
-    @Column
     private String adreca;
     
-    @Column
     private String contrasenya;
     
+    private boolean premium;
     
 }
