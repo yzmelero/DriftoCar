@@ -4,10 +4,31 @@
  */
 package Projecte2.DriftoCar.entity.MongoDB;
 
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  *
  * @author Anna
  */
+@Document(collection = "historic_reserves")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HistoricReserves {
-    
+
+    @Id
+    private Long idReserva;
+
+    private Document client;
+    private Document vehicle;
+    private Date dataInici;
+    private Date dataFi;
+    private double totalCost;
+    private double fianca;
+    private boolean estat;
 }
