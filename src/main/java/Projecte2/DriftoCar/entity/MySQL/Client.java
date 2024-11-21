@@ -15,6 +15,6 @@ import jakarta.persistence.InheritanceType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Client extends Usuari{
+public class Client{
     
 }
