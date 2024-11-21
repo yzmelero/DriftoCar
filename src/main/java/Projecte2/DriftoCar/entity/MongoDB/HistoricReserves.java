@@ -26,7 +26,7 @@ public class HistoricReserves {
     private Long idReserva;
 
     //private Document client;
-    //private Document vehicle;
+    //private Document vehicle; ambas dos son de relacion
     
     private LocalDate dataInici;
     private LocalDate dataFi;

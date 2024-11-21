@@ -35,7 +35,7 @@ public class HistoricIncidencies {
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
 
-    //private DocumentacioIncidencia documentacioIncidencia
+    //private DocumentacioIncidencia documentacioIncidencia relacion de collections
 
     // private documentVehicle matricula;
 }
