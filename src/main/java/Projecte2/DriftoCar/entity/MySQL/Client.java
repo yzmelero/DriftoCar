@@ -4,10 +4,17 @@
  */
 package Projecte2.DriftoCar.entity.MySQL;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+
 /**
  *
  * @author Anna
  */
-public class Client {
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Client extends Usuari{
     
 }
