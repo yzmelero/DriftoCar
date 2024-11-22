@@ -4,11 +4,22 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Anna
  */
+@Service
 public class LocalitzacioService {
     
+    @Autowired
+    private LocalitzacioRepository repository;  
+    
+    public Localitzacio AltaLocalitzacio(Localitzacio localitzacio) {
+        return repository.save(localitzacio);
+    }
 }
