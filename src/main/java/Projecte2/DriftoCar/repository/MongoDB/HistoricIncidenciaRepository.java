@@ -4,11 +4,14 @@
  */
 package Projecte2.DriftoCar.repository.MongoDB;
 
+import Projecte2.DriftoCar.entity.MongoDB.DocumentacioClient;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
 
 /**
  *
  * @author Anna
  */
-public interface HistoricIncidenciaRepository {
+public interface HistoricIncidenciaRepository extends MongoRepository <DocumentacioClient, String>{
     
 }
