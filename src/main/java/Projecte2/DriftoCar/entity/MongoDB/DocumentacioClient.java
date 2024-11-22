@@ -9,17 +9,17 @@ import java.time.LocalDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 /**
  *
  * @author Anna
  */
 @Document(collection = "documentacio_client")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DocumentacioClient {
     
     

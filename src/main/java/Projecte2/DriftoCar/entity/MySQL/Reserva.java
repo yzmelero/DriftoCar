@@ -14,7 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
+
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,10 +45,10 @@ public class Reserva {
     private Vehicle vehicle;
 
     @Column(name = "data_inici", nullable = false)
-    private Date dataInici;
+    private LocalDate dataInici;
 
     @Column(name = "data_fi", nullable = false)
-    private Date dataFi;
+    private LocalDate dataFi;
 
     @Column(name = "cost_total", nullable = false)
     private double costTotal; 
