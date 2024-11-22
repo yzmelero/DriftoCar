@@ -9,11 +9,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  *
@@ -53,6 +59,13 @@ public class Client {
     
     private String contrasenya;
     
-    private boolean premium;
+    //1 = premium, 0 = normal
+    private boolean reputacio;
+    
+    @OneToMany(mappedBy = "client")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Reserva> reserva = new ArrayList<>();
+    
     
 }

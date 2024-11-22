@@ -4,12 +4,16 @@
  */
 package Projecte2.DriftoCar.entity.MySQL;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,24 +28,26 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "incidencia")
 public class Incidencia {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    //si es 1 sera oberta
+    // 1 = oberta, 0 = tancada
     private boolean estat;
     
     private String motiu;
     
     private double cost;
 
-    private int periode;
+    @Column(name="data_inici_incidencia")
+    private LocalDateTime dataIniciIncidencia;
     
     @ManyToOne
     @JoinColumn(name = "matricula", referencedColumnName = "matricula")       
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private String matricula;
+    private Vehicle matricula;
 }
