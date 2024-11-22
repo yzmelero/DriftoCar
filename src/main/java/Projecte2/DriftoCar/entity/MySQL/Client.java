@@ -34,6 +34,10 @@ public class Client {
     
     @Id
     private String dni;
+
+    private String usuari;
+    
+    private String contrasenya;
     
     private String nom;
     
@@ -55,8 +59,6 @@ public class Client {
     private int numTarjetaCredit;
     
     private String adreca;
-    
-    private String contrasenya;
     
     //1 = premium, 0 = normal
     private boolean reputacio;

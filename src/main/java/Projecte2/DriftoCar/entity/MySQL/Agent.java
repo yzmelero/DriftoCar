@@ -23,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="agent")
+@EqualsAndHashCode(callSuper = true)
 public class Agent extends Client{
 
 
