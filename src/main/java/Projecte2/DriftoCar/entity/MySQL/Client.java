@@ -11,6 +11,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class Client {
     private LocalDate dniCaducitat;
     
     @Column(name = "num_tarjeta_credit", unique = true)
-    private int numTarjetaCredit;
+    private Long numTarjetaCredit;
     
     private String adreca;
     

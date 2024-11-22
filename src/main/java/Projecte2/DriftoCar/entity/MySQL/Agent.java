@@ -26,12 +26,12 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class Agent extends Client{
 
-
+    //enuum
     private Rol rol;
     
     //esto se pone en las columnas que tienen relaciones, se pondra relacion, join column y luego estas 2
     @OneToOne    
-    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal")       
+    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal")  //poner unique     
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Localitzacio localitzacio;
