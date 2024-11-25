@@ -7,6 +7,7 @@ package Projecte2.DriftoCar.service.MySQL;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
@@ -17,8 +18,9 @@ import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 
 /**
  *
- * @author Anna
+ * @author Mario
  */
+@Service
 public class ReservaService {
 
     @Autowired
@@ -46,10 +48,10 @@ public class ReservaService {
         // Verificar que el cliente existe
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
 
-        if (client == null) {
+        if (client.isEmpty()) {
             throw new RuntimeException("El client no existeix");
         }
-        if (vehicle == null) {
+        if (vehicle.isEmpty()) {
             throw new RuntimeException("El vehicle no existeix");
         }
         if (!reserva.getVehicle().isDisponibilitat()) {
