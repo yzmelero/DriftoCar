@@ -4,7 +4,6 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,6 @@ public class ReservaService {
             
         // Verificar que el cliente existe
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
-
 
         if (client == null) {
             throw new Exception("El client no existeix");
