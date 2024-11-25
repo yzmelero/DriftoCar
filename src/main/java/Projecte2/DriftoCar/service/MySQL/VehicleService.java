@@ -26,4 +26,11 @@ public class VehicleService {
         }
         return vehicleRepository.save(vehicle);
     }
+    
+    public void baixaVehicle(String matricula) {
+        if (!vehicleRepository.existsById(matricula)) {
+            throw new RuntimeException("No existeix cap vehicle amb la matrícula: " + matricula);
+        }
+        vehicleRepository.deleteById(matricula);
+    }
 }
