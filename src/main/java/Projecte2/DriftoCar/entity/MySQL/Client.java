@@ -38,7 +38,7 @@ public class Client {
     private String usuari;
     
     private String contrasenya;
-    
+        
     private String nom;
     
     private String cognoms;
