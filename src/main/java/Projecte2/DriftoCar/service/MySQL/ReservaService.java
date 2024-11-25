@@ -38,7 +38,7 @@ public class ReservaService {
      * @throws Exception
      * @author Mario
      */
-    public Reserva createReserva(Reserva reserva) throws Exception {
+    public Reserva altaReserva(Reserva reserva) {
         // Verificar que el vehículo existe
         Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
 
@@ -47,10 +47,13 @@ public class ReservaService {
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
 
         if (client == null) {
-            throw new Exception("El client no existeix");
+            throw new RuntimeException("El client no existeix");
         }
         if (vehicle == null) {
-            throw new Exception("El vehicle no existeix");
+            throw new RuntimeException("El vehicle no existeix");
+        }
+        if (!reserva.getVehicle().isDisponibilitat()) {
+            throw new RuntimeException("El vehicle no esta disponible");
         }
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
