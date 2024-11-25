@@ -42,7 +42,7 @@ public class RegistreController {
     @PostMapping("/alta-client")
     public ResponseEntity<Client> registrarClient(@ModelAttribute("client") Client client, 
                                   @RequestParam("confirmacioContrasenya") String confirmacioContrasenya, 
-                                  Model model) {
+                                  Model model) throws Exception {
        
         if (!client.getContrasenya().equals(confirmacioContrasenya)){
             throw new IllegalArgumentException("La contrasenya no coincideix");
