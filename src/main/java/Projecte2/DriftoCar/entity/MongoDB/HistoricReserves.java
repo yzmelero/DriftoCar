@@ -25,8 +25,13 @@ public class HistoricReserves {
     @Id
     private Long idReserva;
 
-    //private Document client;
-    //private Document vehicle; ambas dos son de relacion
+    private String nomClient;
+    
+    private String DNI;
+    
+    private String cognomClient;
+    
+    private String matricula;
     
     private LocalDate dataInici;
     private LocalDate dataFi;
