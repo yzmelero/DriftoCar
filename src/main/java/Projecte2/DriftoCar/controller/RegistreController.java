@@ -48,7 +48,7 @@ public class RegistreController {
             throw new IllegalArgumentException("La contrasenya no coincideix");
         }
         
-        Client nouClient = clientService.registreClient(client);
+        Client nouClient = clientService.altaClient(client);
         return new ResponseEntity<>(nouClient, HttpStatus.CREATED);
 
     }
