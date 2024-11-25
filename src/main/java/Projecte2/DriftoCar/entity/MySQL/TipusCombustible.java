@@ -8,6 +8,6 @@ package Projecte2.DriftoCar.entity.MySQL;
  *
  * @author Yaiza
  */
-public enum Transmisio {
-    MANUAL, AUTOMÀTIC
+public enum TipusCombustible {
+    ELECTRIC, BENZINA, DIESEL, HIBRIT
 }

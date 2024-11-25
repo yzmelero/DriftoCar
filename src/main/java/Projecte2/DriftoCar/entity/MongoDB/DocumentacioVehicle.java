@@ -4,9 +4,9 @@ package Projecte2.DriftoCar.entity.MongoDB;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import Projecte2.DriftoCar.entity.MySQL.Combustible;
+import Projecte2.DriftoCar.entity.MySQL.TipusCombustible;
 import Projecte2.DriftoCar.entity.MySQL.TipusVehicle;
-import Projecte2.DriftoCar.entity.MySQL.Transmisio;
+import Projecte2.DriftoCar.entity.MySQL.TipusTransmisio;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -30,10 +30,10 @@ public class DocumentacioVehicle {
     private int places;
     
     @Enumerated(EnumType.STRING)
-    private Transmisio transmisio; 
+    private TipusTransmisio transmisio; 
             
     @Enumerated(EnumType.STRING)
-    private Combustible combustible; // String
+    private TipusCombustible combustible; // String
     
     @Enumerated(EnumType.STRING)
     private TipusVehicle tipus;

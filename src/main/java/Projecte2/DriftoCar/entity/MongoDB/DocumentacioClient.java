@@ -25,6 +25,10 @@ public class DocumentacioClient {
     
     @Id
     private String dni;
+
+    private String usuari;
+    
+    private String contrasenya;
     
     private String nom;
     
@@ -41,8 +45,6 @@ public class DocumentacioClient {
     private int numTarjetaCredit;
     
     private String adreca;
-    
-    private String contrasenya;
     
     //si es 1 sera premium
     private boolean reputacio;
