@@ -30,7 +30,7 @@ public class ClientService {
 
     }
 
-    public Client altaClient(Client client) {
+    public Client altaClient(Client client) throws Exception {
         log.info("S'ha entrat al mètode registreClient");
 
         if (client.getUsuari() == null || client.getUsuari().isEmpty()) {
@@ -57,7 +57,7 @@ public class ClientService {
         if (client.getLlicCaducitat() == null || client.getLlicCaducitat().toString().isEmpty()) {
             throw new IllegalArgumentException("El camp caducitat de la llicència no pot estar buit.");
         }
-        if (client.getDniCaducitat()== null || client.getDniCaducitat().toString().isEmpty()) {
+        if (client.getDniCaducitat() == null || client.getDniCaducitat().toString().isEmpty()) {
             throw new IllegalArgumentException("El camp caducitat del dni no pot estar buit.");
         }
         if (client.getNumTarjetaCredit() == null || client.getNumTarjetaCredit().toString().isEmpty()) {
@@ -70,6 +70,9 @@ public class ClientService {
         //Comprovar si ja existeix un client amb el dni inserit.
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
 
+        if (clientExistent != null) {
+            throw new Exception("Ja existeix un client amb aquest DNI.");
+        }
         return clientRepository.save(client);
 
     }
