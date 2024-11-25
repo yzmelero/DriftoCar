@@ -4,6 +4,9 @@
  */
 package Projecte2.DriftoCar.repository.MySQL;
 
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.entity.MySQL.TipusCombustible;
+import Projecte2.DriftoCar.entity.MySQL.TipusTransmisio;
 import Projecte2.DriftoCar.entity.MySQL.TipusVehicle;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import java.util.List;
@@ -26,10 +29,16 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     List<Vehicle> findByDisponibilitat(boolean disponibilitat);
 
-    List<Vehicle> findByLocalitzacioCodiPostal(String codiPostal);
+    List<Vehicle> findByLocalitzacio(Localitzacio localitzacio);
 
-    List<Vehicle> findByTipusAndDisponibilitat(TipusVehicle tipus, boolean disponibilitat);
+    List<Vehicle> findByTipus(TipusVehicle tipus);
+    
+    List<Vehicle> findByCombustible(TipusCombustible combustible);
+    
+    List<Vehicle> findByPlaces (int places);
 
-    List<Vehicle> findByAnyBetween(int startYear, int endYear);
+    List<Vehicle> findByTransmisio(TipusTransmisio transmisio);
+
+    List<Vehicle> findByAny(int any);
 
 }
