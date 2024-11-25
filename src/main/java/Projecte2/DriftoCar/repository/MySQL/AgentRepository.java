@@ -4,12 +4,13 @@
  */
 package Projecte2.DriftoCar.repository.MySQL;
 
-
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Anna
  */
+@Repository
 public interface AgentRepository {
     
 }

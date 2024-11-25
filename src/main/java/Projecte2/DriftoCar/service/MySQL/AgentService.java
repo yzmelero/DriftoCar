@@ -4,11 +4,14 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  *
  * @author Anna
  */
 public class AgentService {
-    
+    @Autowired
+    AgentService agentService;
 }
