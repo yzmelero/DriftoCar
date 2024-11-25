@@ -35,6 +35,7 @@ public class Client {
     @Id
     private String dni;
 
+    @Column(unique = true)
     private String usuari;
     
     private String contrasenya;
@@ -56,7 +57,7 @@ public class Client {
     private LocalDate dniCaducitat;
     
     @Column(name = "num_tarjeta_credit", unique = true)
-    private int numTarjetaCredit;
+    private Long numTarjetaCredit;
     
     private String adreca;
     
