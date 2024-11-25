@@ -5,6 +5,7 @@
 package Projecte2.DriftoCar.service.MySQL;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,26 +31,29 @@ public class ReservaService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public Reserva createReserva(String matricula, String dni, LocalDate dataInici, LocalDate dataFi, double costTotal, double fianca) {
+    /**
+     *  Aquest metode guarda una nova reserva a a BBDD si el client i la matricula existeixen
+     * 
+     * @param reserva
+     * @return
+     * @throws Exception
+     * @author Mario
+     */
+    public Reserva createReserva(Reserva reserva) throws Exception {
         // Verificar que el vehículo existe
-        Vehicle vehicle = vehicleRepository.findByMatricula(matricula)
-                .orElseThrow(() -> new RuntimeException("El vehículo no existe"));
+        Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
 
+            
         // Verificar que el cliente existe
-        Client client = clientRepository.findByDni(dni)
-                .orElseThrow(() -> new RuntimeException("El cliente no existe"));
+        Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
 
-        // Crear la reserva
-        Reserva reserva = new Reserva();
-        reserva.setVehicle(vehicle);
-        reserva.setClient(client);
-        reserva.setDataInici(dataInici);
-        reserva.setDataFi(dataFi);
-        reserva.setDataFi(dataFi);
-        reserva.setCostTotal(costTotal);
-        reserva.setFianca(fianca);
-        reserva.setEstat(true);
 
+        if (client == null) {
+            throw new Exception("El client no existeix");
+        }
+        if (vehicle == null) {
+            throw new Exception("El vehicle no existeix");
+        }
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
