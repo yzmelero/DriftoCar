@@ -19,7 +19,7 @@ public class LocalitzacioService {
     @Autowired
     private LocalitzacioRepository repository;  
     
-    public Localitzacio AltaLocalitzacio(Localitzacio localitzacio) {
+    public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
         return repository.save(localitzacio);
     }
 }
