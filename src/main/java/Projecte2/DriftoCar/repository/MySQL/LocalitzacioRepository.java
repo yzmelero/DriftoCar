@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * @author Anna
  */
 @Repository
-public interface LocalitzacioRepository extends JpaRepository<Localitzacio, Long> {
+public interface LocalitzacioRepository extends JpaRepository<Localitzacio, String> {
 }

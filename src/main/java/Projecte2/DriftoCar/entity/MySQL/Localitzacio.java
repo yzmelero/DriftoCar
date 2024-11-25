@@ -30,7 +30,7 @@ public class Localitzacio {
     
     @Id
     @Column(name = "codi_postal")
-    private Long codiPostal;
+    private String codiPostal;
     
     private String ciutat;
     
