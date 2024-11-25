@@ -57,7 +57,7 @@ public class Client {
     private LocalDate dniCaducitat;
     
     @Column(name = "num_tarjeta_credit", unique = true)
-    private Integer numTarjetaCredit;
+    private Long numTarjetaCredit;
     
     private String adreca;
     

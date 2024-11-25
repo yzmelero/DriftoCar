@@ -70,7 +70,7 @@ public class ClientService {
         //Comprovar si ja existeix un client amb el dni inserit.
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
 
-        if (clientExistent != null) {
+        if (clientExistent.isPresent()) {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
         return clientRepository.save(client);
