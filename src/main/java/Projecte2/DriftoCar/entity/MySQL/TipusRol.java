@@ -6,8 +6,8 @@ package Projecte2.DriftoCar.entity.MySQL;
 
 /**
  *
- * @author Yaiza
+ * @author mario
  */
-public enum Combustible {
-    ELECTRIC, BENZINA, DIESEL, HIBRIT
+public enum TipusRol {
+    ADMIN, AGENT;
 }

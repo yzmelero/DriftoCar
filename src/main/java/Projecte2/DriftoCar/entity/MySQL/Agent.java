@@ -5,6 +5,8 @@
 package Projecte2.DriftoCar.entity.MySQL;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,16 +24,16 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="agent")
+@Table(name = "agent")
 @EqualsAndHashCode(callSuper = true)
-public class Agent extends Client{
+public class Agent extends Client {
 
-    //enuum
-    private Rol rol;
-    
+    @Enumerated(EnumType.STRING)
+    private TipusRol rol;
+
     //esto se pone en las columnas que tienen relaciones, se pondra relacion, join column y luego estas 2
-    @OneToOne    
-    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal")  //poner unique     
+    @OneToOne
+    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Localitzacio localitzacio;

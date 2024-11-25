@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.Binary;
 
 /**
  *
@@ -35,7 +36,7 @@ public class HistoricIncidencies {
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
 
-    //private DocumentacioIncidencia documentacioIncidencia relacion de collections
+    private Binary documentacion;
 
-    // private documentVehicle matricula;
+    private String matricula;
 }

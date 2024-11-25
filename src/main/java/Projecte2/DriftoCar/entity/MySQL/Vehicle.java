@@ -39,10 +39,10 @@ public class Vehicle {
     private int places;
     
     @Enumerated(EnumType.STRING)
-    private Transmisio transmisio; 
+    private TipusTransmisio transmisio; 
             
     @Enumerated(EnumType.STRING)
-    private Combustible combustible; // String
+    private TipusCombustible combustible; // String
     
     @Enumerated(EnumType.STRING)
     private TipusVehicle tipus;

@@ -4,12 +4,14 @@
  */
 package Projecte2.DriftoCar.repository.MySQL;
 
-
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Anna
  */
-public interface LocalitzacioRepository {
-    
+@Repository
+public interface LocalitzacioRepository extends JpaRepository<Localitzacio, Long> {
 }

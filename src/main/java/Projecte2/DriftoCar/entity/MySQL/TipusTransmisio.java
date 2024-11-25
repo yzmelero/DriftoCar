@@ -6,8 +6,8 @@ package Projecte2.DriftoCar.entity.MySQL;
 
 /**
  *
- * @author mario
+ * @author Yaiza
  */
-public enum Rol {
-    ADMIN, AGENT;
+public enum TipusTransmisio {
+    MANUAL, AUTOMÀTIC
 }
