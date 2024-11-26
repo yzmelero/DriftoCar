@@ -76,4 +76,39 @@ public class ClientService {
         return clientRepository.save(client);
 
     }
+    
+    
+    
+    public void modificarClient(Client client) throws Exception{
+        
+        log.info("S'ha entrat al mètode modificarClient");
+
+        Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+
+        if (clientExistent.isEmpty()) {
+            throw new Exception("No existeix cap client amb aquest DNI.");
+        }
+        
+        //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
+        Client clientAntic = clientExistent.get();
+        
+        clientAntic.setNom(client.getNom());
+        clientAntic.setCognoms(client.getCognoms());
+        clientAntic.setLlicencia(client.getLlicencia());
+        clientAntic.setLlicCaducitat(client.getLlicCaducitat());
+        clientAntic.setDniCaducitat(client.getDniCaducitat());
+        clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
+        clientAntic.setAdreca(client.getAdreca());
+        //clientAntic.setReputacio(client.getReputacio());
+    }
 }
+/* @Column(unique = true)
+    private String usuari;
+    
+    private String contrasenya;
+    
+    @Column(unique = true)
+    private String email;
+  
+    //1 = premium, 0 = normal
+    private boolean reputacio;*/
