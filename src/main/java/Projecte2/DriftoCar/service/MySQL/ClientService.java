@@ -31,7 +31,7 @@ public class ClientService {
     }
 
     public Client altaClient(Client client) throws Exception {
-        log.info("S'ha entrat al mètode registreClient");
+        log.info("S'ha entrat al mètode altaClient");
 
         if (client.getUsuari() == null || client.getUsuari().isEmpty()) {
             throw new IllegalArgumentException("El camp usuari no pot estar buit.");
@@ -64,7 +64,7 @@ public class ClientService {
             throw new IllegalArgumentException("El camp tarjeta de crèdit no pot estar buit.");
         }
         if (client.getAdreca() == null || client.getAdreca().isEmpty()) {
-            throw new IllegalArgumentException("El camp tarjeta de crèdit no pot estar buit.");
+            throw new IllegalArgumentException("El camp adreça no pot estar buit.");
         }
 
         //Comprovar si ja existeix un client amb el dni inserit.
@@ -78,9 +78,8 @@ public class ClientService {
     }
     
     
-    
-    public Client modificarClient(Client client) throws Exception{
-        
+    public Client modificarClient(Client client) throws Exception {
+
         log.info("S'ha entrat al mètode modificarClient");
 
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
@@ -88,10 +87,10 @@ public class ClientService {
         if (clientExistent.isEmpty()) {
             throw new Exception("No existeix cap client amb aquest DNI.");
         }
-        
+
         //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
         Client clientAntic = clientExistent.get();
-        
+
         clientAntic.setNom(client.getNom());
         clientAntic.setCognoms(client.getCognoms());
         clientAntic.setLlicencia(client.getLlicencia());
@@ -103,8 +102,24 @@ public class ClientService {
         clientAntic.setContrasenya(client.getContrasenya());
         clientAntic.setUsuari(client.getUsuari());
         clientAntic.setReputacio(client.isReputacio());
-        
+
+        log.info("S'ha modificat el client.");
         return clientRepository.save(clientAntic);
+
+    }
+
+    public void baixaClient(Client client) throws Exception {
+
+        log.info("S'ha entrat al mètode baixaClient");
+
+        Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+
+        if (clientExistent.isEmpty()) {
+            throw new Exception("No hi ha cap client amb aquest DNI");
+        }
+
+        clientRepository.delete(clientExistent.get());
+        log.info("S'ha esborrat el client.");
+
     }
 }
-
