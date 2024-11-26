@@ -4,6 +4,7 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,9 @@ public class ReservaService {
         }
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
+    }
+    
+    public List<Reserva> listarReservas(){
+        return reservaRepository.findAll();
     }
 }

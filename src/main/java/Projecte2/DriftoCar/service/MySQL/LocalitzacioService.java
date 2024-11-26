@@ -26,4 +26,12 @@ public class LocalitzacioService {
         }
         return localitzacioRepository.save(localitzacio);
     }
+    
+    public void baixaLocalitzacio(String codiPostal) {
+        if (!localitzacioRepository.existsById(codiPostal)) {
+            throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+        
+        localitzacioRepository.deleteById(codiPostal);
+    }
 }
