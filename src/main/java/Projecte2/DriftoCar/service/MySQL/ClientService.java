@@ -87,6 +87,8 @@ public class ClientService {
             throw new Exception("No hi ha cap client amb aquest DNI");
         }
         
-        clientRepository.delete(client);
+        clientRepository.delete(clientExistent.get());
+        log.info("S'ha esborrat el client.");
+
     }
 }
