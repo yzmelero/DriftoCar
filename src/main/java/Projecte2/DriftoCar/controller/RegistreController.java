@@ -50,6 +50,8 @@ public class RegistreController {
         
         Client nouClient = clientService.altaClient(client);
         return new ResponseEntity<>(nouClient, HttpStatus.CREATED);
+        
+        
 
     }
 
