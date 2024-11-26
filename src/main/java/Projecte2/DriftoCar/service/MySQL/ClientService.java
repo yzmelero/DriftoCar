@@ -31,7 +31,7 @@ public class ClientService {
     }
 
     public Client altaClient(Client client) throws Exception {
-        log.info("S'ha entrat al mètode registreClient");
+        log.info("S'ha entrat al mètode altaClient");
 
         if (client.getUsuari() == null || client.getUsuari().isEmpty()) {
             throw new IllegalArgumentException("El camp usuari no pot estar buit.");
@@ -64,7 +64,7 @@ public class ClientService {
             throw new IllegalArgumentException("El camp tarjeta de crèdit no pot estar buit.");
         }
         if (client.getAdreca() == null || client.getAdreca().isEmpty()) {
-            throw new IllegalArgumentException("El camp tarjeta de crèdit no pot estar buit.");
+            throw new IllegalArgumentException("El camp adreça no pot estar buit.");
         }
 
         //Comprovar si ja existeix un client amb el dni inserit.
@@ -74,6 +74,21 @@ public class ClientService {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
         return clientRepository.save(client);
+
+    }
+    
+    public void baixaClient(Client client) throws Exception{
+        
+        log.info("S'ha entrat al mètode baixaClient");
+
+        Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+        
+        if (clientExistent.isEmpty()) {
+            throw new Exception("No hi ha cap client amb aquest DNI");
+        }
+        
+        clientRepository.delete(clientExistent.get());
+        log.info("S'ha esborrat el client.");
 
     }
 }
