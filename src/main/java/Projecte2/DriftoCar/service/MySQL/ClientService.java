@@ -79,7 +79,7 @@ public class ClientService {
     
     
     
-    public void modificarClient(Client client) throws Exception{
+    public Client modificarClient(Client client) throws Exception{
         
         log.info("S'ha entrat al mètode modificarClient");
 
@@ -99,16 +99,12 @@ public class ClientService {
         clientAntic.setDniCaducitat(client.getDniCaducitat());
         clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
         clientAntic.setAdreca(client.getAdreca());
-        //clientAntic.setReputacio(client.getReputacio());
+        clientAntic.setEmail(client.getEmail());
+        clientAntic.setContrasenya(client.getContrasenya());
+        clientAntic.setUsuari(client.getUsuari());
+        clientAntic.setReputacio(client.isReputacio());
+        
+        return clientRepository.save(clientAntic);
     }
 }
-/* @Column(unique = true)
-    private String usuari;
-    
-    private String contrasenya;
-    
-    @Column(unique = true)
-    private String email;
-  
-    //1 = premium, 0 = normal
-    private boolean reputacio;*/
+
