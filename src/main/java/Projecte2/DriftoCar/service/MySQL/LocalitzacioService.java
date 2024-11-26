@@ -17,9 +17,21 @@ import org.springframework.stereotype.Service;
 public class LocalitzacioService {
     
     @Autowired
-    private LocalitzacioRepository repository;  
+    private LocalitzacioRepository localitzacioRepository;  
     
-    public Localitzacio AltaLocalitzacio(Localitzacio localitzacio) {
-        return repository.save(localitzacio);
+    public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
+
+        if (localitzacioRepository.existsById(localitzacio.getCodiPostal())) {
+            throw new RuntimeException("Ja existeix una localitzacio amb el codi postal: " + localitzacio.getCodiPostal());
+        }
+        return localitzacioRepository.save(localitzacio);
+    }
+    
+    public void baixaLocalitzacio(String codiPostal) {
+        if (!localitzacioRepository.existsById(codiPostal)) {
+            throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+        
+        localitzacioRepository.deleteById(codiPostal);
     }
 }
