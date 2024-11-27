@@ -5,7 +5,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Listado de Clientes</title>
+    <title>Llistat de Clients</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -17,25 +17,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="row">
             <div class="col">
 
-                <h1>Listado de Clientes</h1>
+                <h1>Llistat de Clients</h1>
                 
-                <p>Total de clientes: <span th:text="${#lists.size(clients)}"></span></p>
+                <p>Total de clients: <span th:text="${#lists.size(clients)}"></span></p>
 
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">DNI</th>
-                            <th scope="col">Usuario</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
+                            <th scope="col">Usuari</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Cognoms</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Licencia</th>
-                            <th scope="col">Caducidad Licencia</th>
-                            <th scope="col">Caducidad DNI</th>
-                            <th scope="col">Tarjeta de Crédito</th>
-                            <th scope="col">Dirección</th>
-                            <th scope="col">Reputación</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">Llicència</th>
+                            <th scope="col">Caducitat Llicència</th>
+                            <th scope="col">Caducitat DNI</th>
+                            <th scope="col">Tarjeta de Crèdit</th>
+                            <th scope="col">Adreça</th>
+                            <th scope="col">Reputació</th>
+                            <th scope="col">Accions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,7 +53,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <td th:text="${client.reputacio ? 'Premium' : 'Normal'}"></td>
                             <td>
                                 <a class="btn btn-success" th:href="@{/clients/edit/{dni}(dni=${client.dni})}">Editar</a>
-                                <a class="btn btn-danger" th:href="@{/clients/delete/{dni}(dni=${client.dni})}">Borrar</a>
+                                <a class="btn btn-danger" th:href="@{/clients/delete/{dni}(dni=${client.dni})}">Esborrar</a>
                             </td>
                         </tr>
                     </tbody>

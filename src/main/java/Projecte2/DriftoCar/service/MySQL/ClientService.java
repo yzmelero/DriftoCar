@@ -6,6 +6,7 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,5 +122,9 @@ public class ClientService {
         clientRepository.delete(clientExistent.get());
         log.info("S'ha esborrat el client.");
 
+    }
+    
+    public List<Client> llistarClients(){
+        return clientRepository.findAll();
     }
 }
