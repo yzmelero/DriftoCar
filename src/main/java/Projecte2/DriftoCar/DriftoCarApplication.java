@@ -10,4 +10,6 @@ public class DriftoCarApplication {
 		SpringApplication.run(DriftoCarApplication.class, args);
 	}
 
+
 }
+

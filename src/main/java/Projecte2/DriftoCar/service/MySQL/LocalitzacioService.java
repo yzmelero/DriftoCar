@@ -49,4 +49,20 @@ public class LocalitzacioService {
 
         localitzacioRepository.deleteById(codiPostal);
     }
+    
+    public Localitzacio modificarLocalitzacio(String codiPostal, Localitzacio novaLocalitzacio) {
+        if (!localitzacioRepository.existsById(codiPostal)) {
+            throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+
+        Localitzacio localitzacioExistente = localitzacioRepository.findById(codiPostal).get();
+
+        localitzacioExistente.setCiutat(novaLocalitzacio.getCiutat());
+        localitzacioExistente.setAdrecaLocalitzacio(novaLocalitzacio.getAdrecaLocalitzacio());
+        localitzacioExistente.setHorari(novaLocalitzacio.getHorari());
+        localitzacioExistente.setCondicions(novaLocalitzacio.getCondicions());
+
+        return localitzacioRepository.save(localitzacioExistente);
+    }
+
 }
