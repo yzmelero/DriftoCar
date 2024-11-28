@@ -4,6 +4,9 @@
  */
 package Projecte2.DriftoCar.entity.MySQL;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,10 +34,24 @@ public class Agent extends Client {
     @Enumerated(EnumType.STRING)
     private TipusRol rol;
 
-    //esto se pone en las columnas que tienen relaciones, se pondra relacion, join column y luego estas 2
+    // esto se pone en las columnas que tienen relaciones, se pondra relacion, join
+    // column y luego estas 2
     @OneToOne
     @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Localitzacio localitzacio;
+
+    public Agent(String dni, String usuari, String contrasenya, String nom, String cognoms,
+            String email, String llicencia, LocalDate llicCaducitat, LocalDate dniCaducitat,
+            Long numTarjetaCredit, String adreca, boolean reputacio, List<Reserva> reserva,
+            TipusRol rol, Localitzacio localitzacio) {
+        super(dni, usuari, contrasenya, nom, cognoms, email, llicencia, llicCaducitat,
+            dniCaducitat, numTarjetaCredit, adreca, reputacio, reserva);
+        this.rol = rol;
+        this.localitzacio = localitzacio;
+    }
+
+    
+
 }

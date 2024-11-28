@@ -4,12 +4,16 @@
  */
 package Projecte2.DriftoCar.repository.MySQL;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import Projecte2.DriftoCar.entity.MySQL.Agent;
 
 /**
  *
  * @author Anna
  */
-public interface AgentRepository {
+@Repository
+public interface AgentRepository extends JpaRepository<Agent, String> {
     
 }
