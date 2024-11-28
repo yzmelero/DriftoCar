@@ -52,8 +52,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <td th:text="${client.adreca}"></td>
                             <td th:text="${client.reputacio ? 'Premium' : 'Normal'}"></td>
                             <td>
-                                <a class="btn btn-success" th:href="@{/clients/edit/{dni}(dni=${client.dni})}">Editar</a>
-                                <a class="btn btn-danger" th:href="@{/clients/delete/{dni}(dni=${client.dni})}">Esborrar</a>
+                                <a class="btn btn-success" th:href="@{/clients/modificar/{dni}(dni=${client.dni})}">Editar</a>
+                                <a class="btn btn-danger" th:href="@{/clients/esborrar/{dni}(dni=${client.dni})}">Esborrar</a>
                             </td>
                         </tr>
                     </tbody>
