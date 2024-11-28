@@ -77,16 +77,47 @@ public class ClientService {
 
     }
     
-    public void baixaClient(Client client) throws Exception{
-        
+    
+    public Client modificarClient(Client client) throws Exception {
+
+        log.info("S'ha entrat al mètode modificarClient");
+
+        Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+
+        if (clientExistent.isEmpty()) {
+            throw new Exception("No existeix cap client amb aquest DNI.");
+        }
+
+        //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
+        Client clientAntic = clientExistent.get();
+
+        clientAntic.setNom(client.getNom());
+        clientAntic.setCognoms(client.getCognoms());
+        clientAntic.setLlicencia(client.getLlicencia());
+        clientAntic.setLlicCaducitat(client.getLlicCaducitat());
+        clientAntic.setDniCaducitat(client.getDniCaducitat());
+        clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
+        clientAntic.setAdreca(client.getAdreca());
+        clientAntic.setEmail(client.getEmail());
+        clientAntic.setContrasenya(client.getContrasenya());
+        clientAntic.setUsuari(client.getUsuari());
+        clientAntic.setReputacio(client.isReputacio());
+
+        log.info("S'ha modificat el client.");
+        return clientRepository.save(clientAntic);
+
+    }
+
+    public void baixaClient(Client client) throws Exception {
+
         log.info("S'ha entrat al mètode baixaClient");
 
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
-        
+
         if (clientExistent.isEmpty()) {
             throw new Exception("No hi ha cap client amb aquest DNI");
         }
-        
+
         clientRepository.delete(clientExistent.get());
         log.info("S'ha esborrat el client.");
 

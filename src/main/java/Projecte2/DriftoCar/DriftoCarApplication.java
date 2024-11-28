@@ -8,9 +8,9 @@ public class DriftoCarApplication {
 
 
     public static void main(String[] args) {
-       SpringApplication.run(DriftoCarApplication.class, args);
-        
-        
+        SpringApplication.run(DriftoCarApplication.class, args);
     }
-
 }
+
+
+
