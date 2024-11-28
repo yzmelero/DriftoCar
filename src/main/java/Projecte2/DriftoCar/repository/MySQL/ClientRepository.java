@@ -5,6 +5,7 @@
 package Projecte2.DriftoCar.repository.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,9 @@ public interface ClientRepository extends JpaRepository <Client,String>  {
     //Client registreClient(Client client);
    
     //Retorna un client amb l'ID especificat.
+    //List<Client> findAll();
     Optional<Client> findByDni(String dni);
+    
     
     //Modifica un client.
     //Client modificarClient(Client client, String dni);
