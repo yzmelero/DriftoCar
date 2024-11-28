@@ -8,6 +8,7 @@ import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,29 +40,30 @@ public class VehicleService {
         vehicleRepository.deleteById(matricula);
     }
 
-    public Vehicle modificaVehicle(String matricula, Vehicle vehicleActualitzat) {
-        Vehicle vehicleExistent = vehicleRepository.findByMatricula(matricula).get();
+    public Vehicle modificaVehicle(Vehicle vehicleActualitzat) {
+        Optional<Vehicle> vehicleExistent = vehicleRepository.findByMatricula(vehicleActualitzat.getMatricula());
 
-        if (vehicleExistent == null) {
-            throw new RuntimeException("No existeix cap vehicle amb la matrícula: " + matricula);
+        if (vehicleExistent.isEmpty()) {
+            throw new RuntimeException("No existeix cap vehicle amb la matrícula: " + vehicleActualitzat.getMatricula());
         }
+        Vehicle vehicleAntic = vehicleExistent.get();
 
-        Localitzacio localitzacio = localitzacioRepository.findById(vehicleActualitzat.getLocalitzacio().getCodiPostal()).orElse(null);
-
-        if (localitzacio != null) {
-            vehicleExistent.setLocalitzacio(localitzacio);
+        Optional<Localitzacio> localitzacio = localitzacioRepository.findById(vehicleActualitzat.getLocalitzacio().getCodiPostal());
+        if (localitzacio.isEmpty()) {
+            throw new RuntimeException("No existeix la localitzacio inserida.");
         }
+        
+        vehicleAntic.setLocalitzacio(vehicleActualitzat.getLocalitzacio());
+        vehicleAntic.setMarca(vehicleActualitzat.getMarca());
+        vehicleAntic.setModel(vehicleActualitzat.getModel());
+        vehicleAntic.setAny(vehicleActualitzat.getAny());
+        vehicleAntic.setPlaces(vehicleActualitzat.getPlaces());
+        vehicleAntic.setTransmisio(vehicleActualitzat.getTransmisio());
+        vehicleAntic.setCombustible(vehicleActualitzat.getCombustible());
+        vehicleAntic.setTipus(vehicleActualitzat.getTipus());
+        vehicleAntic.setDisponibilitat(vehicleActualitzat.isDisponibilitat());
 
-        vehicleExistent.setMarca(vehicleActualitzat.getMarca());
-        vehicleExistent.setModel(vehicleActualitzat.getModel());
-        vehicleExistent.setAny(vehicleActualitzat.getAny());
-        vehicleExistent.setPlaces(vehicleActualitzat.getPlaces());
-        vehicleExistent.setTransmisio(vehicleActualitzat.getTransmisio());
-        vehicleExistent.setCombustible(vehicleActualitzat.getCombustible());
-        vehicleExistent.setTipus(vehicleActualitzat.getTipus());
-        vehicleExistent.setDisponibilitat(vehicleActualitzat.isDisponibilitat());
-
-        return vehicleRepository.save(vehicleExistent);
+        return vehicleRepository.save(vehicleAntic);
     }
 
 }
