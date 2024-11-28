@@ -6,11 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DriftoCarApplication {
 
+	public static void main(String[] args) {
+		SpringApplication.run(DriftoCarApplication.class, args);
+	}
 
-    public static void main(String[] args) {
-        SpringApplication.run(DriftoCarApplication.class, args);
-    }
+
 }
-
-
 

@@ -5,7 +5,10 @@
 package Projecte2.DriftoCar.service.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
+import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class LocalitzacioService {
     @Autowired
     private LocalitzacioRepository localitzacioRepository;
 
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
     public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
 
         if (localitzacioRepository.existsById(localitzacio.getCodiPostal())) {
@@ -30,6 +36,15 @@ public class LocalitzacioService {
     public void baixaLocalitzacio(String codiPostal) {
         if (!localitzacioRepository.existsById(codiPostal)) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+
+        Localitzacio localitzacio = localitzacioRepository.findById(codiPostal).get();
+
+        List<Vehicle> vehicles = vehicleRepository.findByLocalitzacio_CodiPostal(codiPostal);
+
+        if (!vehicles.isEmpty()) {
+            throw new RuntimeException("No s'ha pogut eliminar la localitzacio perque el codi postal " +
+                    codiPostal + " té vehicles associats!");
         }
 
         localitzacioRepository.deleteById(codiPostal);
