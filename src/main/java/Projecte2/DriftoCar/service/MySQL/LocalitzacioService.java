@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LocalitzacioService {
-    
+
     @Autowired
-    private LocalitzacioRepository localitzacioRepository;  
-    
+    private LocalitzacioRepository localitzacioRepository;
+
     public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
 
         if (localitzacioRepository.existsById(localitzacio.getCodiPostal())) {
@@ -26,12 +26,28 @@ public class LocalitzacioService {
         }
         return localitzacioRepository.save(localitzacio);
     }
-    
+
     public void baixaLocalitzacio(String codiPostal) {
         if (!localitzacioRepository.existsById(codiPostal)) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
         }
-        
+
         localitzacioRepository.deleteById(codiPostal);
     }
+    
+    public Localitzacio modificarLocalitzacio(String codiPostal, Localitzacio novaLocalitzacio) {
+        if (!localitzacioRepository.existsById(codiPostal)) {
+            throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+
+        Localitzacio localitzacioExistente = localitzacioRepository.findById(codiPostal).get();
+
+        localitzacioExistente.setCiutat(novaLocalitzacio.getCiutat());
+        localitzacioExistente.setAdrecaLocalitzacio(novaLocalitzacio.getAdrecaLocalitzacio());
+        localitzacioExistente.setHorari(novaLocalitzacio.getHorari());
+        localitzacioExistente.setCondicions(novaLocalitzacio.getCondicions());
+
+        return localitzacioRepository.save(localitzacioExistente);
+    }
+
 }
