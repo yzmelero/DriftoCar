@@ -9,13 +9,16 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  *
@@ -42,9 +45,13 @@ public class Localitzacio {
     private String condicions;
     
     @OneToMany(mappedBy = "localitzacio")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Vehicle> vehicles = new ArrayList<>();
 
     @OneToOne(mappedBy = "localitzacio")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Agent agent;
     
     

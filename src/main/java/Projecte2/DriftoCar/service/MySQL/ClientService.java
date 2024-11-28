@@ -6,6 +6,7 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,19 +77,57 @@ public class ClientService {
         return clientRepository.save(client);
 
     }
-    
-    public void baixaClient(Client client) throws Exception{
-        
+
+    public Client modificarClient(Client client) {
+
+        log.info("S'ha entrat al mètode modificarClient");
+
+        Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+
+        if (clientExistent.isEmpty()) {
+            throw new RuntimeException("No existeix cap client amb aquest DNI.");
+        }
+
+        //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
+        Client clientAntic = clientExistent.get();
+
+        clientAntic.setNom(client.getNom());
+        clientAntic.setCognoms(client.getCognoms());
+        clientAntic.setLlicencia(client.getLlicencia());
+        clientAntic.setLlicCaducitat(client.getLlicCaducitat());
+        clientAntic.setDniCaducitat(client.getDniCaducitat());
+        clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
+        clientAntic.setAdreca(client.getAdreca());
+        clientAntic.setEmail(client.getEmail());
+        clientAntic.setContrasenya(client.getContrasenya());
+        clientAntic.setUsuari(client.getUsuari());
+        clientAntic.setReputacio(client.isReputacio());
+
+        log.info("S'ha modificat el client.");
+        return clientRepository.save(clientAntic);
+
+    }
+
+    public void baixaClient(Client client) {
+
         log.info("S'ha entrat al mètode baixaClient");
 
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
-        
+
         if (clientExistent.isEmpty()) {
-            throw new Exception("No hi ha cap client amb aquest DNI");
+            throw new RuntimeException("No hi ha cap client amb aquest DNI");
         }
-        
+
         clientRepository.delete(clientExistent.get());
         log.info("S'ha esborrat el client.");
 
+    }
+
+    public List<Client> llistarClients() {
+        return clientRepository.findAll();
+    }
+
+    public Client obtenirClientPerDni(String dni) {
+        return clientRepository.findById(dni).orElse(null); 
     }
 }
