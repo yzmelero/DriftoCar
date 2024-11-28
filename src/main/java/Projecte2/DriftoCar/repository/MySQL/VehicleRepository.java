@@ -32,13 +32,16 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
     List<Vehicle> findByLocalitzacio(Localitzacio localitzacio);
 
     List<Vehicle> findByTipus(TipusVehicle tipus);
-    
+
     List<Vehicle> findByCombustible(TipusCombustible combustible);
-    
-    List<Vehicle> findByPlaces (int places);
+
+    List<Vehicle> findByPlaces(int places);
 
     List<Vehicle> findByTransmisio(TipusTransmisio transmisio);
 
     List<Vehicle> findByAny(int any);
+
+    List<Vehicle> findByLocalitzacio_CodiPostal(String codiPostal);
+
 
 }
