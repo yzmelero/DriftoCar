@@ -62,7 +62,7 @@ public class ReservaService {
         return reservaRepository.save(reserva);
     }
     
-    public List<Reserva> listarReservas(){
+    public List<Reserva> llistarReservas(){
         return reservaRepository.findAll();
     }
 }
