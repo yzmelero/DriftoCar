@@ -32,7 +32,7 @@ public class AgentController {
     }
     
 @GetMapping("/alta")
-public String mostrarFormulario(Model model) {
+public String altaAgente(Model model) {
     Agent agent = new Agent();
     agent.setLocalitzacio(new Localitzacio()); // Inicializar localitzacio
     model.addAttribute("agent", agent);
