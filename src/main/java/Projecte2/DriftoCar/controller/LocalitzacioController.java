@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -20,12 +22,26 @@ public class LocalitzacioController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
-    // Llistar totes les localitzacions
     @GetMapping("/llistar")
     public String llistarLocalitzacions(Model model) {
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
-        return "localitzacio-llista"; // Retorna la vista de Thymeleaf per llistar localitzacions
+        return "localitzacio-llista";
     }
 
+    @GetMapping("/alta")
+    public String mostrarFormularioAlta(Model model) {
+        model.addAttribute("localitzacio", new Localitzacio());
+        return "localitzacio-alta";  // Retorna la vista de Thymeleaf para crear una nueva localización
+    }
+
+    @PostMapping("/alta")
+    public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
+        try {
+            localitzacioService.altaLocalitzacio(localitzacio);
+            return "redirect:/localitzacions/llistar";
+        } catch (RuntimeException e) {
+            return "error";
+        }
+    }
 }
