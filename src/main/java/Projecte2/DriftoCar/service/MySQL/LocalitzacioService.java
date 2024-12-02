@@ -65,6 +65,14 @@ public class LocalitzacioService {
 
         return localitzacioRepository.save(localitzacioExistente);
     }
+    
+    public List<Localitzacio> llistarLocalitzacions() {
+        return localitzacioRepository.findAll();
+    }
+    
+    public Localitzacio obtenirLocalitzacioCodiPostal(String codiPostal) {
+        return localitzacioRepository.findById(codiPostal).orElse(null);
+    }
 
     public List<Localitzacio> llistarLocalitzacions() {
         return localitzacioRepository.findAll();

@@ -36,7 +36,7 @@ public class HistoricIncidencies {
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
 
-    private Binary documentacion;
+    private Binary[] documentacion;
 
     private String matricula;
 }

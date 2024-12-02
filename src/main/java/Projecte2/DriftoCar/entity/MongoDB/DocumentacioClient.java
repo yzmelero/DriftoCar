@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.Binary;
 /**
  *
  * @author Anna
@@ -25,29 +26,27 @@ public class DocumentacioClient {
     
     @Id
     private String dni;
-
-    private String usuari;
-    
-    private String contrasenya;
-    
+        
     private String nom;
     
     private String cognoms;
     
+    private String contrasenya;
+    
     private String email;
 
     private String llicencia;
-     
+        
     private LocalDate llicCaducitat;
     
     private LocalDate dniCaducitat;
     
-    private int numTarjetaCredit;
+    private Binary[] imatgeDni;
+    
+    private Binary[] imatgeLlicencia;
+    
+    private String numTarjetaCredit;
     
     private String adreca;
-    
-    //si es 1 sera premium
-    private boolean reputacio;
-    
 
 }
