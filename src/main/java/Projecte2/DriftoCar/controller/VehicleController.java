@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/vehicles")
-public class AltaVehicleController {
+public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
