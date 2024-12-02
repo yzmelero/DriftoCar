@@ -4,10 +4,15 @@
  */
 package Projecte2.DriftoCar.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 /**
  *
  * @author Anna
  */
+@Controller
+@RequestMapping("/menu")
 public class MenuPrincipalController {
     
 }
