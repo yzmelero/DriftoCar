@@ -39,8 +39,6 @@ public class LocalitzacioService {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
         }
 
-        Localitzacio localitzacio = localitzacioRepository.findById(codiPostal).get();
-
         List<Vehicle> vehicles = vehicleRepository.findByLocalitzacio_CodiPostal(codiPostal);
 
         if (!vehicles.isEmpty()) {
