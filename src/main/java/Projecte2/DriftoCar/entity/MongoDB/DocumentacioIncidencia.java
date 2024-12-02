@@ -23,12 +23,10 @@ public class DocumentacioIncidencia {
     @Id
     private Long id;
 
-    private Binary fotos;
+    private Binary[] fotos;
 
     private String text;
 
-    private Binary pdf;
+    private Binary[] pdf;
     
-
-
 }
