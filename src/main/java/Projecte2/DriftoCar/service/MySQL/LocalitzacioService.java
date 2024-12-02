@@ -28,7 +28,8 @@ public class LocalitzacioService {
     public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
 
         if (localitzacioRepository.existsById(localitzacio.getCodiPostal())) {
-            throw new RuntimeException("Ja existeix una localitzacio amb el codi postal: " + localitzacio.getCodiPostal());
+            throw new RuntimeException(
+                    "Ja existeix una localitzacio amb el codi postal: " + localitzacio.getCodiPostal());
         }
         return localitzacioRepository.save(localitzacio);
     }
@@ -49,7 +50,7 @@ public class LocalitzacioService {
 
         localitzacioRepository.deleteById(codiPostal);
     }
-    
+
     public Localitzacio modificarLocalitzacio(String codiPostal, Localitzacio novaLocalitzacio) {
         if (!localitzacioRepository.existsById(codiPostal)) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
@@ -63,6 +64,10 @@ public class LocalitzacioService {
         localitzacioExistente.setCondicions(novaLocalitzacio.getCondicions());
 
         return localitzacioRepository.save(localitzacioExistente);
+    }
+
+    public List<Localitzacio> llistarLocalitzacions() {
+        return localitzacioRepository.findAll();
     }
 
 }

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.service.MySQL.AgentService;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 
 @Controller
 @RequestMapping("/agent")
@@ -19,6 +21,8 @@ public class AgentController {
 
     @Autowired
     private AgentService agentService;
+    @Autowired
+    private LocalitzacioService localitzacioService;
 
     @GetMapping("/llistar")
     public String llistarAgents(Model model) {
@@ -27,11 +31,18 @@ public class AgentController {
         return "agent-llistar"; // Nombre del archivo HTML
     }
     
-    @GetMapping("/alta")
-    public String mostrarFormulario(Model model) {
-        model.addAttribute("agent", new Agent());
-        return "agent-alta"; // Nombre del archivo HTML
-    }
+@GetMapping("/alta")
+public String mostrarFormulario(Model model) {
+    Agent agent = new Agent();
+    agent.setLocalitzacio(new Localitzacio()); // Inicializar localitzacio
+    model.addAttribute("agent", agent);
+
+    // Obtener localitzacions desde la BBDD
+    List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+    model.addAttribute("localitzacions", localitzacions);
+
+    return "agent-alta"; // Ajusta según el nombre de tu template
+}
 
     @PostMapping("/guardar")
     public String guardarAgente(@ModelAttribute Agent agent) {

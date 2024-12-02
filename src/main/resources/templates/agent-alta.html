@@ -51,9 +51,16 @@
         </div>
 
         <div>
-            <label for="localitzacio">Localitzacio (Codi Postal):</label>
-            <input type="text" id="localitzacio" name="localitzacio" th:value="${agent?.localitzacio?.codiPostal}"
-                required>
+            <label for="localitzacio">Localització (Codi Postal):</label>
+            <select id="localitzacio" name="localitzacio.codiPostal" required>
+                <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
+                    th:text="${localitzacio.codiPostal}"
+                    th:selected="${localitzacio.codiPostal == agent?.localitzacio?.codiPostal}">
+                </option>
+            </select>
+            <!--
+            <p th:if="${#lists.isEmpty(localitzacions)}" style="color: red;">No existeix cap localització</p>
+        -->
         </div>
 
         <div>
