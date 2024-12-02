@@ -8,6 +8,7 @@ import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class VehicleService {
         if (localitzacio.isEmpty()) {
             throw new RuntimeException("No existeix la localitzacio inserida.");
         }
-        
+
         vehicleAntic.setLocalitzacio(vehicleActualitzat.getLocalitzacio());
         vehicleAntic.setMarca(vehicleActualitzat.getMarca());
         vehicleAntic.setModel(vehicleActualitzat.getModel());
@@ -66,4 +67,7 @@ public class VehicleService {
         return vehicleRepository.save(vehicleAntic);
     }
 
+    public List<Vehicle> llistarVehicles() {
+        return vehicleRepository.findAll();
+    }
 }
