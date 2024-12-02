@@ -16,7 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <div class="container text-center mt-5">
         <h1>Llistat de Localitzacions</h1>
         
-        <a href="/localitzacions/alta" class="btn btn-primary mb-4">Crear Localització</a>
+        <a href="/localitzacio/alta" class="btn btn-primary mb-4">Crear Localització</a>
 
         <table class="table">
             <thead>
@@ -37,8 +37,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${localitzacio.horari}"></td>
                     <td th:text="${localitzacio.condicions}"></td>
                     <td>
-                        <a class="btn btn-success" th:href="@{/localitzacions/modificar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Editar</a>
-                        <a class="btn btn-danger" th:href="@{/localitzacions/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Esborrar</a>
+                        <a class="btn btn-success" th:href="@{/localitzacio/modificar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Editar</a>
+                        <a class="btn btn-danger" th:href="@{/localitzacio/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Esborrar</a>
                     </td>
                 </tr>
             </tbody>

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Anna
  */
 @Controller
-@RequestMapping("/localitzacions")
+@RequestMapping("/localitzacio")
 public class LocalitzacioController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class LocalitzacioController {
     public String llistarLocalitzacions(Model model) {
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
-        return "localitzacio-llista";
+        return "localitzacio-llistar";
     }
 
     @GetMapping("/alta")
@@ -39,7 +39,7 @@ public class LocalitzacioController {
     public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
         try {
             localitzacioService.altaLocalitzacio(localitzacio);
-            return "redirect:/localitzacions/llistar";
+            return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
             return "error";
         }

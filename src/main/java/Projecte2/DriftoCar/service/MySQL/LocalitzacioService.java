@@ -73,9 +73,5 @@ public class LocalitzacioService {
     public Localitzacio obtenirLocalitzacioCodiPostal(String codiPostal) {
         return localitzacioRepository.findById(codiPostal).orElse(null);
     }
-
-    public List<Localitzacio> llistarLocalitzacions() {
-        return localitzacioRepository.findAll();
-    }
-
+    
 }

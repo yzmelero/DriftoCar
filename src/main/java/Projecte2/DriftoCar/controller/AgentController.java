@@ -47,7 +47,7 @@ public String altaAgente(Model model) {
     @PostMapping("/guardar")
     public String guardarAgente(@ModelAttribute Agent agent) {
         agentService.altaAgent(agent);
-        return "redirect:/agent/listar";
+        return "redirect:/agent/llistar";
     }
 }
 

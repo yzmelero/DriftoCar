@@ -14,7 +14,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <div class="container mt-5">
         <h1>Alta de Localitzacio</h1>
         
-        <form th:action="@{/localitzacions/alta}" th:object="${localitzacio}" method="post">
+        <form th:action="@{/localitzacio/alta}" th:object="${localitzacio}" method="post">
             <div class="mb-3">
                 <label for="codiPostal" class="form-label">Codi Postal</label>
                 <input type="text" id="codiPostal" class="form-control" th:field="*{codiPostal}" required>
