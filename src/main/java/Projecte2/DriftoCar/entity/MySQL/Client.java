@@ -48,7 +48,6 @@ public class Client {
     @Column(unique = true)
     private String email;
     
-    @Column(unique = true)
     private String llicencia;
      
     @Column(name = "llic_caducitat")
@@ -58,7 +57,7 @@ public class Client {
     private LocalDate dniCaducitat;
     
     @Column(name = "num_tarjeta_credit", unique = true)
-    private Long numTarjetaCredit;
+    private String numTarjetaCredit;
     
     private String adreca;
     
