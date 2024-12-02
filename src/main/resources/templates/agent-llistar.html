@@ -3,12 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Agentes</title>
+    <title>Llistat d'Agents</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
-    <h1>Listado de Agentes</h1>
+    <h1>Llistat d'Agents</h1>
 
     <table border="1">
         <thead>
@@ -17,36 +17,45 @@
                 <th>Usuari</th>
                 <th>Nom</th>
                 <th>Cognoms</th>
-                <th>Email</th>
+                <th>Correu electrònic</th>
+                <th>Llicència</th>
+                <th>Caducitat Llicència</th>
+                <th>Caducitat DNI</th>
+                <th>Targeta de Crèdit</th>
+                <th>Adreça</th>
+                <th>Reputació</th>
                 <th>Rol</th>
-                <th>Localitzacio</th>
-                <th>Accions</th>
+                <th>Localització</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Bucle para iterar sobre los agentes -->
             <tr th:each="agent : ${agents}">
-                <td th:text="${agent.dni}">DNI</td>
-                <td th:text="${agent.usuari}">Usuari</td>
-                <td th:text="${agent.nom}">Nom</td>
-                <td th:text="${agent.cognoms}">Cognoms</td>
-                <td th:text="${agent.email}">Email</td>
-                <td th:text="${agent.rol}">Rol</td>
-                <td th:text="${agent.localitzacio.codiPostal}">Localitzacio</td>
+                <td th:text="${agent.dni}"></td>
+                <td th:text="${agent.usuari}"></td>
+                <td th:text="${agent.nom}"></td>
+                <td th:text="${agent.cognoms}"></td>
+                <td th:text="${agent.email}"></td>
+                <td th:text="${agent.llicencia}"></td>
+                <td th:text="${agent.llicCaducitat}"></td>
+                <td th:text="${agent.dniCaducitat}"></td>
+                <td th:text="${agent.numTarjetaCredit}"></td>
+                <td th:text="${agent.adreca}"></td>
+                <td th:text="${agent.reputacio ? 'Sí' : 'No'}"></td>
+                <td th:text="${agent.rol}"></td>
+                <td th:text="${agent.localitzacio?.codiPostal}"></td>
                 <td>
                     <a th:href="@{/agent/editar/{id}(id=${agent.dni})}">Editar</a>
                     <a th:href="@{/agent/eliminar/{id}(id=${agent.dni})}"
-                        onclick="return confirm('Segur que vols eliminar aquest agent?');">Eliminar</a>
+                        onclick="return confirm('¿Estás seguro de eliminar este agente?');">Eliminar</a>
                 </td>
             </tr>
             <!-- Mostrar mensaje si no hay agentes -->
             <tr th:if="${#lists.isEmpty(agents)}">
-                <td colspan="8">No hi ha agents registrats</td>
+                <td colspan="8">No hay agentes registrados</td>
             </tr>
         </tbody>
     </table>
-
-    <a href="/agent/alta">Crear nou agent</a>
+    <a href="/agent/alta">Afegir nou agent</a>
 </body>
 
 </html>

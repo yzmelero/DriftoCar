@@ -10,7 +10,7 @@
 <body>
     <h1>Alta d'Agent</h1>
 
-    <!-- Formulario para dar de alta un agente -->
+    <!-- Formulari per donar d'alta un agent -->
     <form th:action="@{/agent/guardar}" method="post">
         <div>
             <label for="dni">DNI:</label>
@@ -38,8 +38,39 @@
         </div>
 
         <div>
-            <label for="email">Email:</label>
+            <label for="email">Correu electrònic:</label>
             <input type="email" id="email" name="email" th:value="${agent?.email}" required>
+        </div>
+
+        <div>
+            <label for="llicencia">Llicència:</label>
+            <input type="text" id="llicencia" name="llicencia" th:value="${agent?.llicencia}" required>
+        </div>
+
+        <div>
+            <label for="llicCaducitat">Caducitat de la llicència:</label>
+            <input type="date" id="llicCaducitat" name="llicCaducitat" th:value="${agent?.llicCaducitat}" required>
+        </div>
+
+        <div>
+            <label for="dniCaducitat">Caducitat del DNI:</label>
+            <input type="date" id="dniCaducitat" name="dniCaducitat" th:value="${agent?.dniCaducitat}" required>
+        </div>
+
+        <div>
+            <label for="numTarjetaCredit">Número de targeta de crèdit:</label>
+            <input type="text" id="numTarjetaCredit" name="numTarjetaCredit" th:value="${agent?.numTarjetaCredit}"
+                required>
+        </div>
+
+        <div>
+            <label for="adreca">Adreça:</label>
+            <input type="text" id="adreca" name="adreca" th:value="${agent?.adreca}" required>
+        </div>
+
+        <div>
+            <label for="reputacio">Reputació:</label>
+            <input type="checkbox" id="reputacio" name="reputacio" th:checked="${agent?.reputacio}">
         </div>
 
         <div>
@@ -52,20 +83,19 @@
 
         <div>
             <label for="localitzacio">Localització (Codi Postal):</label>
-            <select id="localitzacio" name="localitzacio.codiPostal" required>
+            <select id="localitzacio" name="localitzacio.codiPostal" required
+                th:if="${not #lists.isEmpty(localitzacions)}">
                 <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
                     th:text="${localitzacio.codiPostal}"
                     th:selected="${localitzacio.codiPostal == agent?.localitzacio?.codiPostal}">
                 </option>
             </select>
-            <!--
             <p th:if="${#lists.isEmpty(localitzacions)}" style="color: red;">No existeix cap localització</p>
-        -->
         </div>
 
         <div>
-            <button type="submit">Guardar</button>
-            <a href="/agent/llistar">Cancelar</a>
+            <button type="submit" th:disabled="${#lists.isEmpty(localitzacions)}">Guardar</button>
+            <a href="/agent/llistar">Cancel·lar</a>
         </div>
     </form>
 </body>
