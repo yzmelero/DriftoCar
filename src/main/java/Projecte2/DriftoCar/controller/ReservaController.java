@@ -20,10 +20,10 @@ public class ReservaController {
 @Autowired
 private ReservaService reservaService;
 
-    @GetMapping("/listar")
-public String listarReservas(Model model) {
-    List<Reserva> reservas = reservaService.listarReservas();
+    @GetMapping("/llistar")
+public String llistarReservas(Model model) {
+    List<Reserva> reservas = reservaService.llistarReservas();
     model.addAttribute("reservas", reservas);
-    return "reserva-listar";
+    return "reserva-llistar";
 }
 }

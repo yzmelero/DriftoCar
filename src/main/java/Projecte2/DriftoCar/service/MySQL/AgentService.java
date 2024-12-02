@@ -4,6 +4,7 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,7 @@ public class AgentService {
         }
         return agentRepository.save(agent);
     }
-    
+    public List<Agent> llistarAgents(){
+        return agentRepository.findAll();
+    }
 }
