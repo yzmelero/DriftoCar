@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Alta d'Agent</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <h1>Alta d'Agent</h1>
+
+    <!-- Formulario para dar de alta un agente -->
+    <form th:action="@{/agent/guardar}" method="post">
+        <div>
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" name="dni" th:value="${agent?.dni}" required>
+        </div>
+
+        <div>
+            <label for="usuari">Usuari:</label>
+            <input type="text" id="usuari" name="usuari" th:value="${agent?.usuari}" required>
+        </div>
+
+        <div>
+            <label for="contrasenya">Contrasenya:</label>
+            <input type="password" id="contrasenya" name="contrasenya" th:value="${agent?.contrasenya}" required>
+        </div>
+
+        <div>
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" name="nom" th:value="${agent?.nom}" required>
+        </div>
+
+        <div>
+            <label for="cognoms">Cognoms:</label>
+            <input type="text" id="cognoms" name="cognoms" th:value="${agent?.cognoms}" required>
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:value="${agent?.email}" required>
+        </div>
+
+        <div>
+            <label for="rol">Rol:</label>
+            <select id="rol" name="rol" th:value="${agent?.rol}">
+                <option value="ADMIN">Admin</option>
+                <option value="AGENT">Agent</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="localitzacio">Localitzacio (Codi Postal):</label>
+            <input type="text" id="localitzacio" name="localitzacio" th:value="${agent?.localitzacio?.codiPostal}"
+                required>
+        </div>
+
+        <div>
+            <button type="submit">Guardar</button>
+            <a href="/agent/llistar">Cancelar</a>
+        </div>
+    </form>
+</body>
+
+</html>

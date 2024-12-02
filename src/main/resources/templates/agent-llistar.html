@@ -14,39 +14,39 @@
         <thead>
             <tr>
                 <th>DNI</th>
-                <th>Usuario</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
+                <th>Usuari</th>
+                <th>Nom</th>
+                <th>Cognoms</th>
                 <th>Email</th>
                 <th>Rol</th>
-                <th>Localización</th>
-                <th>Acciones</th>
+                <th>Localitzacio</th>
+                <th>Accions</th>
             </tr>
         </thead>
         <tbody>
             <!-- Bucle para iterar sobre los agentes -->
             <tr th:each="agent : ${agents}">
                 <td th:text="${agent.dni}">DNI</td>
-                <td th:text="${agent.usuari}">Usuario</td>
-                <td th:text="${agent.nom}">Nombre</td>
-                <td th:text="${agent.cognoms}">Apellidos</td>
+                <td th:text="${agent.usuari}">Usuari</td>
+                <td th:text="${agent.nom}">Nom</td>
+                <td th:text="${agent.cognoms}">Cognoms</td>
                 <td th:text="${agent.email}">Email</td>
                 <td th:text="${agent.rol}">Rol</td>
-                <td th:text="${agent.localitzacio.codiPostal}">Localización</td>
+                <td th:text="${agent.localitzacio.codiPostal}">Localitzacio</td>
                 <td>
                     <a th:href="@{/agent/editar/{id}(id=${agent.dni})}">Editar</a>
                     <a th:href="@{/agent/eliminar/{id}(id=${agent.dni})}"
-                        onclick="return confirm('¿Estás seguro de eliminar este agente?');">Eliminar</a>
+                        onclick="return confirm('Segur que vols eliminar aquest agent?');">Eliminar</a>
                 </td>
             </tr>
             <!-- Mostrar mensaje si no hay agentes -->
             <tr th:if="${#lists.isEmpty(agents)}">
-                <td colspan="8">No hay agentes registrados</td>
+                <td colspan="8">No hi ha agents registrats</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="/agent/nuevo">Crear Nuevo Agente</a>
+    <a href="/agent/alta">Crear nou agent</a>
 </body>
 
 </html>
