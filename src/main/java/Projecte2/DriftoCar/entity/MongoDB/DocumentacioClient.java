@@ -33,12 +33,10 @@ public class DocumentacioClient {
     
     private String contrasenya;
     
-    private String email; //Sera el nom d'usuari
+    private String email;
 
     private String llicencia;
-    
-    private String tipusLlicencia;
-    
+        
     private LocalDate llicCaducitat;
     
     private LocalDate dniCaducitat;
