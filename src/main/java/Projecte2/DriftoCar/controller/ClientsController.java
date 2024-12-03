@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -26,16 +27,27 @@ public class ClientsController {
 
     @Autowired
     private ClientService clientService;
-    
 
     @GetMapping("/llistar")
-    public String llistarClients(Model model) {
-        
-        List<Client> clients = clientService.llistarClients();
+    public String llistarClients(@RequestParam(value = "searchNom", required = false) String searchNom,
+            @RequestParam(value = "searchDni", required = false) String searchDni,
+            @RequestParam(value = "searchEmail", required = false) String searchEmail,
+            Model model) {
+
+        List<Client> clients;
+
+        if    ((searchNom   != null && !searchNom.isEmpty())
+            || (searchDni   != null && !searchDni.isEmpty())
+            || (searchEmail != null && !searchEmail.isEmpty())) {
+            clients = clientService.cercarClients(searchNom, searchDni, searchEmail);
+        } else {
+            clients = clientService.llistarClients();
+        }
+
         model.addAttribute("clients", clients);
-        
+
         return "client-llistar";
-        
+
     }
 
     @GetMapping("/esborrar/{dni}")
@@ -46,24 +58,24 @@ public class ClientsController {
         return "redirect:/clients/llistar";
 
     }
-    
+
     @GetMapping("/modificar/{dni}")
-    public String modificarClients(@PathVariable("dni") String dni, Model model){
-        
+    public String modificarClients(@PathVariable("dni") String dni, Model model) {
+
         Client client = clientService.obtenirClientPerDni(dni);
         if (client == null) {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
-            
+
         }
-        model.addAttribute("client", client);        
+        model.addAttribute("client", client);
         return "client-modificar";
     }
-    
+
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("client") Client client){
-        
+    public String guardarClientModificat(@ModelAttribute("client") Client client) {
+
         clientService.modificarClient(client);
         return "redirect:/clients/llistar";
     }
-   
+
 }

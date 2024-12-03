@@ -68,7 +68,7 @@ public class ClientService {
             throw new IllegalArgumentException("El camp adreça no pot estar buit.");
         }
 
-        //Comprovar si ja existeix un client amb el dni inserit.
+        // Comprovar si ja existeix un client amb el dni inserit.
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
 
         if (clientExistent.isPresent()) {
@@ -88,7 +88,8 @@ public class ClientService {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
 
-        //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
+        // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
+        // modificar.
         Client clientAntic = clientExistent.get();
 
         clientAntic.setNom(client.getNom());
@@ -128,6 +129,14 @@ public class ClientService {
     }
 
     public Client obtenirClientPerDni(String dni) {
-        return clientRepository.findById(dni).orElse(null); 
+        return clientRepository.findById(dni).orElse(null);
+    }
+
+    public List<Client> cercarClients(String nom, String dni, String email) {
+
+        return clientRepository.findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                nom != null ? nom : "",
+                dni != null ? dni : "",
+                email != null ? email : "");
     }
 }
