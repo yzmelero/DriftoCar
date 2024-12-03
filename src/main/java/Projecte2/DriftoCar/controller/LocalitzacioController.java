@@ -38,24 +38,24 @@ public class LocalitzacioController {
     }
 
     @PostMapping("/alta")
-    public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
+    public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio, Model model) {
         try {
             localitzacioService.altaLocalitzacio(localitzacio);
             return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
-            return "error";
+            model.addAttribute("error", "Ja existeix una localització amb aquest codi postal.");
+            return "localitzacio-alta";
         }
     }
 
-     @GetMapping("/confirmar-esborrar/{codiPostal}")
+    @GetMapping("/confirmar-esborrar/{codiPostal}")
     public String confirmarEsborrar(@PathVariable String codiPostal, Model model) {
         Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
-        
+
         model.addAttribute("localitzacio", localitzacio);
-        return "confirmar-esborrar"; 
+        return "confirmar-esborrar";
     }
 
-    // Mètode per esborrar la localització
     @PostMapping("/esborrar/{codiPostal}")
     public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
         try {
