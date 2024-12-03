@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -133,10 +134,9 @@ public class ClientService {
     }
 
     public List<Client> cercarClients(String nom, String dni, String email) {
-
-        return clientRepository.findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
-                nom != null ? nom : "",
-                dni != null ? dni : "",
-                email != null ? email : "");
+        return clientRepository.cercarClients(
+                (nom != null && !nom.isEmpty()) ? nom : null,
+                (dni != null && !dni.isEmpty()) ? dni : null,
+                (email != null && !email.isEmpty()) ? email : null);
     }
 }

@@ -23,13 +23,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <h1>Llistat de Clients</h1>
                 <form th:action="@{/clients/llistar}" method="get" class="row g-3">
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchNom" placeholder="Nom">
+                        <input type="text" class="form-control" name="searchNom"  th:value="${searchNom}" placeholder="nom">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchDni" placeholder="DNI">
+                        <input type="text" class="form-control" name="searchDni" th:value="${searchDni}" placeholder="dni">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchEmail" placeholder="Email">
+                        <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}" placeholder="email">
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Cerca</button>
@@ -84,6 +84,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+        <div class="modal fade" id="noResultsModal" tabindex="-1" aria-labelledby="noResultsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noResultsModalLabel">Cerca sense resultats</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
+                    </div>
+                    <div class="modal-body">
+                        No s'han trobat clients amb els criteris seleccionats. Si us plau, intenta-ho amb altres valors.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">D'acord</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const clientsCount = parseInt("[[${#lists.size(clients)}]]");
+                if (clientsCount === 0) {
+                    new bootstrap.Modal(document.getElementById('noResultsModal')).show();
+                }
+            });
+        </script>
 </body>
 
 </html>

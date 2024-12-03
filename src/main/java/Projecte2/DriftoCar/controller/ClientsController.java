@@ -45,7 +45,10 @@ public class ClientsController {
         }
 
         model.addAttribute("clients", clients);
-
+        model.addAttribute("searchNom", searchNom);
+        model.addAttribute("searchDni", searchDni);
+        model.addAttribute("searchEmail", searchEmail);
+        
         return "client-llistar";
 
     }
