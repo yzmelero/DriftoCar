@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -32,7 +34,7 @@ public class LocalitzacioController {
     @GetMapping("/alta")
     public String mostrarFormularioAlta(Model model) {
         model.addAttribute("localitzacio", new Localitzacio());
-        return "localitzacio-alta";  // Retorna la vista de Thymeleaf para crear una nueva localización
+        return "localitzacio-alta";
     }
 
     @PostMapping("/alta")
@@ -44,4 +46,25 @@ public class LocalitzacioController {
             return "error";
         }
     }
+
+     @GetMapping("/confirmar-esborrar/{codiPostal}")
+    public String confirmarEsborrar(@PathVariable String codiPostal, Model model) {
+        Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
+        
+        model.addAttribute("localitzacio", localitzacio);
+        return "confirmar-esborrar"; 
+    }
+
+    // Mètode per esborrar la localització
+    @PostMapping("/esborrar/{codiPostal}")
+    public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
+        try {
+            localitzacioService.baixaLocalitzacio(codiPostal);
+            redirectAttributes.addFlashAttribute("success", "Localització eliminada correctament.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/localitzacio/llistar";
+    }
+
 }
