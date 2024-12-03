@@ -4,7 +4,9 @@
  */
 package Projecte2.DriftoCar.controller;
 
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
+    
+    @Autowired
+    private LocalitzacioService localitzacioService;
 
     // Llistar 
     @GetMapping("/llistar")
@@ -38,6 +43,8 @@ public class VehicleController {
     @GetMapping("/afegir")
     public String afegirVehicles(Model model) {
         model.addAttribute("vehicles", new Vehicle());
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions);
         return "vehicle-alta";
     }
 
