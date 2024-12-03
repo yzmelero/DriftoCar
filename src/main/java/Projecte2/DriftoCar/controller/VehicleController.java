@@ -4,13 +4,17 @@
  */
 package Projecte2.DriftoCar.controller;
 
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -18,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Anna
  */
 @Controller
-@RequestMapping("/vehicles")
+@RequestMapping("/vehicle")
 public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
+    
+    @Autowired
+    private LocalitzacioService localitzacioService;
 
     // Llistar 
     @GetMapping("/llistar")
@@ -32,5 +39,18 @@ public class VehicleController {
         return "vehicle-llistar";
     }
 
+    // Alta
+    @GetMapping("/afegir")
+    public String afegirVehicles(Model model) {
+        model.addAttribute("vehicles", new Vehicle());
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions);
+        return "vehicle-alta";
+    }
 
+    @PostMapping("/afegir")
+    public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle) {
+        vehicleService.altaVehicle(vehicle);
+        return "redirect:/vehicle/llistar";
+    }
 }
