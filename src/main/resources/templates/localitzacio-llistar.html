@@ -17,7 +17,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <h1>Llistat de Localitzacions</h1>
         
         <a href="/localitzacio/alta" class="btn btn-primary mb-4">Crear Localització</a>
-
+        
+        <div th:if="${success}" class="alert alert-success text-center">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+        
         <table class="table">
             <thead>
                 <tr>
@@ -38,13 +45,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${localitzacio.condicions}"></td>
                     <td>
                         <a class="btn btn-success" th:href="@{/localitzacio/modificar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Editar</a>
-                        <a class="btn btn-danger" th:href="@{/localitzacio/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Esborrar</a>
+                        <a class="btn btn-danger" th:href="@{/localitzacio/confirmar-esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Esborrar</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
