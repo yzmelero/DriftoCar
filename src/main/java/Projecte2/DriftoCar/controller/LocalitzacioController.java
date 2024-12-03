@@ -66,5 +66,26 @@ public class LocalitzacioController {
         }
         return "redirect:/localitzacio/llistar";
     }
+    
+    @GetMapping("/modificar/{codiPostal}")
+    public String mostrarFormularioModificar(@PathVariable String codiPostal, Model model) {
+        Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
+        if (localitzacio == null) {
+            model.addAttribute("error", "No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+            return "redirect:/localitzacio/llistar";
+        }
+        model.addAttribute("localitzacio", localitzacio);
+        return "localitzacio-modificar";
+    }
+
+    @PostMapping("/modificar")
+    public String modificarLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
+        try {
+            localitzacioService.modificarLocalitzacio(localitzacio.getCodiPostal(), localitzacio);
+            return "redirect:/localitzacio/llistar";
+        } catch (RuntimeException e) {
+            return "error";
+        }
+    }
 
 }
