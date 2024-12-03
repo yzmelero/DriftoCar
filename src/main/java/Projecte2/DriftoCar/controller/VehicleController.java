@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,7 +28,7 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
-    
+
     @Autowired
     private LocalitzacioService localitzacioService;
 
@@ -52,5 +53,12 @@ public class VehicleController {
     public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle) {
         vehicleService.altaVehicle(vehicle);
         return "redirect:/vehicle/llistar";
+    }
+
+    // Esborrar
+    @GetMapping("/esborrar/{matricula}")
+    public String esborrarVehicle(@PathVariable("matricula") String matricula) {
+        vehicleService.baixaVehicle(matricula);
+        return "redirect:/vehicles/llistar";
     }
 }
