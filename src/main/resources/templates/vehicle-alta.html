@@ -78,8 +78,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
 
                 <div class="mb-3">
-                    <label for="codiPostal" class="form-label">Codi postal localització:</label>
-                    <input type="text" id="localitzacio" class="form-control" name="localitzacio" required/>
+                    <label for="localitzacio" class="form-label">Codi postal localització:</label>
+                    <select id="localitzacio" name="localitzacio.codiPostal" class="form-select" required
+                            th:if="${not #lists.isEmpty(localitzacions)}">
+                        <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
+                                th:text="${localitzacio.codiPostal}"
+                                th:selected="${localitzacio.codiPostal == agent?.localitzacio?.codiPostal}">
+                        </option>
+                    </select>
+                    <p class="text-danger" th:if="${#lists.isEmpty(localitzacions)}">No existeix cap localització</p>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Crear Vehicle</button>
