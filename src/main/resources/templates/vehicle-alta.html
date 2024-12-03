@@ -12,67 +12,78 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
               integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
     </head>
     <body>
-        <div class="container text-center mt-5">
-            <div class="row">
-                <div class="col">
-                    <h1>Alta Vehicles</h1>
-                    <form th:action="@{/vehicle/afegir}" method="POST">
-                        <label for="matricula">Matrícula:</label>
-                        <input type="text" id="matricula" name="matricula" required/>
+        <div class="container mt-5">
 
-                        <label for="marca">Marca:</label>
-                        <input type="text" id="marca" name="marca" required/>
-                        <br/>
-
-                        <label for="model">Model:</label>
-                        <input type="text" id="model" name="model" required/>
-
-                        <label for="any">Any:</label>
-                        <input type="text" id="any" name="any" required/>
-                        <br/>
-
-                        <label for="places">Nombre de places:</label>
-                        <input type="text" id="places" name="places" required/>
-
-                        <label for="transmisio">Tipus de transmissió:</label>
-                        <select id="transmisio" name="transmisio">
-                            <option value="MANUAL">Manual</option>
-                            <option value="AUTOMATICA">Automàtica</option>
-                        </select>
-                        <br/>
-
-                        <label for="combustible">Tipus de combustible:</label>
-                        <select id="combustible" name="combustible">
-                            <option value="ELECTRIC">Electric</option>
-                            <option value="BENZINA">Benzina</option>
-                            <option value="DIESEL">Diesel</option>
-                            <option value="HIBRIT">Hibrit</option>
-                        </select>
-
-                        <label for="tipus">Tipus de vehicle:</label>
-                        <select id="tipus" name="tipus">
-                            <option value="COTXE">Cotxe</option>
-                            <option value="MOTO">Moto</option>
-                            <option value="FURGONETA">Furgoneta</option>
-                            <option value="CAMIO">Camió</option>
-                        </select>
-                        <br/>
-
-                        <label for="disponibilitat">Disponibilitat (true/false):</label>
-                        <input type="text" id="disponibilitat" name="disponibilitat" required/>
-                        <select id="disponibilitat" name="disponibilitat">
-                            <option value="true">Disponible</option>
-                            <option value="false">No Disponible</option>
-                        </select>
-
-                        <label for="codiPostal">Codi postal localització:</label>
-                        <input type="text" id="localitzacio" name="localitzacio" required/>
-                        <br/>
-
-                        <button type="submit">Crear Vehicle</button>
-                    </form>
+            <h1>Alta Vehicles</h1>
+            <form th:action="@{/vehicle/afegir}" method="POST">
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">Matrícula:</label>
+                    <input type="text" id="matricula" class="form-control" name="matricula" required/>
                 </div>
-            </div>
+
+                <div class="mb-3">
+                    <label for="marca" class="form-label">Marca:</label>
+                    <input type="text" id="marca" class="form-control" name="marca" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="model" class="form-label">Model:</label>
+                    <input type="text" id="model" class="form-control" name="model" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="any" class="form-label">Any:</label>
+                    <input type="text" id="any" class="form-control" name="any" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="places" class="form-label">Nombre de places:</label>
+                    <input type="text" id="places" class="form-control" name="places" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="transmisio" class="form-label">Tipus de transmissió:</label>
+                    <select id="transmisio" class="form-control" name="transmisio">
+                        <option value="MANUAL">Manual</option>
+                        <option value="AUTOMATICA">Automàtica</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="combustible" class="form-label">Tipus de combustible:</label>
+                    <select id="combustible" class="form-control" name="combustible">
+                        <option value="ELECTRIC">Electric</option>
+                        <option value="BENZINA">Benzina</option>
+                        <option value="DIESEL">Diesel</option>
+                        <option value="HIBRIT">Hibrit</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="tipus" class="form-label">Tipus de vehicle:</label>
+                    <select id="tipus" class="form-control" name="tipus">
+                        <option value="COTXE">Cotxe</option>
+                        <option value="MOTO">Moto</option>
+                        <option value="FURGONETA">Furgoneta</option>
+                        <option value="CAMIO">Camió</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="disponibilitat" class="form-label">Disponibilitat:</label>
+                    <select id="disponibilitat" class="form-control" name="disponibilitat">
+                        <option value="true">Disponible</option>
+                        <option value="false">No Disponible</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="codiPostal" class="form-label">Codi postal localització:</label>
+                    <input type="text" id="localitzacio" class="form-control" name="localitzacio" required/>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Crear Vehicle</button>
+            </form>
         </div>
     </body>
 </html>
