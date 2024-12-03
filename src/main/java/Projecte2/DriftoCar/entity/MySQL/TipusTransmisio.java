@@ -9,5 +9,5 @@ package Projecte2.DriftoCar.entity.MySQL;
  * @author Yaiza
  */
 public enum TipusTransmisio {
-    MANUAL, AUTOMÀTIC
+    MANUAL, AUTOMATIC
 }

@@ -9,5 +9,5 @@ package Projecte2.DriftoCar.entity.MySQL;
  * @author Yaiza
  */
 public enum TipusVehicle {
-    COTXE, MOTO, FURGONETA, CAMIÓ
+    COTXE, MOTO, FURGONETA, CAMIO
 }

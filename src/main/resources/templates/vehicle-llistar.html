@@ -19,6 +19,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <h1>Llistat de Vehicles</h1>
 
                     <p>Total de vehicles: <span th:text="${#lists.size(vehicles)}"></span></p>
+                    <a class="btn btn-primary" th:href="@{/vehicle/afegir}">Afegir nou vehicle</a>
 
                     <table class="table">
                         <thead>
@@ -49,8 +50,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <td th:text="${vehicle.disponibilitat ? 'Disponible' : 'No Disponible'}"></td>
                                 <td th:text="${vehicle.localitzacio.codiPostal}"></td>
                                 <td>
-                                    <a class="btn btn-success" th:href="@{/vehicles/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>
-                                    <a class="btn btn-danger" th:href="@{/vehicles/esborrar/{matricula}(matricula=${vehicle.matricula})}">Esborrar</a>
+                                    <a class="btn btn-success" th:href="@{/vehicle/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>
+                                    <a class="btn btn-danger" th:href="@{/vehicle/esborrar/{matricula}(matricula=${vehicle.matricula})}">Esborrar</a>
                                 </td>
                             </tr>
                         </tbody>
