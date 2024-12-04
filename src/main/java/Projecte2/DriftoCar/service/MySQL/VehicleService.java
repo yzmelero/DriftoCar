@@ -70,4 +70,8 @@ public class VehicleService {
     public List<Vehicle> llistarVehicles() {
         return vehicleRepository.findAll();
     }
+    
+    public Vehicle obtenirVehicleMatricula(String matricula) {
+        return vehicleRepository.findByMatricula(matricula).orElse(null);
+    }
 }
