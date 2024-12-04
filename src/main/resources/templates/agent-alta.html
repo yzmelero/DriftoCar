@@ -14,6 +14,10 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Alta d'Agent</h1>
 
+        <div class="alert alert-warning" th:if="${error}">
+            No s'ha pogut donar d'alta l'agent perquè ja existeix un amb el mateix DNI.
+        </div>
+
         <form th:action="@{/agent/guardar}" method="post">
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>

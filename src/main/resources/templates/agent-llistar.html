@@ -52,7 +52,7 @@
                     <td th:text="${agent.rol}"></td>
                     <td th:text="${agent.localitzacio?.codiPostal}"></td>
                     <td>
-                        <a class="btn btn-success btn-sm" th:href="@{/agent/editar/{id}(id=${agent.dni})}">Editar</a>
+                        <a class="btn btn-success btn-sm" th:href="@{/agent/modificar/{id}(id=${agent.dni})}">Editar</a>
                         <a class="btn btn-danger btn-sm" th:href="@{/agent/eliminar/{id}(id=${agent.dni})}"
                             onclick="return confirm('¿Estás seguro de eliminar este agente?');">Eliminar</a>
                     </td>
