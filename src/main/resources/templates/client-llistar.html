@@ -23,66 +23,73 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <h1>Llistat de Clients</h1>
                 <form th:action="@{/clients/llistar}" method="get" class="row g-3">
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchCognoms"  th:value="${searchCognoms}" placeholder="cognoms">
+                        <input type="text" class="form-control" name="searchCognoms" th:value="${searchCognoms}"
+                            placeholder="cognoms">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchNacionalitat" th:value="${searchNacionalitat}" placeholder="nacionalitat">
+                        <input type="text" class="form-control" name="searchNacionalitat"
+                            th:value="${searchNacionalitat}" placeholder="nacionalitat">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchTelefon" th:value="${searchTelefon}" placeholder="telefon">
+                        <input type="text" class="form-control" name="searchTelefon" th:value="${searchTelefon}"
+                            placeholder="telefon">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}" placeholder="email">
+                        <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}"
+                            placeholder="email">
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Cerca</button>
                     </div>
-                    
-                <p>Total de clients: <span th:text="${#lists.size(clients)}"></span></p>
+                    <div>
+                        <a href="/registre/alta-client" class="btn btn-primary mb-4">Crear Client</a>
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">DNI</th>
-                            <th scope="col">Usuari</th>
-                            <th scope="col">Nom</th>
-                            <th scope="col">Cognoms</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Nacionalitat</th>
-                            <th scope="col">Telefon</th>
-                            <th scope="col">Llicència</th>
-                            <th scope="col">Caducitat Llicència</th>
-                            <th scope="col">Caducitat DNI</th>
-                            <th scope="col">Tarjeta de Crèdit</th>
-                            <th scope="col">Adreça</th>
-                            <th scope="col">Reputació</th>
-                            <th scope="col">Accions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="client : ${clients}">
-                            <th scope="row" th:text="${client.dni}"></th>
-                            <td th:text="${client.usuari}"></td>
-                            <td th:text="${client.nom}"></td>
-                            <td th:text="${client.cognoms}"></td>
-                            <td th:text="${client.email}"></td>
-                            <td th:text="${client.nacionalitat}"></td>
-                            <td th:text="${client.telefon}"></td>
-                            <td th:text="${client.llicencia}"></td>
-                            <td th:text="${client.llicCaducitat}"></td>
-                            <td th:text="${client.dniCaducitat}"></td>
-                            <td th:text="${client.numTarjetaCredit}"></td>
-                            <td th:text="${client.adreca}"></td>
-                            <td th:text="${client.reputacio ? 'Premium' : 'Normal'}"></td>
-                            <td>
-                                <a class="btn btn-success"
-                                    th:href="@{/clients/modificar/{dni}(dni=${client.dni})}">Editar</a>
-                                <a class="btn btn-danger"
-                                    th:href="@{/clients/esborrar/{dni}(dni=${client.dni})}">Esborrar</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    </div>
+                    <p>Total de clients: <span th:text="${#lists.size(clients)}"></span></p>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">DNI</th>
+                                <th scope="col">Usuari</th>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Cognoms</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Nacionalitat</th>
+                                <th scope="col">Telefon</th>
+                                <th scope="col">Llicència</th>
+                                <th scope="col">Caducitat Llicència</th>
+                                <th scope="col">Caducitat DNI</th>
+                                <th scope="col">Tarjeta de Crèdit</th>
+                                <th scope="col">Adreça</th>
+                                <th scope="col">Reputació</th>
+                                <th scope="col">Accions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="client : ${clients}">
+                                <th scope="row" th:text="${client.dni}"></th>
+                                <td th:text="${client.usuari}"></td>
+                                <td th:text="${client.nom}"></td>
+                                <td th:text="${client.cognoms}"></td>
+                                <td th:text="${client.email}"></td>
+                                <td th:text="${client.nacionalitat}"></td>
+                                <td th:text="${client.telefon}"></td>
+                                <td th:text="${client.llicencia}"></td>
+                                <td th:text="${client.llicCaducitat}"></td>
+                                <td th:text="${client.dniCaducitat}"></td>
+                                <td th:text="${client.numTarjetaCredit}"></td>
+                                <td th:text="${client.adreca}"></td>
+                                <td th:text="${client.reputacio ? 'Premium' : 'Normal'}"></td>
+                                <td>
+                                    <a class="btn btn-success"
+                                        th:href="@{/clients/modificar/{dni}(dni=${client.dni})}">Editar</a>
+                                    <a class="btn btn-danger"
+                                        th:href="@{/clients/esborrar/{dni}(dni=${client.dni})}">Esborrar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
             </div>
         </div>
@@ -91,30 +98,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-        <div class="modal fade" id="noResultsModal" tabindex="-1" aria-labelledby="noResultsModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="noResultsModalLabel">Cerca sense resultats</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
-                    </div>
-                    <div class="modal-body">
-                        No s'han trobat clients amb els criteris seleccionats. Si us plau, intenta-ho amb altres valors.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">D'acord</button>
-                    </div>
+    <div class="modal fade" id="noResultsModal" tabindex="-1" aria-labelledby="noResultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noResultsModalLabel">Cerca sense resultats</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
+                </div>
+                <div class="modal-body">
+                    No s'han trobat clients amb els criteris seleccionats. Si us plau, intenta-ho amb altres valors.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">D'acord</button>
                 </div>
             </div>
         </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const clientsCount = parseInt("[[${#lists.size(clients)}]]");
-                if (clientsCount === 0) {
-                    new bootstrap.Modal(document.getElementById('noResultsModal')).show();
-                }
-            });
-        </script>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const clientsCount = parseInt("[[${#lists.size(clients)}]]");
+            if (clientsCount === 0) {
+                new bootstrap.Modal(document.getElementById('noResultsModal')).show();
+            }
+        });
+    </script>
 </body>
 
 </html>
