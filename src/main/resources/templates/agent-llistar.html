@@ -53,12 +53,12 @@
                     <td th:text="${agent.localitzacio?.codiPostal}"></td>
                     <td>
                         <a class="btn btn-success btn-sm" th:href="@{/agent/modificar/{id}(id=${agent.dni})}">Editar</a>
-                        <a class="btn btn-danger btn-sm" th:href="@{/agent/eliminar/{id}(id=${agent.dni})}"
-                            onclick="return confirm('¿Estás seguro de eliminar este agente?');">Eliminar</a>
+                        <a class="btn btn-danger btn-sm" th:href="@{/agent/esborrar/{dni}(dni=${agent.dni})}"
+                            onclick="return confirm('Segur que vols eliminar aquest agent?');">Eliminar</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(agents)}">
-                    <td colspan="14" class="text-center">No hay agentes registrados</td>
+                    <td colspan="14" class="text-center">No n'hi ha agents registrats</td>
                 </tr>
             </tbody>
         </table>

@@ -85,4 +85,11 @@ public class AgentService {
     public Agent obtenirAgentPerDni(String dni) {
         return agentRepository.findById(dni).orElse(null);
     }
+    
+    public void eliminarAgent(Agent agent) {
+        if (!agentRepository.existsById(agent.getDni())) {
+            throw new RuntimeException("L'agent amb DNI " + agent.getDni() + " no existeix.");
+        }
+        agentRepository.deleteById(agent.getDni()); // Elimina el agente si existe
+    }
 }
