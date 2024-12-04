@@ -23,10 +23,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <h1>Llistat de Clients</h1>
                 <form th:action="@{/clients/llistar}" method="get" class="row g-3">
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchNom"  th:value="${searchNom}" placeholder="nom">
+                        <input type="text" class="form-control" name="searchCognoms"  th:value="${searchCognoms}" placeholder="cognoms">
                     </div>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="searchDni" th:value="${searchDni}" placeholder="dni">
+                        <input type="text" class="form-control" name="searchNacionalitat" th:value="${searchNacionalitat}" placeholder="nacionalitat">
+                    </div>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" name="searchTelefon" th:value="${searchTelefon}" placeholder="telefon">
                     </div>
                     <div class="col-auto">
                         <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}" placeholder="email">
@@ -34,7 +37,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Cerca</button>
                     </div>
-                </form>
+                    
                 <p>Total de clients: <span th:text="${#lists.size(clients)}"></span></p>
 
                 <table class="table">
@@ -45,6 +48,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <th scope="col">Nom</th>
                             <th scope="col">Cognoms</th>
                             <th scope="col">Email</th>
+                            <th scope="col">Nacionalitat</th>
+                            <th scope="col">Telefon</th>
                             <th scope="col">Llicència</th>
                             <th scope="col">Caducitat Llicència</th>
                             <th scope="col">Caducitat DNI</th>
@@ -61,6 +66,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <td th:text="${client.nom}"></td>
                             <td th:text="${client.cognoms}"></td>
                             <td th:text="${client.email}"></td>
+                            <td th:text="${client.nacionalitat}"></td>
+                            <td th:text="${client.telefon}"></td>
                             <td th:text="${client.llicencia}"></td>
                             <td th:text="${client.llicCaducitat}"></td>
                             <td th:text="${client.dniCaducitat}"></td>

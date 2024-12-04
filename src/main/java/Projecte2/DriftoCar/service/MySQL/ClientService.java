@@ -11,7 +11,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,6 +51,12 @@ public class ClientService {
         }
         if (client.getCognoms() == null || client.getCognoms().isEmpty()) {
             throw new IllegalArgumentException("El camp cognoms no pot estar buit.");
+        }
+        if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
+            throw new IllegalArgumentException("El camp nacionalitat no pot estar buit.");
+        }
+        if (client.getTelefon() == null || client.getTelefon().isEmpty()) {
+            throw new IllegalArgumentException("El camp telèfon no pot estar buit.");
         }
         if (client.getLlicencia() == null || client.getLlicencia().isEmpty()) {
             throw new IllegalArgumentException("El camp llicència no pot estar buit.");
@@ -101,6 +106,8 @@ public class ClientService {
         clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
         clientAntic.setAdreca(client.getAdreca());
         clientAntic.setEmail(client.getEmail());
+        clientAntic.setNacionalitat(client.getNacionalitat());
+        clientAntic.setTelefon(client.getTelefon());
         clientAntic.setContrasenya(client.getContrasenya());
         clientAntic.setUsuari(client.getUsuari());
         clientAntic.setReputacio(client.isReputacio());
@@ -133,10 +140,11 @@ public class ClientService {
         return clientRepository.findById(dni).orElse(null);
     }
 
-    public List<Client> cercarClients(String nom, String dni, String email) {
+    public List<Client> cercarClients(String cognoms, String nacionalitat, String telefon, String email) {
         return clientRepository.cercarClients(
-                (nom != null && !nom.isEmpty()) ? nom : null,
-                (dni != null && !dni.isEmpty()) ? dni : null,
+                (cognoms != null && !cognoms.isEmpty()) ? cognoms : null,
+                (nacionalitat != null && !nacionalitat.isEmpty()) ? nacionalitat : null,
+                (telefon != null && !telefon.isEmpty()) ? telefon : null,
                 (email != null && !email.isEmpty()) ? email : null);
     }
 }

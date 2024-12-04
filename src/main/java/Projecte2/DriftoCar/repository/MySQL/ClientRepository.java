@@ -27,16 +27,19 @@ public interface ClientRepository extends JpaRepository<Client, String> {
     Optional<Client> findByDni(String dni);
 
     // Mètode necessàri per al filtre en la pantalla de llistar clients.
-    List<Client> findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
-            String nom, String dni, String email);
+    /* List<Client> findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
+            String nom, String dni, String email);*/
 
     @Query("SELECT c FROM Client c " +
-            "WHERE (:nom IS NULL OR LOWER(c.nom) LIKE LOWER(CONCAT('%', :nom, '%'))) " +
-            "AND (:dni IS NULL OR LOWER(c.dni) LIKE LOWER(CONCAT('%', :dni, '%'))) " +
+            "WHERE (:cognoms IS NULL OR LOWER(c.cognoms) LIKE LOWER(CONCAT('%', :cognoms, '%'))) " +
+            "AND (:nacionalitat IS NULL OR LOWER(c.nacionalitat) LIKE LOWER(CONCAT('%', :nacionalitat, '%'))) " +
+            "AND (:telefon IS NULL OR (c.telefon) LIKE (CONCAT('%', :telefon, '%')))" +
             "AND (:email IS NULL OR LOWER(c.email) LIKE LOWER(CONCAT('%', :email, '%')))")
-    List<Client> cercarClients(@Param("nom") String nom,
-            @Param("dni") String dni,
+    List<Client> cercarClients(@Param("cognoms") String cognoms,
+            @Param("nacionalitat") String nacionalitat,
+            @Param("telefon") String telefon,
             @Param("email") String email);
+
     // Modifica un client.
     // Client modificarClient(Client client, String dni);
 

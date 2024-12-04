@@ -60,6 +60,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
 
                 <div class="mb-3">
+                    <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                    <input type="nacionalitat" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" required />
+                    <div class="invalid-feedback">
+                        Si us plau, introdueix una nacionalitat.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefon" class="form-label">Telèfon</label>
+                    <input type="telefon" id="telefon" th:field="*{telefon}" class="form-control" required />
+                    <div class="invalid-feedback">
+                        Si us plau, introdueix un telèfon.
+                    </div>
+                </div>
+
+                <div class="mb-3">
                     <label for="llicencia" class="form-label">Llicència</label>
                     <input type="text" id="llicencia" th:field="*{llicencia}" class="form-control" required />
                     <div class="invalid-feedback">

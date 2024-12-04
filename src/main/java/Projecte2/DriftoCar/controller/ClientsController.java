@@ -29,24 +29,27 @@ public class ClientsController {
     private ClientService clientService;
 
     @GetMapping("/llistar")
-    public String llistarClients(@RequestParam(value = "searchNom", required = false) String searchNom,
-            @RequestParam(value = "searchDni", required = false) String searchDni,
+    public String llistarClients(@RequestParam(value = "searchCognoms", required = false) String searchCognoms,
+            @RequestParam(value = "searchNacionalitat", required = false) String searchNacionalitat,
+            @RequestParam(value = "searchTelefon", required = false) String searchTelefon,
             @RequestParam(value = "searchEmail", required = false) String searchEmail,
             Model model) {
 
         List<Client> clients;
 
-        if    ((searchNom   != null && !searchNom.isEmpty())
-            || (searchDni   != null && !searchDni.isEmpty())
+        if    ((searchCognoms   != null && !searchCognoms.isEmpty())
+            || (searchNacionalitat     != null && !searchNacionalitat.isEmpty())
+            || (searchTelefon          != null && !searchTelefon.isEmpty())
             || (searchEmail != null && !searchEmail.isEmpty())) {
-            clients = clientService.cercarClients(searchNom, searchDni, searchEmail);
+            clients = clientService.cercarClients(searchCognoms, searchNacionalitat, searchTelefon, searchEmail);
         } else {
             clients = clientService.llistarClients();
         }
 
         model.addAttribute("clients", clients);
-        model.addAttribute("searchNom", searchNom);
-        model.addAttribute("searchDni", searchDni);
+        model.addAttribute("searchCognoms", searchCognoms);
+        model.addAttribute("searchNacionalitat", searchNacionalitat);
+        model.addAttribute("searchTelefon", searchTelefon);
         model.addAttribute("searchEmail", searchEmail);
         
         return "client-llistar";
