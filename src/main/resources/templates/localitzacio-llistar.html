@@ -42,7 +42,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="localitzacio : ${localitzacions}">
+                <tr th:each="localitzacio : ${localitzacions}" 
+                    th:onclick="|window.location.href='@{/localitzacio/consulta/{codiPostal}(codiPostal=${localitzacio.codiPostal})}'|"
+                    style="cursor: pointer;">
                     <td th:text="${localitzacio.codiPostal}"></td>
                     <td th:text="${localitzacio.ciutat}"></td>
                     <td th:text="${localitzacio.adrecaLocalitzacio}"></td>
