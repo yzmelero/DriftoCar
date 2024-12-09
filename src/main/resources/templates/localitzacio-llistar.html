@@ -13,9 +13,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
+    <div class="container-fluid">
+            <div class="d-flex justify-content-start mt-2">
+                <a class="btn btn-secondary" th:href="@{/}"><-- Menú principal</a>
+            </div>
+    </div>
     <div class="container text-center mt-5">
         <h1>Llistat de Localitzacions</h1>
-        
+                
         <a href="/localitzacio/alta" class="btn btn-primary mb-4">Crear Localització</a>
         
         <div th:if="${success}" class="alert alert-success text-center">
@@ -37,7 +42,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="localitzacio : ${localitzacions}">
+                <tr th:each="localitzacio : ${localitzacions}" 
+                    th:onclick="|window.location.href='@{/localitzacio/consulta/{codiPostal}(codiPostal=${localitzacio.codiPostal})}'|"
+                    style="cursor: pointer;">
                     <td th:text="${localitzacio.codiPostal}"></td>
                     <td th:text="${localitzacio.ciutat}"></td>
                     <td th:text="${localitzacio.adrecaLocalitzacio}"></td>

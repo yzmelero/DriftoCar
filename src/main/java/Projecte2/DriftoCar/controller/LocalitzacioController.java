@@ -24,6 +24,7 @@ public class LocalitzacioController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
+    //Llista
     @GetMapping("/llistar")
     public String llistarLocalitzacions(Model model) {
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -31,6 +32,7 @@ public class LocalitzacioController {
         return "localitzacio-llistar";
     }
 
+    //Alta
     @GetMapping("/alta")
     public String mostrarFormularioAlta(Model model) {
         model.addAttribute("localitzacio", new Localitzacio());
@@ -48,6 +50,7 @@ public class LocalitzacioController {
         }
     }
 
+    //Esborrar
     @GetMapping("/esborrar/{codiPostal}")
     public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
         try {
@@ -58,7 +61,8 @@ public class LocalitzacioController {
         }
         return "redirect:/localitzacio/llistar";
     }
-
+    
+    //Modificar
     @GetMapping("/modificar/{codiPostal}")
     public String mostrarFormularioModificar(@PathVariable String codiPostal, Model model) {
         Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
@@ -78,6 +82,20 @@ public class LocalitzacioController {
         } catch (RuntimeException e) {
             return "error";
         }
+    }
+
+    //Consultar
+    @GetMapping("/consulta/{codiPostal}")
+    public String consultarLocalitzacio(@PathVariable String codiPostal, Model model) {
+        Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
+
+        if (localitzacio == null) {
+            model.addAttribute("error", "No s'ha trobat la localització amb el codi postal: " + codiPostal);
+            return "redirect:/localitzacio/llistar";
+        }
+
+        model.addAttribute("localitzacio", localitzacio);
+        return "localitzacio-consulta";
     }
 
 }

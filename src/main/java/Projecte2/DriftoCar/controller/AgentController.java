@@ -2,6 +2,8 @@ package Projecte2.DriftoCar.controller;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/agent")
 public class AgentController {
 
+    Logger log = LoggerFactory.getLogger(AgentController.class);
     @Autowired
     private AgentService agentService;
     @Autowired
@@ -91,5 +94,18 @@ public class AgentController {
 
         agentService.modificarAgent(agent);
         return "redirect:/agent/llistar";
+    }
+
+    @GetMapping("/esborrar/{dni}")
+    public String eliminarAgent(@PathVariable("dni") String dni, Model model, Agent agent) {
+        log.info("S'ha entrat al mètode esborrarController.");
+        try {
+            agentService.eliminarAgent(agent); // Llama al servicio para eliminar
+        } catch (RuntimeException e) {
+            model.addAttribute("error", "No s'ha pogut eliminar l'agent.");
+            return "agent-llistar"; // Vuelve a la lista con un mensaje de error
+        }
+
+        return "redirect:/agent/llistar"; // Redirige al listado después de eliminar
     }
 }
