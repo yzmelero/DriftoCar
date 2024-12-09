@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
@@ -107,5 +108,16 @@ public class AgentController {
         }
 
         return "redirect:/agent/llistar"; // Redirige al listado después de eliminar
+    }
+
+        @GetMapping("/agent/llistar")
+    public String listarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
+        if (dni != null && !dni.isEmpty()) {
+            model.addAttribute("agents", agentService.buscarPorDni(dni)); // Filtra por DNI
+        } else {
+            model.addAttribute("agents", agentService.llistarAgents()); // Lista todos los agentes
+        }
+        model.addAttribute("filtroDni", dni); // Para mantener el valor del filtro en el formulario
+        return "agent-llistar";
     }
 }

@@ -92,4 +92,9 @@ public class AgentService {
         }
         agentRepository.deleteById(agent.getDni()); // Elimina el agente si existe
     }
+
+    public List<Agent> buscarPorDni(String dni) {
+        return agentRepository.findByDniContaining(dni); // Delega la búsqueda al repositorio
+    }
+    
 }

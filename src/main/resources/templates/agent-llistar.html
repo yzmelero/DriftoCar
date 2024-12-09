@@ -15,8 +15,23 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Llistat d'Agents</h1>
 
-            <a href="/agent/alta" class="btn btn-primary mb-3">Afegir nou agent</a>
-            <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
+        <a href="/agent/alta" class="btn btn-primary mb-3">Afegir nou agent</a>
+        <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
+
+        <form th:action="@{/agent/llistar}" method="get" class="mb-4">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <label for="dni" class="col-form-label">Filtrar per DNI:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" id="dni" name="dni" class="form-control" th:value="${filtroDni}"
+                        placeholder="Introdueix DNI">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
 
         <table class="table table-bordered">
             <thead class="table-light">
