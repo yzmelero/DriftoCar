@@ -79,6 +79,8 @@ public class ClientsController {
 
         }
         model.addAttribute("client", client);
+        model.addAttribute("editMode", true);
+
         log.info("Caducitat llicència al model: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI al model: {}", client.getDniCaducitat());
         return "client-modificar";
@@ -93,4 +95,12 @@ public class ClientsController {
         return "redirect:/clients/llistar";
     }
 
+    @GetMapping("/visualitzar")
+    public String visualitzarClient(@PathVariable String dni, Model model){
+
+        Client client = clientService.obtenirClientPerDni(dni);
+        model.addAttribute("client", client);
+        model.addAttribute("editMode", false);
+        return "client-modificar";
+    }
 }
