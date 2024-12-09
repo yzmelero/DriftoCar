@@ -51,15 +51,7 @@ public class LocalitzacioController {
     }
 
     //Esborrar
-    @GetMapping("/confirmar-esborrar/{codiPostal}")
-    public String confirmarEsborrar(@PathVariable String codiPostal, Model model) {
-        Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
-
-        model.addAttribute("localitzacio", localitzacio);
-        return "confirmar-esborrar";
-    }
-
-    @PostMapping("/esborrar/{codiPostal}")
+    @GetMapping("/esborrar/{codiPostal}")
     public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
         try {
             localitzacioService.baixaLocalitzacio(codiPostal);
@@ -69,7 +61,7 @@ public class LocalitzacioController {
         }
         return "redirect:/localitzacio/llistar";
     }
-
+    
     //Modificar
     @GetMapping("/modificar/{codiPostal}")
     public String mostrarFormularioModificar(@PathVariable String codiPostal, Model model) {
