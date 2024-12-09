@@ -5,14 +5,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Editar Client</title>
+        <title>Informació del Client</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
         <div class="container mt-5">
-            <h2 class="mb-4">Editar Client</h2>
+            <h2 class="mb-4">Informació del Client</h2>
 
             <!-- Formulario para editar cliente -->
             <form th:action="@{/clients/modificar}" th:object="${client}" method="post" class="needs-validation" novalidate>
@@ -21,7 +21,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="usuari" class="form-label">Usuari</label>
-                    <input type="text" id="usuari" th:field="*{usuari}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="usuari" th:field="*{usuari}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un usuari.
                     </div>
@@ -29,7 +29,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="contrasenya" class="form-label">Contrasenya</label>
-                    <input type="password" id="contrasenya" th:field="*{contrasenya}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="password" id="contrasenya" th:field="*{contrasenya}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una contrasenya.
                     </div>
@@ -37,7 +37,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>
-                    <input type="text" id="nom" th:field="*{nom}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="nom" th:field="*{nom}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un nom.
                     </div>
@@ -45,7 +45,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="cognoms" class="form-label">Cognoms</label>
-                    <input type="text" id="cognoms" th:field="*{cognoms}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="cognoms" th:field="*{cognoms}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix uns cognoms.
                     </div>
@@ -53,7 +53,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Correu electrònic</label>
-                    <input type="email" id="email" th:field="*{email}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="email" id="email" th:field="*{email}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un correu electrònic.
                     </div>
@@ -61,7 +61,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="telefon" class="form-label">Telèfon</label>
-                    <input type="text" id="telefon" th:field="*{telefon}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="telefon" th:field="*{telefon}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un telèfon.
                     </div>
@@ -69,7 +69,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 
                 <div class="mb-3">
                     <label for="nacionalitat" class="form-label">Nacionalitat</label>
-                    <input type="text" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una nacionalitat.
                     </div>
@@ -77,7 +77,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="llicencia" class="form-label">Llicència</label>
-                    <input type="text" id="llicencia" th:field="*{llicencia}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="llicencia" th:field="*{llicencia}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una llicència.
                     </div>
@@ -86,7 +86,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="mb-3">
                     <label for="llicCaducitat" class="form-label">Caducitat de la llicència:</label>
                     <input type="date" id="llicCaducitat" th:field="*{llicCaducitat}" 
-                    class="form-control" th:attr="disabled=${!editMode}" required />
+                    class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una data de caducitat de la llicència.
                     </div>
@@ -95,7 +95,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="mb-3">
                     <label for="dniCaducitat" class="form-label">Caducitat del DNI</label>
                     <input type="date" id="dniCaducitat" th:field="*{dniCaducitat}" 
-                    class="form-control" th:attr="disabled=${!editMode}" required />
+                    class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una data de caducitat del DNI.
                     </div>
@@ -103,7 +103,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="numTarjetaCredit" class="form-label">Nombre de Tarjeta de Crèdit</label>
-                    <input type="number" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="number" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un nombre de la tarjeta de crèdit.
                     </div>
@@ -111,7 +111,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="adreca" class="form-label">Adreça</label>
-                    <input type="text" id="adreca" th:field="*{adreca}" class="form-control" th:attr="disabled=${!editMode}" required />
+                    <input type="text" id="adreca" th:field="*{adreca}" class="form-control" th:readonly="${modeVisualitzar}" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una adreça.
                     </div>
@@ -119,7 +119,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="reputacio" class="form-label">Reputació</label>
-                    <select id="reputacio" th:field="*{reputacio}" class="form-control" th:attr="disabled=${!editMode}" required>
+                    <select id="reputacio" th:field="*{reputacio}" class="form-control" th:readonly="${modeVisualitzar}" required>
                         <option value="true">Premium</option>
                         <option value="false">Normal</option>
                     </select>
@@ -128,7 +128,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" h:if="${editMode}"
+                <button type="submit" class="btn btn-primary" th:disabled="${modeVisualitzar}"
                 onclick="return confirm('Segur que vols modificar aquest client?');">Guardar</button>
                 <a th:href="@{/clients/llistar}" class="btn btn-secondary">Cancelar</a>
             </form>
