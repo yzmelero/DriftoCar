@@ -1,8 +1,12 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/localitzacio")
 public class LocalitzacioController {
+
+    Logger log = LoggerFactory.getLogger(ClientService.class);
 
     @Autowired
     private LocalitzacioService localitzacioService;
@@ -43,6 +49,7 @@ public class LocalitzacioController {
     public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio, Model model) {
         try {
             localitzacioService.altaLocalitzacio(localitzacio);
+            log.info("S'ha donat d'alta una localització..");
             return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
             model.addAttribute("error", "Ja existeix una localització amb aquest codi postal.");
@@ -55,6 +62,7 @@ public class LocalitzacioController {
     public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
         try {
             localitzacioService.baixaLocalitzacio(codiPostal);
+            log.info("S'ha esborrat una localització.");
             redirectAttributes.addFlashAttribute("success", "Localització eliminada correctament.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -78,6 +86,7 @@ public class LocalitzacioController {
     public String modificarLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
         try {
             localitzacioService.modificarLocalitzacio(localitzacio.getCodiPostal(), localitzacio);
+            log.info("S'ha modificat una localització..");
             return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
             return "error";

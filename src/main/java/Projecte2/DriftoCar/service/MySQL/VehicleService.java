@@ -10,6 +10,9 @@ import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehicleService {
 
+    Logger log = LoggerFactory.getLogger(ClientService.class);
+
     @Autowired
     private VehicleRepository vehicleRepository;
 
@@ -27,6 +32,7 @@ public class VehicleService {
     private LocalitzacioRepository localitzacioRepository;
 
     public Vehicle altaVehicle(Vehicle vehicle) {
+        log.info("S'ha entrat al metode d'altaVehicle.");
 
         if (vehicleRepository.existsById(vehicle.getMatricula())) {
             throw new RuntimeException("Ja existeix un vehícle amb la matrícula: " + vehicle.getMatricula());
@@ -35,6 +41,7 @@ public class VehicleService {
     }
 
     public void baixaVehicle(String matricula) {
+        log.info("S'ha entrat al metode de baixaReserva.");
         if (!vehicleRepository.existsById(matricula)) {
             throw new RuntimeException("No existeix cap vehicle amb la matrícula: " + matricula);
         }
@@ -42,6 +49,8 @@ public class VehicleService {
     }
 
     public Vehicle modificaVehicle(Vehicle vehicleActualitzat) {
+        log.info("S'ha entrat al metode de modificaVehicle.");
+
         Optional<Vehicle> vehicleExistent = vehicleRepository.findByMatricula(vehicleActualitzat.getMatricula());
 
         if (vehicleExistent.isEmpty()) {
@@ -63,6 +72,8 @@ public class VehicleService {
         vehicleAntic.setCombustible(vehicleActualitzat.getCombustible());
         vehicleAntic.setTipus(vehicleActualitzat.getTipus());
         vehicleAntic.setDisponibilitat(vehicleActualitzat.isDisponibilitat());
+
+        log.info("S'ha modificat un vehicle.");
 
         return vehicleRepository.save(vehicleAntic);
     }
