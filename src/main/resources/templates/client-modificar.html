@@ -60,18 +60,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
 
                 <div class="mb-3">
-                    <label for="nacionalitat" class="form-label">Nacionalitat</label>
-                    <input type="nacionalitat" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" required />
-                    <div class="invalid-feedback">
-                        Si us plau, introdueix una nacionalitat.
-                    </div>
-                </div>
-
-                <div class="mb-3">
                     <label for="telefon" class="form-label">Telèfon</label>
-                    <input type="telefon" id="telefon" th:field="*{telefon}" class="form-control" required />
+                    <input type="text" id="telefon" th:field="*{telefon}" class="form-control" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix un telèfon.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                    <input type="text" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" required />
+                    <div class="invalid-feedback">
+                        Si us plau, introdueix una nacionalitat.
                     </div>
                 </div>
 
@@ -85,7 +85,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="llicCaducitat" class="form-label">Caducitat de la llicència:</label>
-                    <input type="date" id="llicCaducitat" th:field="*{llicCaducitat}" class="form-control" required />
+                    <input type="date" id="llicCaducitat" th:field="*{llicCaducitat}" 
+                    class="form-control" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una data de caducitat de la llicència.
                     </div>
@@ -93,7 +94,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <div class="mb-3">
                     <label for="dniCaducitat" class="form-label">Caducitat del DNI</label>
-                    <input type="date" id="dniCaducitat" th:field="*{dniCaducitat}" class="form-control" required />
+                    <input type="date" id="dniCaducitat" th:field="*{dniCaducitat}" 
+                    class="form-control" required />
                     <div class="invalid-feedback">
                         Si us plau, introdueix una data de caducitat del DNI.
                     </div>
@@ -126,7 +128,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="submit" class="btn btn-primary"
+                onclick="return confirm('Segur que vols modificar aquest client?');">Guardar</button>
                 <a th:href="@{/clients/llistar}" class="btn btn-secondary">Cancelar</a>
             </form>
         </div>

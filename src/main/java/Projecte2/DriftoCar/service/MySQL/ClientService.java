@@ -98,6 +98,12 @@ public class ClientService {
         // modificar.
         Client clientAntic = clientExistent.get();
 
+        log.info("Client rebut: {}", client);
+
+        log.info("Telèfon rebut: {}", client.getTelefon());
+
+        log.info("Nacionalitat rebuda: {}", client.getNacionalitat());
+
         clientAntic.setNom(client.getNom());
         clientAntic.setCognoms(client.getCognoms());
         clientAntic.setLlicencia(client.getLlicencia());

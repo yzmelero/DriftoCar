@@ -85,8 +85,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <td>
                                     <a class="btn btn-success"
                                         th:href="@{/clients/modificar/{dni}(dni=${client.dni})}">Editar</a>
-                                    <a class="btn btn-danger"
-                                        th:href="@{/clients/esborrar/{dni}(dni=${client.dni})}">Esborrar</a>
+                                    <a class="btn btn-danger btn-sm"
+                                        th:href="@{/clients/esborrar/{dni}(dni=${client.dni})}"
+                                        onclick="return confirm('Segur que vols eliminar aquest client?');">Esborrar</a>
                                 </td>
                             </tr>
                         </tbody>

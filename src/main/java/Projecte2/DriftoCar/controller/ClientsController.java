@@ -7,6 +7,9 @@ package Projecte2.DriftoCar.controller;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +31,8 @@ public class ClientsController {
     @Autowired
     private ClientService clientService;
 
+    Logger log = LoggerFactory.getLogger(ClientService.class);
+
     @GetMapping("/llistar")
     public String llistarClients(@RequestParam(value = "searchCognoms", required = false) String searchCognoms,
             @RequestParam(value = "searchNacionalitat", required = false) String searchNacionalitat,
@@ -37,10 +42,10 @@ public class ClientsController {
 
         List<Client> clients;
 
-        if    ((searchCognoms   != null && !searchCognoms.isEmpty())
-            || (searchNacionalitat     != null && !searchNacionalitat.isEmpty())
-            || (searchTelefon          != null && !searchTelefon.isEmpty())
-            || (searchEmail != null && !searchEmail.isEmpty())) {
+        if ((searchCognoms != null && !searchCognoms.isEmpty())
+                || (searchNacionalitat != null && !searchNacionalitat.isEmpty())
+                || (searchTelefon != null && !searchTelefon.isEmpty())
+                || (searchEmail != null && !searchEmail.isEmpty())) {
             clients = clientService.cercarClients(searchCognoms, searchNacionalitat, searchTelefon, searchEmail);
         } else {
             clients = clientService.llistarClients();
@@ -51,7 +56,7 @@ public class ClientsController {
         model.addAttribute("searchNacionalitat", searchNacionalitat);
         model.addAttribute("searchTelefon", searchTelefon);
         model.addAttribute("searchEmail", searchEmail);
-        
+
         return "client-llistar";
 
     }
@@ -74,6 +79,8 @@ public class ClientsController {
 
         }
         model.addAttribute("client", client);
+        log.info("Caducitat llicència al model: {}", client.getLlicCaducitat());
+        log.info("Caducitat DNI al model: {}", client.getDniCaducitat());
         return "client-modificar";
     }
 
@@ -81,6 +88,8 @@ public class ClientsController {
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
 
         clientService.modificarClient(client);
+        log.info("Caducitat llicència rebuda: {}", client.getLlicCaducitat());
+        log.info("Caducitat DNI rebut: {}", client.getDniCaducitat());
         return "redirect:/clients/llistar";
     }
 

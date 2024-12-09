@@ -15,6 +15,9 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,9 +59,11 @@ public class Client {
     
     private String llicencia;
      
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "llic_caducitat")
     private LocalDate llicCaducitat;
     
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "dni_caducitat")
     private LocalDate dniCaducitat;
     
