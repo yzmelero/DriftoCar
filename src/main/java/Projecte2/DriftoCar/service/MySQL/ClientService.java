@@ -52,6 +52,12 @@ public class ClientService {
         if (client.getCognoms() == null || client.getCognoms().isEmpty()) {
             throw new IllegalArgumentException("El camp cognoms no pot estar buit.");
         }
+        if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
+            throw new IllegalArgumentException("El camp nacionalitat no pot estar buit.");
+        }
+        if (client.getTelefon() == null || client.getTelefon().isEmpty()) {
+            throw new IllegalArgumentException("El camp telèfon no pot estar buit.");
+        }
         if (client.getLlicencia() == null || client.getLlicencia().isEmpty()) {
             throw new IllegalArgumentException("El camp llicència no pot estar buit.");
         }
@@ -68,7 +74,7 @@ public class ClientService {
             throw new IllegalArgumentException("El camp adreça no pot estar buit.");
         }
 
-        //Comprovar si ja existeix un client amb el dni inserit.
+        // Comprovar si ja existeix un client amb el dni inserit.
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
 
         if (clientExistent.isPresent()) {
@@ -88,8 +94,15 @@ public class ClientService {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
 
-        //Amb aquesta línia recuperem el client que ja existeix per a poder-lo modificar.
+        // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
+        // modificar.
         Client clientAntic = clientExistent.get();
+
+        log.info("Client rebut: {}", client);
+
+        log.info("Telèfon rebut: {}", client.getTelefon());
+
+        log.info("Nacionalitat rebuda: {}", client.getNacionalitat());
 
         clientAntic.setNom(client.getNom());
         clientAntic.setCognoms(client.getCognoms());
@@ -99,6 +112,8 @@ public class ClientService {
         clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
         clientAntic.setAdreca(client.getAdreca());
         clientAntic.setEmail(client.getEmail());
+        clientAntic.setNacionalitat(client.getNacionalitat());
+        clientAntic.setTelefon(client.getTelefon());
         clientAntic.setContrasenya(client.getContrasenya());
         clientAntic.setUsuari(client.getUsuari());
         clientAntic.setReputacio(client.isReputacio());
@@ -128,6 +143,14 @@ public class ClientService {
     }
 
     public Client obtenirClientPerDni(String dni) {
-        return clientRepository.findById(dni).orElse(null); 
+        return clientRepository.findById(dni).orElse(null);
+    }
+
+    public List<Client> cercarClients(String cognoms, String nacionalitat, String telefon, String email) {
+        return clientRepository.cercarClients(
+                (cognoms != null && !cognoms.isEmpty()) ? cognoms : null,
+                (nacionalitat != null && !nacionalitat.isEmpty()) ? nacionalitat : null,
+                (telefon != null && !telefon.isEmpty()) ? telefon : null,
+                (email != null && !email.isEmpty()) ? email : null);
     }
 }
