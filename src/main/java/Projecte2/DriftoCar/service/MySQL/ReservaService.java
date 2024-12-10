@@ -61,9 +61,15 @@ public class ReservaService {
         if (vehicle.isEmpty()) {
             throw new RuntimeException("El vehicle no existeix");
         }
-        if (!reserva.getVehicle().isDisponibilitat()) {
+
+        Vehicle vehicleNou = vehicle.get();
+        if (!vehicleNou.isDisponibilitat()) {
             throw new RuntimeException("El vehicle no esta disponible");
         }
+
+        reserva.setClient(client.get());
+        reserva.setVehicle(vehicle.get());
+
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
