@@ -85,4 +85,17 @@ public class VehicleController {
         vehicleService.modificaVehicle(vehicle);
         return "redirect:/vehicle/llistar";
     }
+
+    @GetMapping("/detall/{matricula}")
+    public String mostrarVehicle(@PathVariable String matricula, Model model) {
+        Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+        if (vehicle == null) {
+            model.addAttribute("error", "No s'ha trobat vehicle amb matrícula: " + matricula);
+            return "redirect:/vehicle/llistar";
+        }
+        model.addAttribute("vehicle", vehicle);
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions);
+        return "vehicle-detalls";
+    }
 }
