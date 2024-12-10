@@ -80,6 +80,7 @@ public class ClientService {
         if (clientExistent.isPresent()) {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
+        log.info("S'ha entrat donat d'alta a un client.");
         return clientRepository.save(client);
 
     }
@@ -97,11 +98,10 @@ public class ClientService {
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
         Client clientAntic = clientExistent.get();
-
+        
+        //Loggers per a corregir un bug.
         log.info("Client rebut: {}", client);
-
         log.info("Telèfon rebut: {}", client.getTelefon());
-
         log.info("Nacionalitat rebuda: {}", client.getNacionalitat());
 
         clientAntic.setNom(client.getNom());
