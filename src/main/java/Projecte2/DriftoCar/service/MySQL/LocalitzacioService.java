@@ -9,6 +9,9 @@ import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class LocalitzacioService {
 
+    Logger log = LoggerFactory.getLogger(ClientService.class);
+
     @Autowired
     private LocalitzacioRepository localitzacioRepository;
 
@@ -26,6 +31,7 @@ public class LocalitzacioService {
     private VehicleRepository vehicleRepository;
 
     public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
+        log.info("S'ha entrat al mètode altaLocalitzacio.");
 
         if (localitzacioRepository.existsById(localitzacio.getCodiPostal())) {
             throw new RuntimeException(
@@ -35,6 +41,8 @@ public class LocalitzacioService {
     }
 
     public void baixaLocalitzacio(String codiPostal) {
+        log.info("S'ha entrat al mètode baixaLocalització.");
+
         if (!localitzacioRepository.existsById(codiPostal)) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
         }
@@ -50,6 +58,8 @@ public class LocalitzacioService {
     }
 
     public Localitzacio modificarLocalitzacio(String codiPostal, Localitzacio novaLocalitzacio) {
+        log.info("S'ha entrat al mètode modificarLocalitzacio.");
+
         if (!localitzacioRepository.existsById(codiPostal)) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
         }

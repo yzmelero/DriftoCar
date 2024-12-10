@@ -41,7 +41,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="vehicle : ${vehicles}">
+                            <tr th:each="vehicle : ${vehicles}"
+                                th:onclick="'location.href=\'' + @{/vehicle/detall/{matricula}(matricula=${vehicle.matricula})} + '\''" 
+                                style="cursor: pointer;">
                                 <th scope="row" th:text="${vehicle.matricula}"></th>
                                 <td th:text="${vehicle.marca}"></td>
                                 <td th:text="${vehicle.model}"></td>
@@ -54,7 +56,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <td th:text="${vehicle.localitzacio.codiPostal}"></td>
                                 <td>
                                     <a class="btn btn-success" th:href="@{/vehicle/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>
-                                    <a class="btn btn-danger btn-sm"
+                                    <a class="btn btn-danger"
                                        th:href="@{/vehicle/esborrar/{matricula}(matricula=${vehicle.matricula})}"
                                        onclick="return confirm('¿Estàs segur de que vols esborrar aquest vehicle?');">
                                         Eliminar

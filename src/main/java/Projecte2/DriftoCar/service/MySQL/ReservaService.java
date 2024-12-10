@@ -7,6 +7,8 @@ package Projecte2.DriftoCar.service.MySQL;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,8 @@ import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
  */
 @Service
 public class ReservaService {
+
+    Logger log = LoggerFactory.getLogger(ClientService.class);
 
     @Autowired
     private ReservaRepository reservaRepository;
@@ -42,6 +46,8 @@ public class ReservaService {
      * @author Mario
      */
     public Reserva altaReserva(Reserva reserva) {
+        log.info("S'ha entrat al metode d'altaReserva.");
+
         // Verificar que el vehículo existe
         Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
 
@@ -55,9 +61,15 @@ public class ReservaService {
         if (vehicle.isEmpty()) {
             throw new RuntimeException("El vehicle no existeix");
         }
-        if (!reserva.getVehicle().isDisponibilitat()) {
+
+        Vehicle vehicleNou = vehicle.get();
+        if (!vehicleNou.isDisponibilitat()) {
             throw new RuntimeException("El vehicle no esta disponible");
         }
+
+        reserva.setClient(client.get());
+        reserva.setVehicle(vehicle.get());
+
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
