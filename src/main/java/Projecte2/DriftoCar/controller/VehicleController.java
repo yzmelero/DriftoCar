@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 /**
  *
  * @author Anna
@@ -69,6 +67,22 @@ public class VehicleController {
         vehicleService.baixaVehicle(matricula);
         log.info("S'ha esborrat un vehicle.");
 
+        return "redirect:/vehicle/llistar";
+    }
+
+    // Modifica
+    @GetMapping("/modificar/{matricula}")
+    public String modificarVehicle(@PathVariable("matricula") String matricula, Model model) {
+        Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+        model.addAttribute("vehicle", vehicle);
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions);
+        return "vehicle-modificar";
+    }
+
+    @PostMapping("/modificar")
+    public String guardarVehicleModificat(@ModelAttribute("vehicle") Vehicle vehicle) {
+        vehicleService.modificaVehicle(vehicle);
         return "redirect:/vehicle/llistar";
     }
 }
