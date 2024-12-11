@@ -63,7 +63,19 @@ public class IncidenciaService {
             vehicleRepository.save(vehicle);
         }
     }
+    
+    public void tancarIncidencia(Long id) {
+        Optional<Incidencia> incidenciaOpt = incidenciaRepository.findById(id);
+        
+        if (!incidenciaOpt.isPresent()) {
+            throw new RuntimeException("Incidència no trobada amb l'ID: " + id);
+        }
 
+        Incidencia incidencia = incidenciaOpt.get();
+        incidencia.setEstat(false);
+        incidenciaRepository.save(incidencia);
+    }
+    
     public List<Incidencia> llistarIncidencies() {
         return incidenciaRepository.findAll();
     }

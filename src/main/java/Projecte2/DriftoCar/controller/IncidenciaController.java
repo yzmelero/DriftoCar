@@ -85,4 +85,15 @@ public class IncidenciaController {
             return "redirect:/incidencia/llistar"; // Redirigir en cas d'error
         }
     }
+    
+    @GetMapping("/tancar/{id}")
+    public String tancarIncidencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            incidenciaService.tancarIncidencia(id);
+            redirectAttributes.addFlashAttribute("success", "Incidència tancada correctament.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Error en tancar la incidència: " + e.getMessage());
+        }
+        return "redirect:/incidencia/llistar";
+    }
 }
