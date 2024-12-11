@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 
 /**
@@ -21,4 +24,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findAll();
 
     Optional<Reserva> findById(Long Id);
+
+    @Query("SELECT r FROM Reserva r " +
+            "WHERE (:idReserva IS NULL OR r.idReserva = :idReserva) " +
+            "AND (:email IS NULL OR r.client.email = :email)")
+    List<Reserva> cercarReserves(@Param("idReserva") Long idReserva, @Param("email") String email);
 }
