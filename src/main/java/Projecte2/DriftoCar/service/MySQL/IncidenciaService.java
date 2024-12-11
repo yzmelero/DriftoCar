@@ -28,16 +28,13 @@ public class IncidenciaService {
     private VehicleRepository vehicleRepository;
     
     public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
-        // Obtener todas las incidencias activas
         List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
 
-        // Extraer las matrículas de las incidencias activas
         List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
         for (Incidencia incidencia : incidenciesActives) {
             matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula());
         }
 
-        // Filtrar los vehículos
         List<Vehicle> vehicles = vehicleRepository.findAll();
         List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
         for (Vehicle vehicle : vehicles) {
