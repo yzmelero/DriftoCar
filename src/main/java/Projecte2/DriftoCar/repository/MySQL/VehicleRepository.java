@@ -9,9 +9,11 @@ import Projecte2.DriftoCar.entity.MySQL.TipusCombustible;
 import Projecte2.DriftoCar.entity.MySQL.TipusTransmisio;
 import Projecte2.DriftoCar.entity.MySQL.TipusVehicle;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,5 +45,15 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     List<Vehicle> findByLocalitzacio_CodiPostal(String codiPostal);
 
+    @Query("""
+        SELECT v FROM Vehicle v
+        WHERE v.disponibilitat = true
+        AND v.matricula NOT IN (
+            SELECT r.vehicle.matricula
+            FROM Reserva r
+            WHERE (r.dataInici <= :dataFinal AND r.dataFi >= :dataInici)
+        )
+    """)
+    List<Vehicle> findVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal);
 
 }
