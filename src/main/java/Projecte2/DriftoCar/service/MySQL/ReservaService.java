@@ -77,4 +77,10 @@ public class ReservaService {
     public List<Reserva> llistarReservas(){
         return reservaRepository.findAll();
     }
+
+    public List<Reserva> cercarReserva(String email, Long id_reserva) {
+        log.debug("cercarReserva() - email: " + email + ", id_reserva: " + id_reserva);
+        return reservaRepository.cercarReserves(id_reserva, email);
+        
+    }
 }
