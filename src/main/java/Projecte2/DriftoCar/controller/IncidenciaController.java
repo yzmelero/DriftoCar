@@ -36,7 +36,13 @@ public class IncidenciaController {
     @Autowired
     private IncidenciaService incidenciaService;
 
-    // Mostrar la lista de vehículos o filtrar por matrícula
+    @GetMapping("/llistar-incidencies")
+    public String llistarIncidencies(Model model) {
+        List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
+        model.addAttribute("incidencies", incidencies);
+        return "incidencia-llistar"; 
+    }
+    
     @GetMapping("/llistar")
     public String llistarVehicles(@RequestParam(value = "matricula", required = false) String matricula, Model model) {
         List<Vehicle> vehicles;
