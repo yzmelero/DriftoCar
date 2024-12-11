@@ -10,11 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
@@ -97,4 +99,16 @@ public class ReservaController {
         return "redirect:/reserva/llistar";
     }
 
+    @GetMapping("/consulta/{idReserva}")
+    public String consultarReserva(@PathVariable Long idReserva, Model model) {
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+
+        if (reserva == null) {
+            model.addAttribute("error", "No s'ha trobat la reserva amb aquest id: " + idReserva);
+            return "redirect:/reserva/llistar";
+        }
+
+        model.addAttribute("reserva", reserva);
+        return "reserva-consulta";
+    }
 }

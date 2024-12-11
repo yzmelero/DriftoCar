@@ -18,11 +18,11 @@
         <form th:action="@{/reserva/llistar}" method="get" class="row g-3">
             <div class="col-auto">
                 <input type="number" class="form-control" name="searchId_reserva" th:value="${searchId_reserva}"
-                placeholder="Id reserva">
+                    placeholder="Id reserva">
             </div>
             <div class="col-auto">
                 <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}"
-                placeholder="Email: ">
+                    placeholder="Email: ">
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary">Cerca</button>
@@ -46,7 +46,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="reserva : ${reservas}">
+                        <tr th:each="reserva : ${reservas}"
+                            th:onclick="|window.location.href='@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}'|"
+                            style="cursor: pointer;">>
                             <th scope="row" th:text="${reserva.idReserva}"></th>
                             <td th:text="${reserva.client.dni}"></td>
                             <td th:text="${reserva.vehicle.matricula}"></td>
