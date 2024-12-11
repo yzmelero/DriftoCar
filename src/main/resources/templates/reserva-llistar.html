@@ -48,7 +48,7 @@
                     <tbody>
                         <tr th:each="reserva : ${reservas}"
                             th:onclick="|window.location.href='@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}'|"
-                            style="cursor: pointer;">>
+                            style="cursor: pointer;">
                             <th scope="row" th:text="${reserva.idReserva}"></th>
                             <td th:text="${reserva.client.dni}"></td>
                             <td th:text="${reserva.vehicle.matricula}"></td>
