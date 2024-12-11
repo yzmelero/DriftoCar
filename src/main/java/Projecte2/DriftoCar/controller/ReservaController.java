@@ -3,6 +3,8 @@ package Projecte2.DriftoCar.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,12 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.ReservaService;
 
 /**
@@ -24,6 +28,10 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
 @Controller
 @RequestMapping("/reserva")
 public class ReservaController {
+
+    Logger log = LoggerFactory.getLogger(ClientService.class);
+
+
     @Autowired
     private ReservaService reservaService;
 
@@ -34,9 +42,30 @@ public class ReservaController {
     private ClientRepository clientRepository;
 
     @GetMapping("/llistar")
-    public String llistarReservas(Model model) {
-        List<Reserva> reservas = reservaService.llistarReservas();
-        model.addAttribute("reservas", reservas);
+    public String llistarReservas(Model model,
+            @RequestParam(value = "searchEmail", required = false) String searchEmail,
+            @RequestParam(value = "searchId_reserva", required = false) Long searchId_reserva) {
+
+        if (searchEmail != null && searchEmail.isEmpty()) {
+            searchEmail = null;
+        }
+
+        //Verificar per consola que funcioni correctament. 
+        log.debug("searchEmail: " + searchEmail);
+        log.debug("searchId_reserva: " + searchId_reserva);
+        
+        List<Reserva> reserves;
+        if ((searchId_reserva != null)
+                || (searchEmail != null && !searchEmail.isEmpty())) {
+            reserves = reservaService.cercarReserva(searchEmail, searchId_reserva);
+        } else {
+            reserves = reservaService.llistarReservas();
+        }
+
+        model.addAttribute("reservas", reserves);
+        model.addAttribute("searchId_reserva", searchId_reserva);
+        model.addAttribute("searchEmail", searchEmail);
+
         return "reserva-llistar";
     }
 
@@ -47,7 +76,7 @@ public class ReservaController {
         List<Client> clients = clientRepository.findAll();
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
-        //model.addAttribute("reserva", new Reserva());
+        // model.addAttribute("reserva", new Reserva());
 
         Reserva reserva = new Reserva();
 
@@ -68,5 +97,4 @@ public class ReservaController {
         return "redirect:/reserva/llistar";
     }
 
-   
 }
