@@ -14,22 +14,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="container mt-5">
             <h1>Crear nova incidència per al vehicle</h1>
 
-            <!-- Formulari per obrir la incidència -->
             <form th:action="@{/incidencia/obrir}" th:object="${incidencia}" method="post">
 
-                <!-- Codi matrícula del vehicle -->
                 <div class="mb-3">
                     <label for="matricula" class="form-label">Matrícula del Vehicle</label>
                     <input type="text" id="matricula" class="form-control" th:field="*{matricula.matricula}" readonly />
                 </div>
 
-                <!-- Motiu de la incidència -->
                 <div class="mb-3">
                     <label for="motiu" class="form-label">Motiu de la incidència</label>
                     <textarea class="form-control" id="motiu" th:field="*{motiu}" required></textarea>
                 </div>
 
-                <!-- Disponibilitat -->
                 <div class="mb-3">
                     <label for="disponibilitat" class="form-label">Disponibilitat del vehicle</label>
                     <select id="disponibilitat" class="form-control" th:field="*{matricula.disponibilitat}">
@@ -38,19 +34,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </select>
                 </div>
 
-                <!-- Data d'inici de la incidència -->
                 <div class="mb-3">
                     <label for="dataIniciIncidencia" class="form-label">Data d'inici de la incidència</label>
                     <input type="datetime-local" id="dataIniciIncidencia" class="form-control" th:field="*{dataIniciIncidencia}" required />
                 </div>
 
-                <!-- Data de finalització de la incidència (opcional) -->
                 <div class="mb-3">
                     <label for="dataFiIncidencia" class="form-label">Data de finalització de la incidència (opcional)</label>
                     <input type="datetime-local" id="dataFiIncidencia" class="form-control" th:field="*{dataFiIncidencia}" />
                 </div>
 
-                <!-- Botón para enviar el formulario -->
                 <button type="submit" class="btn btn-primary">Crear Incidència</button>
             </form>
         </div>

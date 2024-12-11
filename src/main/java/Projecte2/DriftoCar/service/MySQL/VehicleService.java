@@ -8,6 +8,7 @@ import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,5 +85,9 @@ public class VehicleService {
     
     public Vehicle obtenirVehicleMatricula(String matricula) {
         return vehicleRepository.findByMatricula(matricula).orElse(null);
+    }
+    
+    public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
+        return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
     }
 }

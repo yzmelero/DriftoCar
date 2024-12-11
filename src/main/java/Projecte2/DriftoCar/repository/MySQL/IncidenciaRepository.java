@@ -5,6 +5,7 @@
 package Projecte2.DriftoCar.repository.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
-    
+    List<Incidencia> findByEstat(boolean estat);
 }

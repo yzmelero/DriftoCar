@@ -36,25 +36,22 @@ public class IncidenciaController {
     @Autowired
     private IncidenciaService incidenciaService;
 
-    // Mostrar la lista de vehículos o filtrar por matrícula
+    @GetMapping("/llistar-incidencies")
+    public String llistarIncidencies(Model model) {
+        List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
+        model.addAttribute("incidencies", incidencies);
+        return "incidencia-llistar"; 
+    }
+    
     @GetMapping("/llistar")
-    public String llistarVehicles(@RequestParam(value = "matricula", required = false) String matricula, Model model) {
-        List<Vehicle> vehicles;
+    public String llistarVehiclesSenseIncidencies(Model model) {
+        // Obtenim els vehicles sense incidències actives
+        List<Vehicle> vehiclesSenseIncidencies = incidenciaService.llistarVehiclesSenseIncidenciesActives();
 
-        if (matricula != null && !matricula.isEmpty()) {
-            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
-            if (vehicle != null) {
-                vehicles = List.of(vehicle);
-            } else {
-                model.addAttribute("error", "No s'ha trobat el vehicle amb la matrícula: " + matricula);
-                vehicles = new ArrayList<>();
-            }
-        } else {
-            vehicles = vehicleService.llistarVehicles();
-        }
+        // Afegim els vehicles al model
+        model.addAttribute("vehicles", vehiclesSenseIncidencies);
 
-        model.addAttribute("vehicles", vehicles);
-        return "incidencia-cerca-vehicle";
+        return "incidencia-cerca-vehicle"; // La vista que mostrarà la llista
     }
 
     // Mostrar el formulario de creación de la incidencia

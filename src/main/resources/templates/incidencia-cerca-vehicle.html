@@ -23,7 +23,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="col">
                     <h1>Llista d'Incidències</h1>
                     
-                    <!-- Formulario de búsqueda con estilo mejorado -->
                     <form th:action="@{/incidencia/llistar}" method="get" class="mb-4">
                         <div class="input-group">
                             <input type="text" name="matricula" class="form-control" placeholder="Filtrar per matrícula" aria-label="Matrícula" />
@@ -31,7 +30,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </div>
                     </form>
 
-                    <!-- Tabla de vehículos -->
                     <table class="table table-striped">
                         <thead>
                             <tr>
