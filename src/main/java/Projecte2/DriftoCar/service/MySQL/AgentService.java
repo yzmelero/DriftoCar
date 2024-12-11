@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
-import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 
@@ -32,7 +31,23 @@ public class AgentService {
     LocalitzacioRepository localitzacioRepository;
 
     public Agent altaAgent(Agent agent) {
-        Optional<Localitzacio> localitzacio = localitzacioRepository.findById(
+        // Verifica si ya existe un agente con el mismo DNI
+        if (agentRepository.existsById(agent.getDni())) {
+            throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
+        }
+
+        // Verifica si la localización ya tiene un agente asignado
+        if (agent.getLocalitzacio() != null
+                && localitzacioRepository.existsById(agent.getLocalitzacio().getCodiPostal())) {
+            if (agentRepository.existsByLocalitzacio(agent.getLocalitzacio())) {
+                throw new RuntimeException("La localització ja està assignada a un altre agent.");
+            }
+        }
+
+        // Guarda el nuevo agente
+        return agentRepository.save(agent);
+
+       /*Optional<Localitzacio> localitzacio = localitzacioRepository.findById(
                 agent.getLocalitzacio().getCodiPostal());
 
         if (localitzacio.isEmpty()) {
@@ -43,7 +58,7 @@ public class AgentService {
         if (agentExistent.isPresent()) {
             throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
         }
-        return agentRepository.save(agent);
+        return agentRepository.save(agent);*/
     }
 
     public List<Agent> llistarAgents() {
@@ -59,9 +74,17 @@ public class AgentService {
         if (agentExistent.isEmpty()) {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
-
+        agentExistent = agentRepository.findByUsuari(agent.getUsuari());
+        if (agentExistent.isPresent()) {
+            throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
+        }
+        agentExistent = agentRepository.findByEmail(agent.getEmail());
+        if (agentExistent.isPresent()) {
+            throw new RuntimeException("Aquest email ja esta en us.");
+        }
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
+        
         Agent agentAntic = agentExistent.get();
 
         agentAntic.setNom(agent.getNom());

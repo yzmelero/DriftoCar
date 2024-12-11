@@ -40,29 +40,37 @@ public class AgentController {
 
     @GetMapping("/alta")
     public String altaAgente(Model model) {
-        Agent agent = new Agent();
-        agent.setLocalitzacio(new Localitzacio()); // Inicializar localitzacio
-        model.addAttribute("agent", agent);
 
-        // Obtener localitzacions desde la BBDD
-        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
-        model.addAttribute("localitzacions", localitzacions);
-
-        return "agent-alta"; // Ajusta según el nombre de tu template
+        if (!model.containsAttribute("agent")) {
+            model.addAttribute("agent", new Agent());
+            List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+            model.addAttribute("localitzacions", localitzacions);
+        }
+        return "agent-alta";
     }
 
     @PostMapping("/guardar")
     public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model) {
+        
         if (bindingResult.hasErrors()) {
-            return "agent-alta"; // Retorna al formulario si hay errores de validación
+            List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+            model.addAttribute("localitzacions", localitzacions);
+            model.addAttribute("agent", agent);
+            return "agent-alta";
         }
 
         try {
-            agentService.altaAgent(agent); // Llama al servicio para guardar el agente
-        } catch (RuntimeException e) { // Maneja el caso del DNI duplicado
-            model.addAttribute("error", "Ja existeix un agent amb aquest DNI.");
-            agent.setDni(""); // Limpia el campo DNI
-            model.addAttribute("agent", agent); // Mantiene los demás datos
+            agentService.altaAgent(agent);
+        } catch (RuntimeException e) {
+            String error = e.getMessage();
+
+            if (error.contains("DNI")) {
+                agent.setDni(""); // Limpia el campo DNI si hay error de duplicidad
+            }
+
+            model.addAttribute("error", error);
+            model.addAttribute("agent", agent); // Mantiene los demás datos en el formulario
+
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
             return "agent-alta";
@@ -91,9 +99,16 @@ public class AgentController {
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("agent") Agent agent) {
+    public String guardarClientModificat(@Valid Agent agent, Model model) {
+        try {
+            agentService.modificarAgent(agent);
+        } catch (RuntimeException e) {
+            String error = e.getMessage();
+            model.addAttribute("error", error);
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
 
-        agentService.modificarAgent(agent);
         return "redirect:/agent/llistar";
     }
 
