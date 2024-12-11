@@ -40,7 +40,7 @@ public class RegistreController {
     }
 
     @PostMapping("/alta-client")
-    public ResponseEntity<Client> registrarClient(@ModelAttribute("client") Client client, 
+    public String registrarClient(@ModelAttribute("client") Client client, 
                                   @RequestParam("confirmacioContrasenya") String confirmacioContrasenya, 
                                   Model model) throws Exception {
        
@@ -48,9 +48,10 @@ public class RegistreController {
             throw new IllegalArgumentException("La contrasenya no coincideix");
         }
         
-        Client nouClient = clientService.altaClient(client);
-        return new ResponseEntity<>(nouClient, HttpStatus.CREATED);
+        clientService.altaClient(client);
         
+        return "redirect:/clients/llistar";
+                        
         
 
     }
