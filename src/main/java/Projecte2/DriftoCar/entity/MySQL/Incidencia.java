@@ -35,18 +35,19 @@ public class Incidencia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    // 1 = oberta, 0 = tancada
+    // 1 = actiu, 0 = inactiu
     private boolean estat;
     
     private String motiu;
     
-    private double cost;
-
     @Column(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
     
+    @Column(name = "data_fi_incidencia")
+    private LocalDateTime dataFiIncidencia;
+    
     @ManyToOne
-    @JoinColumn(name = "matricula", referencedColumnName = "matricula")       
+    @JoinColumn(name = "matricula", referencedColumnName = "matricula", nullable = false)       
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Vehicle matricula;
