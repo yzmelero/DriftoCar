@@ -15,20 +15,6 @@
         <h1>Listado de Reservas</h1>
         <a href="/reserva/alta" class="btn btn-primary mb-3">Crear reserva</a>
         <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
-
-        <!--<form th:action="@{/reserva/llistar}" method="get" class="mb-4">
-            <div class="row justify-content-center">
-                <div class="col-md-3">
-                    <input type="text" class="form-control" name="searchEmail" placeholder="Email:" th:value="${searchEmail}">
-                </div>
-                <div class="col-md-3">
-                    <input type="number" class="form-control" name="searchId_reserva" placeholder="ID Reserva:" th:value="${searchId_reserva}">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                </div>
-            </div>
-        </form>-->
         <form th:action="@{/reserva/llistar}" method="get" class="row g-3">
             <div class="col-auto">
                 <input type="number" class="form-control" name="searchId_reserva" th:value="${searchId_reserva}"
@@ -43,7 +29,6 @@
             </div>
         </form>
         <p>Total de reservas: <span th:text="${#lists.size(reservas)}"></span></p>
-
         <div class="row">
             <div class="col">
                 <table class="table">

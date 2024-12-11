@@ -25,6 +25,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     Optional<Reserva> findById(Long Id);
 
+    //Aquesta linia és pel filtre.
     @Query("SELECT r FROM Reserva r " +
             "WHERE (:idReserva IS NULL OR r.idReserva = :idReserva) " +
             "AND (:email IS NULL OR r.client.email = :email)")

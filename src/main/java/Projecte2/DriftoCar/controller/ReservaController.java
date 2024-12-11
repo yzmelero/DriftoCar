@@ -3,6 +3,8 @@ package Projecte2.DriftoCar.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.ReservaService;
 
 /**
@@ -25,6 +28,10 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
 @Controller
 @RequestMapping("/reserva")
 public class ReservaController {
+
+    Logger log = LoggerFactory.getLogger(ClientService.class);
+
+
     @Autowired
     private ReservaService reservaService;
 
@@ -42,9 +49,11 @@ public class ReservaController {
         if (searchEmail != null && searchEmail.isEmpty()) {
             searchEmail = null;
         }
-        System.out.println("searchEmail: " + searchEmail);
-        System.out.println("searchId_reserva: " + searchId_reserva);
 
+        //Verificar per consola que funcioni correctament. 
+        log.debug("searchEmail: " + searchEmail);
+        log.debug("searchId_reserva: " + searchId_reserva);
+        
         List<Reserva> reserves;
         if ((searchId_reserva != null)
                 || (searchEmail != null && !searchEmail.isEmpty())) {
