@@ -1,5 +1,7 @@
 package Projecte2.DriftoCar.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,5 +120,13 @@ public class ReservaController {
 
         model.addAttribute("reserva", reserva);
         return "reserva-consulta";
+    }
+
+    @GetMapping("/lliurar")
+    public String mostrarFormulariLliurament(Model model){
+
+        LocalDateTime dataActual = LocalDateTime.now();
+        model.addAttribute("dataHoraLliurament", dataActual.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        return "reserva-lliurar";
     }
 }

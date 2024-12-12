@@ -16,6 +16,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.bson.types.Binary;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -59,4 +63,17 @@ public class Reserva {
     @Column(name = "estat", nullable = false)
     private boolean estat;
   
+    @Column(name = "data_hora_lliurar")
+    private LocalDateTime data_hora_lliurar;
+
+    @Column(name = "descripcio_estat_lliurar")
+    private String descripcioEstatLliurar;
+
+    @Column(name = "estat_vehicle_lliurar")
+    private Binary[] estatVehicleLliurar;
+
+    @Column(name = "data_hora_retornar")
+    private LocalDateTime dataHoraRetornar;
+
+
 }
