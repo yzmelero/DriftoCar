@@ -46,20 +46,27 @@ public class ReservaController {
     @GetMapping("/llistar")
     public String llistarReservas(Model model,
             @RequestParam(value = "searchEmail", required = false) String searchEmail,
-            @RequestParam(value = "searchId_reserva", required = false) Long searchId_reserva) {
+            @RequestParam(value = "searchId_reserva", required = false) Long searchId_reserva,
+            @RequestParam(value = "searchMatricula", required = false) String searchMatricula) {
 
         if (searchEmail != null && searchEmail.isEmpty()) {
             searchEmail = null;
+        }
+        if (searchMatricula != null && searchMatricula.isEmpty()) {
+            searchMatricula = null;
         }
 
         //Verificar per consola que funcioni correctament. 
         log.debug("searchEmail: " + searchEmail);
         log.debug("searchId_reserva: " + searchId_reserva);
+        log.debug("searchMatricula: " + searchMatricula);
+
         
         List<Reserva> reserves;
         if ((searchId_reserva != null)
-                || (searchEmail != null && !searchEmail.isEmpty())) {
-            reserves = reservaService.cercarReserva(searchEmail, searchId_reserva);
+                || (searchEmail != null && !searchEmail.isEmpty())
+                || (searchMatricula != null && !searchMatricula.isEmpty())) {
+            reserves = reservaService.cercarReserva(searchEmail, searchId_reserva, searchMatricula);
         } else {
             reserves = reservaService.llistarReservas();
         }
@@ -67,6 +74,7 @@ public class ReservaController {
         model.addAttribute("reservas", reserves);
         model.addAttribute("searchId_reserva", searchId_reserva);
         model.addAttribute("searchEmail", searchEmail);
+        model.addAttribute("searchMatricula", searchMatricula);
 
         return "reserva-llistar";
     }
