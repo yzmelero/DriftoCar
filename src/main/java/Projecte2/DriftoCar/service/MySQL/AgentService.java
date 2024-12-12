@@ -48,8 +48,24 @@ public class AgentService {
         return agentRepository.save(agent);
     }
 
+
+    /**
+     * Retorna tots els agents.
+     *
+     * @return Una llista de tots els agents.
+     */
     public List<Agent> llistarAgents() {
         return agentRepository.findAll();
+    }
+
+    /**
+     * Filtra els agents que contenen un DNI parcial o complet.
+     *
+     * @param dni El DNI per cercar.
+     * @return Una llista d'agents que coincideixen amb el DNI.
+     */
+    public List<Agent> filtrarPerDni(String dni) {
+        return agentRepository.findByDniContaining(dni);
     }
 
     public Agent modificarAgent(Agent agent) {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +30,27 @@ public class AgentController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
+
+    /**
+     * Filtra els agents pel seu DNI.
+     *
+     * @param dni   El DNI per filtrar. Si no s'especifica, es mostren tots els
+     *              agents.
+     * @param model El model per passar dades a la vista.
+     * @return El nom de la plantilla Thymeleaf per al llistat d'agents.
+     */
     @GetMapping("/llistar")
-    public String llistarAgents(Model model) {
-        List<Agent> agents = agentService.llistarAgents();
+    public String llistarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
+        
+        
+        List<Agent> agents;
+
+        if (dni != null && !dni.isEmpty()) {
+            agents = agentService.filtrarPerDni(dni); // Cerca agents pel DNI
+        } else {
+            agents = agentService.llistarAgents(); // Mostra tots els agents
+        }
+        model.addAttribute("filtroDni", dni);
         model.addAttribute("agents", agents);
         return "agent-llistar"; // Nombre del archivo HTML
     }
@@ -123,16 +140,5 @@ public class AgentController {
         }
 
         return "redirect:/agent/llistar"; // Redirige al listado después de eliminar
-    }
-
-        @GetMapping("/agent/llistar")
-    public String listarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
-        if (dni != null && !dni.isEmpty()) {
-            model.addAttribute("agents", agentService.buscarPorDni(dni)); // Filtra por DNI
-        } else {
-            model.addAttribute("agents", agentService.llistarAgents()); // Lista todos los agentes
-        }
-        model.addAttribute("filtroDni", dni); // Para mantener el valor del filtro en el formulario
-        return "agent-llistar";
     }
 }
