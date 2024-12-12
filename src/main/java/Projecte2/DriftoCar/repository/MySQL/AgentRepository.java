@@ -27,4 +27,6 @@ public interface AgentRepository extends JpaRepository<Agent, String> {
 
     Optional<Agent> findByUsuari(String usuari);
 
+    Optional<Agent> findByNumTarjetaCredit(String numTarjetaCredit);
+
 }

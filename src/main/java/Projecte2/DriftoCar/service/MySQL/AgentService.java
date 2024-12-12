@@ -46,19 +46,6 @@ public class AgentService {
 
         // Guarda el nuevo agente
         return agentRepository.save(agent);
-
-       /*Optional<Localitzacio> localitzacio = localitzacioRepository.findById(
-                agent.getLocalitzacio().getCodiPostal());
-
-        if (localitzacio.isEmpty()) {
-            throw new RuntimeException("La localitzacio no existeix");
-        }
-        Optional<Agent> agentExistent = agentRepository.findById(agent.getDni());
-
-        if (agentExistent.isPresent()) {
-            throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
-        }
-        return agentRepository.save(agent);*/
     }
 
     public List<Agent> llistarAgents() {
@@ -75,12 +62,16 @@ public class AgentService {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
         agentExistent = agentRepository.findByUsuari(agent.getUsuari());
-        if (agentExistent.isPresent()) {
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
             throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
         }
         agentExistent = agentRepository.findByEmail(agent.getEmail());
-        if (agentExistent.isPresent()) {
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
             throw new RuntimeException("Aquest email ja esta en us.");
+        }
+        agentExistent = agentRepository.findByNumTarjetaCredit(agent.getNumTarjetaCredit());
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
+            throw new RuntimeException("Aquesta tarjeta de credit no es valida");
         }
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
