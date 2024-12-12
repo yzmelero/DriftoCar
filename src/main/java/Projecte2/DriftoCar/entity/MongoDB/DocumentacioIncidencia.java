@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DocumentacioIncidencia {
     @Id
-    private Long id;
+    private String id;
 
     private Binary[] fotos;
 

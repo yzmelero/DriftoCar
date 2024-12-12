@@ -39,7 +39,7 @@ public class Incidencia {
     private boolean estat;
     
     private String motiu;
-    
+
     @Column(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
     
