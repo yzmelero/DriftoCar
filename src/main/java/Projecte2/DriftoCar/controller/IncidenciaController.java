@@ -40,9 +40,9 @@ public class IncidenciaController {
     public String llistarIncidencies(Model model) {
         List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
         model.addAttribute("incidencies", incidencies);
-        return "incidencia-llistar"; 
+        return "incidencia-llistar";
     }
-    
+
     @GetMapping("/llistar")
     public String llistarVehiclesSenseIncidencies(Model model) {
         // Obtenim els vehicles sense incidències actives
@@ -84,5 +84,16 @@ public class IncidenciaController {
             redirectAttributes.addFlashAttribute("error", "Error en obrir la incidència: " + e.getMessage());
             return "redirect:/incidencia/llistar"; // Redirigir en cas d'error
         }
+    }
+
+    @GetMapping("/tancar/{id}")
+    public String tancarIncidencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            incidenciaService.tancarIncidencia(id);
+            redirectAttributes.addFlashAttribute("success", "Incidència tancada correctament.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Error en tancar la incidència: " + e.getMessage());
+        }
+        return "redirect:/incidencia/llistar-incidencies";
     }
 }
