@@ -83,9 +83,9 @@ public class ReservaService {
         return reservaRepository.findById(idReserva).orElse(null);
     }
 
-    public List<Reserva> cercarReserva(String email, Long id_reserva) {
-        log.debug("cercarReserva() - email: " + email + ", id_reserva: " + id_reserva);
-        return reservaRepository.cercarReserves(id_reserva, email);
+    public List<Reserva> cercarReserva(String email, Long id_reserva, String matricula) {
+        log.debug("cercarReserva() - email: " + email + ", id_reserva: " + id_reserva + ", matricula: " + matricula);
+        return reservaRepository.cercarReserves(id_reserva, email, matricula);
         
     }
 }
