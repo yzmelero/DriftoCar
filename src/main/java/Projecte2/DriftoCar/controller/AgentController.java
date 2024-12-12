@@ -141,4 +141,21 @@ public class AgentController {
 
         return "redirect:/agent/llistar"; // Redirige al listado después de eliminar
     }
+
+    /**
+     * Consulta d'un agent.
+     *
+     * @param dni   El DNI de l'agent.
+     * @param model El model per passar les dades a la vista.
+     * @return El nom de la plantilla Thymeleaf per a la pàgina de detalls.
+     */
+    @GetMapping("/consulta/{dni}")
+    public String mostrarDetallAgent(@PathVariable("dni") String dni, Model model) {
+        Agent agent = agentService.obtenirAgentPerDni(dni); // Busca l'agent pel seu DNI
+        if (agent == null) {
+            throw new RuntimeException("No s'ha trobat cap agent amb el DNI especificat.");
+        }
+        model.addAttribute("agent", agent);
+        return "agent-consulta"; // Nom de la plantilla
+    }
 }

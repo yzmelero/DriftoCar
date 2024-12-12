@@ -55,7 +55,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="agent : ${agents}">
+                <tr th:each="agent : ${agents}"
+                    th:onclick="|window.location.href='@{/agent/consulta/{dni}(dni=${agent.dni})}'|"
+                    style="cursor: pointer;">
                     <td th:text="${agent.dni}"></td>
                     <td th:text="${agent.usuari}"></td>
                     <td th:text="${agent.nom}"></td>
