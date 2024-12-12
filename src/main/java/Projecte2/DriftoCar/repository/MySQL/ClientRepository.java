@@ -23,7 +23,7 @@ public interface ClientRepository extends JpaRepository<Client, String> {
     // Client registreClient(Client client);
 
     // Retorna un client amb l'ID especificat.
-    // List<Client> findAll();
+    List<Client> findAll();
     Optional<Client> findByDni(String dni);
 
     // Mètode necessàri per al filtre en la pantalla de llistar clients.

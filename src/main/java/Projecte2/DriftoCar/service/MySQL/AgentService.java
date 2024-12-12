@@ -46,6 +46,7 @@ public class AgentService {
 
         // Guarda el nuevo agente
         return agentRepository.save(agent);
+        
     }
 
 
@@ -107,7 +108,7 @@ public class AgentService {
         agentAntic.setReputacio(agent.isReputacio());
         agentAntic.setRol(agent.getRol());
 
-        log.info("S'ha modificat el client.");
+        log.info("S'ha modificat l'agent.");
         return agentRepository.save(agentAntic);
 
     }
@@ -117,10 +118,14 @@ public class AgentService {
     }
     
     public void eliminarAgent(Agent agent) {
+        log.info("S'ha entrat al mètode eliminarAgent.");
+
         if (!agentRepository.existsById(agent.getDni())) {
             throw new RuntimeException("L'agent amb DNI " + agent.getDni() + " no existeix.");
         }
         agentRepository.deleteById(agent.getDni()); // Elimina el agente si existe
+        log.info("S'ha esborrat un agent.");
+
     }
 
     public List<Agent> buscarPorDni(String dni) {

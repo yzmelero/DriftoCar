@@ -13,8 +13,26 @@
 <body>
     <div class="container text-center mt-5">
         <h1>Listado de Reservas</h1>
+        <a href="/reserva/alta" class="btn btn-primary mb-3">Crear reserva</a>
+        <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
+        <form th:action="@{/reserva/llistar}" method="get" class="row g-3">
+            <div class="col-auto">
+                <input type="number" class="form-control" name="searchId_reserva" th:value="${searchId_reserva}"
+                    placeholder="Id reserva">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" name="searchEmail" th:value="${searchEmail}"
+                    placeholder="Email: ">
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" name="searchMatricula" th:value="${searchMatricula}"
+                    placeholder="Matricula: ">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Cerca</button>
+            </div>
+        </form>
         <p>Total de reservas: <span th:text="${#lists.size(reservas)}"></span></p>
-
         <div class="row">
             <div class="col">
                 <table class="table">
@@ -32,7 +50,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="reserva : ${reservas}">
+                        <tr th:each="reserva : ${reservas}"
+                            th:onclick="|window.location.href='@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}'|"
+                            style="cursor: pointer;">
                             <th scope="row" th:text="${reserva.idReserva}"></th>
                             <td th:text="${reserva.client.dni}"></td>
                             <td th:text="${reserva.vehicle.matricula}"></td>
@@ -55,8 +75,24 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+            <div class="modal fade" id="noResultsModal" tabindex="-1" aria-labelledby="noResultsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="noResultsModalLabel">Cerca sense resultats</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
+                        </div>
+                        <div class="modal-body">
+                            No s'han trobat reserves amb els criteris seleccionats. Si us plau, intenta-ho amb altres valors.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">D'acord</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>
 </body>
 
 </html>

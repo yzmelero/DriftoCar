@@ -52,7 +52,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${localitzacio.condicions}"></td>
                     <td>
                         <a class="btn btn-success" th:href="@{/localitzacio/modificar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Editar</a>
-                        <a class="btn btn-danger btn-sm" th:href="@{/localitzacio/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}" onclick="return confirm('Estàs segur que vols eliminar aquesta localització?');">Eliminar</a>
+                        <a class="btn btn-danger" th:href="@{/localitzacio/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}" onclick="return confirm('Estàs segur que vols eliminar aquesta localització?');">Eliminar</a>
                     </td>
                 </tr>
             </tbody>
