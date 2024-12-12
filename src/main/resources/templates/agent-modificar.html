@@ -12,7 +12,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">Editar Agent</h2>
-
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
         <!-- Formulario para editar agente -->
         <form th:action="@{/agent/modificar}" th:object="${agent}" method="post" class="needs-validation" novalidate>
             <!-- Campo oculto para el DNI -->
@@ -80,7 +80,7 @@
 
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Nombre de Tarjeta de Crèdit</label>
-                <input type="number" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control"
+                <input type="text" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control"
                     required />
                 <div class="invalid-feedback">
                     Si us plau, introdueix un nombre de la tarjeta de crèdit.

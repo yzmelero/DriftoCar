@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
@@ -30,38 +30,64 @@ public class AgentController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
+
+    /**
+     * Filtra els agents pel seu DNI.
+     *
+     * @param dni   El DNI per filtrar. Si no s'especifica, es mostren tots els
+     *              agents.
+     * @param model El model per passar dades a la vista.
+     * @return El nom de la plantilla Thymeleaf per al llistat d'agents.
+     */
     @GetMapping("/llistar")
-    public String llistarAgents(Model model) {
-        List<Agent> agents = agentService.llistarAgents();
+    public String llistarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
+        
+        
+        List<Agent> agents;
+
+        if (dni != null && !dni.isEmpty()) {
+            agents = agentService.filtrarPerDni(dni); // Cerca agents pel DNI
+        } else {
+            agents = agentService.llistarAgents(); // Mostra tots els agents
+        }
+        model.addAttribute("filtroDni", dni);
         model.addAttribute("agents", agents);
         return "agent-llistar"; // Nombre del archivo HTML
     }
 
     @GetMapping("/alta")
     public String altaAgente(Model model) {
-        Agent agent = new Agent();
-        agent.setLocalitzacio(new Localitzacio()); // Inicializar localitzacio
-        model.addAttribute("agent", agent);
 
-        // Obtener localitzacions desde la BBDD
-        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
-        model.addAttribute("localitzacions", localitzacions);
-
-        return "agent-alta"; // Ajusta según el nombre de tu template
+        if (!model.containsAttribute("agent")) {
+            model.addAttribute("agent", new Agent());
+            List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+            model.addAttribute("localitzacions", localitzacions);
+        }
+        return "agent-alta";
     }
 
     @PostMapping("/guardar")
     public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model) {
+        
         if (bindingResult.hasErrors()) {
-            return "agent-alta"; // Retorna al formulario si hay errores de validación
+            List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+            model.addAttribute("localitzacions", localitzacions);
+            model.addAttribute("agent", agent);
+            return "agent-alta";
         }
 
         try {
-            agentService.altaAgent(agent); // Llama al servicio para guardar el agente
-        } catch (RuntimeException e) { // Maneja el caso del DNI duplicado
-            model.addAttribute("error", "Ja existeix un agent amb aquest DNI.");
-            agent.setDni(""); // Limpia el campo DNI
-            model.addAttribute("agent", agent); // Mantiene los demás datos
+            agentService.altaAgent(agent);
+        } catch (RuntimeException e) {
+            String error = e.getMessage();
+
+            if (error.contains("DNI")) {
+                agent.setDni(""); // Limpia el campo DNI si hay error de duplicidad
+            }
+
+            model.addAttribute("error", error);
+            model.addAttribute("agent", agent); // Mantiene los demás datos en el formulario
+
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
             return "agent-alta";
@@ -90,9 +116,16 @@ public class AgentController {
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("agent") Agent agent) {
+    public String guardarClientModificat(@Valid Agent agent, Model model) {
+        try {
+            agentService.modificarAgent(agent);
+        } catch (RuntimeException e) {
+            String error = e.getMessage();
+            model.addAttribute("error", error);
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
 
-        agentService.modificarAgent(agent);
         return "redirect:/agent/llistar";
     }
 

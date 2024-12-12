@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
-import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 
@@ -32,26 +31,42 @@ public class AgentService {
     LocalitzacioRepository localitzacioRepository;
 
     public Agent altaAgent(Agent agent) {
-        log.info("S'ha entrat al mètode altaAgent");
-
-        Optional<Localitzacio> localitzacio = localitzacioRepository.findById(
-                agent.getLocalitzacio().getCodiPostal());
-
-        if (localitzacio.isEmpty()) {
-            throw new RuntimeException("La localitzacio no existeix");
-        }
-        Optional<Agent> agentExistent = agentRepository.findById(agent.getDni());
-
-        if (agentExistent.isPresent()) {
+        // Verifica si ya existe un agente con el mismo DNI
+        if (agentRepository.existsById(agent.getDni())) {
             throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
         }
-        log.info("S'ha donat d'alta a un nou agent.");
+
+        // Verifica si la localización ya tiene un agente asignado
+        if (agent.getLocalitzacio() != null
+                && localitzacioRepository.existsById(agent.getLocalitzacio().getCodiPostal())) {
+            if (agentRepository.existsByLocalitzacio(agent.getLocalitzacio())) {
+                throw new RuntimeException("La localització ja està assignada a un altre agent.");
+            }
+        }
+
+        // Guarda el nuevo agente
         return agentRepository.save(agent);
         
     }
 
+
+    /**
+     * Retorna tots els agents.
+     *
+     * @return Una llista de tots els agents.
+     */
     public List<Agent> llistarAgents() {
         return agentRepository.findAll();
+    }
+
+    /**
+     * Filtra els agents que contenen un DNI parcial o complet.
+     *
+     * @param dni El DNI per cercar.
+     * @return Una llista d'agents que coincideixen amb el DNI.
+     */
+    public List<Agent> filtrarPerDni(String dni) {
+        return agentRepository.findByDniContaining(dni);
     }
 
     public Agent modificarAgent(Agent agent) {
@@ -63,9 +78,21 @@ public class AgentService {
         if (agentExistent.isEmpty()) {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
-
+        agentExistent = agentRepository.findByUsuari(agent.getUsuari());
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
+            throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
+        }
+        agentExistent = agentRepository.findByEmail(agent.getEmail());
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
+            throw new RuntimeException("Aquest email ja esta en us.");
+        }
+        agentExistent = agentRepository.findByNumTarjetaCredit(agent.getNumTarjetaCredit());
+        if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
+            throw new RuntimeException("Aquesta tarjeta de credit no es valida");
+        }
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
+        
         Agent agentAntic = agentExistent.get();
 
         agentAntic.setNom(agent.getNom());
@@ -100,4 +127,9 @@ public class AgentService {
         log.info("S'ha esborrat un agent.");
 
     }
+
+    public List<Agent> buscarPorDni(String dni) {
+        return agentRepository.findByDniContaining(dni); // Delega la búsqueda al repositorio
+    }
+    
 }
