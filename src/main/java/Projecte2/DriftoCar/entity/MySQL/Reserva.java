@@ -64,13 +64,10 @@ public class Reserva {
     private boolean estat;
   
     @Column(name = "data_hora_lliurar")
-    private LocalDateTime data_hora_lliurar;
+    private LocalDateTime dataHoraLliurar;
 
     @Column(name = "descripcio_estat_lliurar")
     private String descripcioEstatLliurar;
-
-    @Column(name = "estat_vehicle_lliurar")
-    private Binary[] estatVehicleLliurar;
 
     @Column(name = "data_hora_retornar")
     private LocalDateTime dataHoraRetornar;

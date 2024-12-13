@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
@@ -34,7 +35,6 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
 public class ReservaController {
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
-
 
     @Autowired
     private ReservaService reservaService;
@@ -58,12 +58,11 @@ public class ReservaController {
             searchMatricula = null;
         }
 
-        //Verificar per consola que funcioni correctament. 
+        // Verificar per consola que funcioni correctament.
         log.debug("searchEmail: " + searchEmail);
         log.debug("searchId_reserva: " + searchId_reserva);
         log.debug("searchMatricula: " + searchMatricula);
 
-        
         List<Reserva> reserves;
         if ((searchId_reserva != null)
                 || (searchEmail != null && !searchEmail.isEmpty())
@@ -122,11 +121,22 @@ public class ReservaController {
         return "reserva-consulta";
     }
 
-    @GetMapping("/lliurar")
-    public String mostrarFormulariLliurament(Model model){
+    @GetMapping("/lliurar/{idReserva}")
+    public String mostrarFormulariLliurament(Model model, @PathVariable Long idReserva) {
 
         LocalDateTime dataActual = LocalDateTime.now();
         model.addAttribute("dataHoraLliurament", dataActual.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         return "reserva-lliurar";
+    }
+
+    @PostMapping("/lliurar/{idReserva}")
+    public String lliurarVehicle(Model model, @PathVariable Long idReserva,
+            @RequestParam("dataHoraLliurament") String dataHoraLliurament,
+            @RequestParam("descripcioEstat") String descripcioEstat) {
+
+        
+
+        return "redirect:/consulta/{idReserva}";
+
     }
 }

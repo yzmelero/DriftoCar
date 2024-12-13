@@ -28,7 +28,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <p><strong>Estat:</strong> <span th:text="${reserva.estat ? 'Actiu' : 'Inactiu'}">
             </span></p>
             <a class="btn btn-success"
-                th:href="@{/reservas/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>
+                th:href="@{/reserva/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>
         </div>
         <a href="/reserva/llistar" class="btn btn-secondary">Tornar al Llistat</a>
     </div>
