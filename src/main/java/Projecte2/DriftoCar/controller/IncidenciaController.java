@@ -80,13 +80,13 @@ public class IncidenciaController {
     }
 
     @PostMapping("/obrir")
-    public String guardarIncidencia(@ModelAttribute("incidencia") Incidencia incidencia,
-            @RequestParam("fotos") MultipartFile[] fotos,
+    public String guardarIncidencia(@ModelAttribute("incidencia") Incidencia incidencia, // Captura l'objecte 'Incidencia' des del formulari
+            @RequestParam("fotos") MultipartFile[] fotos, //Captura les fotos  o texts enviades (com un array de fitxers, menys el text)
             @RequestParam("pdf") MultipartFile[] pdf,
             @RequestParam("text") String text,
             RedirectAttributes redirectAttributes) {
         try {
-            // Guardar la incidència a MySQL
+            // Guardar l'incidència a MySQL
             incidenciaService.obrirIncidencia(incidencia);
 
             // Crear i guardar la documentació a MongoDB

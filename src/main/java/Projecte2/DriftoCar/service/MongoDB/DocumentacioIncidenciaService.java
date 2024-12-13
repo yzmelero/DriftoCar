@@ -22,7 +22,7 @@ public class DocumentacioIncidenciaService {
 
     @Autowired
     private DocumentacioIncidenciaRepository documentacioIncidenciaRepository;
-
+    
     public DocumentacioIncidencia guardarDocumentacio(String text, MultipartFile[] fotos, MultipartFile[] pdf) throws IOException {
         // Crear l'objecte DocumentacioIncidencia
         DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
