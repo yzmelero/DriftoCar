@@ -1,7 +1,10 @@
 package Projecte2.DriftoCar.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,19 +127,48 @@ public class ReservaController {
     @GetMapping("/lliurar/{idReserva}")
     public String mostrarFormulariLliurament(Model model, @PathVariable Long idReserva) {
 
-        LocalDateTime dataActual = LocalDateTime.now();
-        model.addAttribute("dataHoraLliurament", dataActual.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+        if (reserva == null) {
+            model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
+            return "error";
+        }
+
+        model.addAttribute("reserva", reserva);
         return "reserva-lliurar";
+
     }
 
     @PostMapping("/lliurar/{idReserva}")
     public String lliurarVehicle(Model model, @PathVariable Long idReserva,
-            @RequestParam("dataHoraLliurament") String dataHoraLliurament,
+            @RequestParam("dataLliurar") String dataLliurar,
+            @RequestParam("horaLliurar") String horaLliurar,
             @RequestParam("descripcioEstat") String descripcioEstat) {
 
-        
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+        if (reserva == null) {
+            model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
+            return "error";
+        }
 
-        return "redirect:/consulta/{idReserva}";
+        try {
 
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
+            LocalTime hora = LocalTime.parse(horaLliurar, horaFormatter);
+
+            reserva.setDataLliurar(data);
+            reserva.setHoraLliurar(hora);
+            reserva.setDescripcioEstatLliurar(descripcioEstat);
+            reserva.setEstat(true);
+
+            reservaService.modificarReserva(reserva);
+        } catch (DateTimeParseException e) {
+            model.addAttribute("error", "El format de la data/hora és incorrecte.");
+            return "reserva-lliurar"; // Torna a mostrar el formulari amb un missatge d'error
+        }
+
+        return "redirect:/reserva/consulta/{idReserva}";
     }
 }
