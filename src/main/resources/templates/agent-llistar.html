@@ -34,7 +34,6 @@
             </div>
         </form>
 
-        <!--TODO añadir telefono del agente a la lista-->
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
@@ -43,6 +42,7 @@
                     <th scope="col">Nom</th>
                     <th scope="col">Cognoms</th>
                     <th scope="col">Correu electrònic</th>
+                    <th scope="col">Telèfon</th>
                     <th scope="col">Llicència</th>
                     <th scope="col">Caducitat Llicència</th>
                     <th scope="col">Caducitat DNI</th>
@@ -61,6 +61,7 @@
                     <td th:text="${agent.nom}"></td>
                     <td th:text="${agent.cognoms}"></td>
                     <td th:text="${agent.email}"></td>
+                    <td th:text="${agent.telefon}"></td>
                     <td th:text="${agent.llicencia}"></td>
                     <td th:text="${agent.llicCaducitat}"></td>
                     <td th:text="${agent.dniCaducitat}"></td>

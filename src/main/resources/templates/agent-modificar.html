@@ -13,7 +13,6 @@
     <div class="container mt-5">
         <h2 class="mb-4">Editar Agent</h2>
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-        <!--TODO añadir nacionalidad y telefono-->
         <!-- Formulario para editar agente -->
         <form th:action="@{/agent/modificar}" th:object="${agent}" method="post" class="needs-validation" novalidate>
             <!-- Campo oculto para el DNI -->
@@ -60,6 +59,14 @@
             </div>
 
             <div class="mb-3">
+                <label for="telefon" class="form-label">Telèfon</label>
+                <input type="text" id="telefon" th:field="*{telefon}" class="form-control" required />
+                <div class="invalid-feedback">
+                    Si us plau, introdueix un telèfon.
+                </div>
+            </div>
+
+            <div class="mb-3">
                 <label for="llicencia" class="form-label">Llicència</label>
                 <input type="text" id="llicencia" th:field="*{llicencia}" class="form-control" required />
                 <div class="invalid-feedback">
@@ -81,8 +88,7 @@
 
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Nombre de Tarjeta de Crèdit</label>
-                <input type="text" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control"
-                    required />
+                <input type="text" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control" required />
                 <div class="invalid-feedback">
                     Si us plau, introdueix un nombre de la tarjeta de crèdit.
                 </div>
@@ -93,6 +99,14 @@
                 <input type="text" id="adreca" th:field="*{adreca}" class="form-control" required />
                 <div class="invalid-feedback">
                     Si us plau, introdueix una adreça.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                <input type="text" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" required />
+                <div class="invalid-feedback">
+                    Si us plau, introdueix una nacionalitat.
                 </div>
             </div>
 
