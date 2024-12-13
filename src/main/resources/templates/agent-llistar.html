@@ -34,7 +34,7 @@
             </div>
         </form>
 
-
+        <!--TODO añadir telefono del agente a la lista-->
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
@@ -55,9 +55,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="agent : ${agents}"
-                    th:onclick="|window.location.href='@{/agent/consulta/{dni}(dni=${agent.dni})}'|"
-                    style="cursor: pointer;">
+                <tr th:each="agent : ${agents}">
                     <td th:text="${agent.dni}"></td>
                     <td th:text="${agent.usuari}"></td>
                     <td th:text="${agent.nom}"></td>
@@ -73,6 +71,7 @@
                     <td th:text="${agent.localitzacio?.codiPostal}"></td>
                     <td>
                         <a class="btn btn-success btn-sm" th:href="@{/agent/modificar/{id}(id=${agent.dni})}">Editar</a>
+                        <a class="btn btn-info" th:href="@{/agent/consulta/{dni}(dni=${agent.dni})}">Visualitzar</a>
                         <a class="btn btn-danger btn-sm" th:href="@{/agent/esborrar/{dni}(dni=${agent.dni})}"
                             onclick="return confirm('Segur que vols eliminar aquest agent?');">Eliminar</a>
                     </td>

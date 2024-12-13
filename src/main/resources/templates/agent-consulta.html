@@ -16,13 +16,14 @@
 
         <div class="card">
             <div class="card-body">
+                <!--TODO añadir telefono del agente-->
                 <h5 class="card-title">Informació General</h5>
                 <p><strong>DNI:</strong> <span th:text="${agent.dni}"></span></p>
                 <p><strong>Usuari:</strong> <span th:text="${agent.usuari}"></span></p>
                 <p><strong>Nom:</strong> <span th:text="${agent.nom}"></span></p>
                 <p><strong>Cognoms:</strong> <span th:text="${agent.cognoms}"></span></p>
                 <p><strong>Correu electrònic:</strong> <span th:text="${agent.email}"></span></p>
-
+                <!--TODO añadir nacionalidad del agente-->
                 <h5 class="card-title mt-4">Altres Dades</h5>
                 <p><strong>Llicència:</strong> <span th:text="${agent.llicencia}"></span></p>
                 <p><strong>Caducitat de la llicència:</strong> <span th:text="${agent.llicCaducitat}"></span></p>

@@ -15,7 +15,7 @@
         <h1 class="text-center mb-4">Alta d'Agent</h1>
 
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-
+        <!--TODO añadir campos de nacionalidad y telefono-->
         <form th:action="@{/agent/guardar}" method="post">
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
