@@ -50,9 +50,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="reserva : ${reservas}"
-                            th:onclick="|window.location.href='@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}'|"
-                            style="cursor: pointer;">
+                        <tr th:each="reserva : ${reservas}">
                             <th scope="row" th:text="${reserva.idReserva}"></th>
                             <td th:text="${reserva.client.dni}"></td>
                             <td th:text="${reserva.vehicle.matricula}"></td>
@@ -62,10 +60,10 @@
                             <td th:text="${#numbers.formatDecimal(reserva.fianca, 0, 2)}"></td>
                             <td th:text="${reserva.estat ? 'Activo' : 'Inactivo'}"></td>
                             <td>
-                                <a class="btn btn-success"
-                                    th:href="@{/reservas/edit/{id}(id=${reserva.idReserva})}">Editar</a>
-                                <a class="btn btn-danger"
-                                    th:href="@{/reservas/delete/{id}(id=${reserva.idReserva})}">Borrar</a>
+                                <a class="btn btn-info"
+                                    th:href="@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}">Visualitzar</a>
+                                <a class="btn btn-danger btn-sm" th:href="@{/reserva/anular/{idReserva}(idReserva=${reserva.idReserva})}"
+                                    onclick="return confirm('Segur que vols anular aquesta reserva?');">Anular</a>
                             </td>
                         </tr>
                     </tbody>

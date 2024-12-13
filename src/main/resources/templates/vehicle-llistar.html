@@ -56,7 +56,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             </tr>
                         </thead>
                         <tbody>
+                            <!--
+                            TODO cambiar la consulta a boton
+                            -->
                             <tr th:each="vehicle : ${vehicles}"
+                            
                                 th:onclick="'location.href=\'' + @{/vehicle/detall/{matricula}(matricula=${vehicle.matricula})} + '\''" 
                                 style="cursor: pointer;">
                                 <th scope="row" th:text="${vehicle.matricula}"></th>

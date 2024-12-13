@@ -7,8 +7,6 @@ package Projecte2.DriftoCar.controller;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,21 +23,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/registre")
 public class RegistreController {
 
-    private final ClientService clientService;
-
     @Autowired
-    public RegistreController(ClientService clientService) {
-        this.clientService = clientService;
-
-    }
+    private ClientService clientService;
 
     //Carrega la pantalla HTML.
-    @GetMapping("/alta-client")
+    @GetMapping("/client-alta")
     public String mostrarFormulari(Model model) {
-        return "alta-client";  
+        return "client-alta";  
     }
 
-    @PostMapping("/alta-client")
+    @PostMapping("/client-alta")
     public String registrarClient(@ModelAttribute("client") Client client, 
                                   @RequestParam("confirmacioContrasenya") String confirmacioContrasenya, 
                                   Model model) throws Exception {
