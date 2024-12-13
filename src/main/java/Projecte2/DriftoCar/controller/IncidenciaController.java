@@ -38,7 +38,7 @@ public class IncidenciaController {
 
     @Autowired
     private IncidenciaService incidenciaService;
-    
+
     @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
@@ -83,27 +83,22 @@ public class IncidenciaController {
     public String guardarIncidencia(@ModelAttribute("incidencia") Incidencia incidencia,
             @RequestParam("fotos") MultipartFile[] fotos,
             @RequestParam("pdf") MultipartFile[] pdf,
-            @RequestParam("text") String text, // Capturamos el texto adicional para la documentación
+            @RequestParam("text") String text,
             RedirectAttributes redirectAttributes) {
         try {
-            // Guardar la incidencia en MySQL
+            // Guardar la incidència a MySQL
             incidenciaService.obrirIncidencia(incidencia);
 
-            // Crear la documentación asociada a la incidencia para MongoDB
-            DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
-            documentacio.setText(text);  // Establecer el texto redactado por el usuario
-            documentacio.setFotos(documentacioIncidenciaService.convertirMultipartsABinary(fotos));  // Convertir fotos a Binary
-            documentacio.setPdf(documentacioIncidenciaService.convertirMultipartsABinary(pdf));    // Convertir PDFs a Binary
+            // Crear i guardar la documentació a MongoDB
+            documentacioIncidenciaService.guardarDocumentacio(text, fotos, pdf);
 
-            // Guardar la documentación en MongoDB
-            documentacioIncidenciaService.guardarDocumentacio(documentacio);
-
-            // Mensaje de éxito
+            // Missatge d'èxit
             redirectAttributes.addFlashAttribute("success", "Incidència oberta correctament amb documentació.");
-            return "redirect:/incidencia/llistar";  // Redirigir después de guardar
+            return "redirect:/incidencia/llistar"; // Redirigir després de guardar
         } catch (RuntimeException | IOException e) {
+            // Missatge d'error
             redirectAttributes.addFlashAttribute("error", "Error en obrir la incidència: " + e.getMessage());
-            return "redirect:/incidencia/llistar";  // Redirigir en caso de error
+            return "redirect:/incidencia/llistar"; // Redirigir en cas d'error
         }
     }
 
