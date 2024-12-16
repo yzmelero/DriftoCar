@@ -5,13 +5,15 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
+import Projecte2.DriftoCar.service.MySQL.ReservaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +43,25 @@ public class VehicleController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
+    @Autowired
+    private ReservaService reservaService;
+
     // Llistar 
     @GetMapping("/llistar")
     public String llistarVehicles(
+            @RequestParam(value = "matricula", required = false) String matricula,
             @RequestParam(value = "dataInici", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInici,
             @RequestParam(value = "dataFinal", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFinal,
             Model model) {
         List<Vehicle> vehicles = vehicleService.llistarVehicles();
         model.addAttribute("vehicles", vehicles);
+
         if (dataInici != null && dataFinal != null) {
             List<Vehicle> vehiclesDisponibles = vehicleService.getVehiclesDisponibles(dataInici, dataFinal);
             model.addAttribute("vehicles", vehiclesDisponibles);
+        } else if (matricula != null && !matricula.isEmpty()) {
+            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula); // Filtrar por matrícula
+            model.addAttribute("vehicles", vehicle);
         }
 
         return "vehicle-llistar";
@@ -98,7 +108,7 @@ public class VehicleController {
         return "redirect:/vehicle/llistar";
     }
 
-    @GetMapping("/detall/{matricula}")
+    @GetMapping("/consulta/{matricula}")
     public String mostrarVehicle(@PathVariable String matricula, Model model) {
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         if (vehicle == null) {
@@ -108,6 +118,40 @@ public class VehicleController {
         model.addAttribute("vehicle", vehicle);
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
-        return "vehicle-detalls";
+        return "vehicle-consulta";
+    }
+
+    @GetMapping("/desactivar/{matricula}")
+    public String desactivarVehicle(@PathVariable("matricula") String matricula,
+            @RequestParam(value = "dataFinal", required = false) LocalDate dataFinal,
+            Model model) {
+        Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+        if (vehicle == null) {
+            model.addAttribute("error", "No hi ha cap vehicle amb matrícula: " + matricula);
+            return "redirect:/vehicle/llistar";
+        }
+
+        List<Reserva> reserves = reservaService.obtenirReservesPerMatricula(matricula);
+        if (dataFinal != null) {
+            List<Reserva> reservasFiltrades = new ArrayList<>();
+            for (Reserva reserva : reserves) {
+                if (reserva.getDataInici().isBefore(dataFinal) || reserva.getDataInici().isEqual(dataFinal)) {
+                    reservasFiltrades.add(reserva);
+                }
+            }
+            reserves = reservasFiltrades;
+        }
+        model.addAttribute("vehicle", vehicle);
+        model.addAttribute("reservas", reserves);
+
+        return "vehicle-desactivar";
+    }
+
+    @PostMapping("/desactivarReserves")
+    public String desactivarReserves(@RequestParam("idReservas") List<Long> idReservas) {
+        for (Long id : idReservas) {
+            reservaService.desactivarReserva(id);
+        }
+        return "redirect:/vehicle/llistar"; 
     }
 }

@@ -38,8 +38,9 @@ public class ReservaService {
     private ClientRepository clientRepository;
 
     /**
-     *  Aquest metode guarda una nova reserva a a BBDD si el client i la matricula existeixen
-     * 
+     * Aquest metode guarda una nova reserva a a BBDD si el client i la
+     * matricula existeixen
+     *
      * @param reserva
      * @return
      * @throws Exception
@@ -51,7 +52,6 @@ public class ReservaService {
         // Verificar que el vehículo existe
         Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
 
-            
         // Verificar que el cliente existe
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
 
@@ -73,14 +73,25 @@ public class ReservaService {
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
-    
-    public List<Reserva> llistarReservas(){
+
+    public List<Reserva> llistarReservas() {
         return reservaRepository.findAll();
     }
 
     public List<Reserva> cercarReserva(String email, Long id_reserva) {
         log.debug("cercarReserva() - email: " + email + ", id_reserva: " + id_reserva);
         return reservaRepository.cercarReserves(id_reserva, email);
-        
+
+    }
+
+    public List<Reserva> obtenirReservesPerMatricula(String matricula) {
+        return reservaRepository.findByVehicleMatriculaEstat(matricula);
+    }
+
+    public void desactivarReserva(Long idReserva) {
+        Reserva reserva = reservaRepository.findById(idReserva)
+                .orElseThrow(() -> new RuntimeException("Reserva no trobada: " + idReserva));
+        reserva.setEstat(false);
+        reservaRepository.save(reserva);
     }
 }
