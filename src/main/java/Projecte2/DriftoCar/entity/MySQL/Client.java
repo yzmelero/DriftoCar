@@ -21,6 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import Projecte2.DriftoCar.entity.Permis;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -85,7 +86,16 @@ public class Client implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+        List<GrantedAuthority> ret = new ArrayList<>();
+
+        if (this instanceof Agent) {
+            Agent agent = (Agent) this;
+            ret.add(new Permis( agent.getRol().toString()));
+        }else{
+            ret.add(new Permis("CLIENT"));
+        }
+        
+        return ret;
     }
 
     @Override
