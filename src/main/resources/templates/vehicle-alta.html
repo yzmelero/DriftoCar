@@ -88,6 +88,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </select>
                     <p class="text-danger" th:if="${#lists.isEmpty(localitzacions)}">No existeix cap localització</p>
                 </div>
+                <div class="mb-3">
+                    <label for="costHora" class="form-label">Cost per hora</label>
+                    <input type="number" id="costHora" name="costHora" class="form-control" required step="0.01">
+
+                </div>
+                <div class="mb-3">
+                    <label for="kmMax" class="form-label">Kilòmetres Màxims</label>
+                    <input type="number" id="kmMax" name="kmMax" class="form-control" required step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="fianca" class="form-label">Fiança</label>
+                    <input type="number" id="fianca" name="fianca" class="form-control" required step="0.01">
+                </div>
 
                 <button type="submit" class="btn btn-primary">Crear Vehicle</button>
             </form>

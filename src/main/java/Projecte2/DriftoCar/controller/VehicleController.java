@@ -60,7 +60,7 @@ public class VehicleController {
             List<Vehicle> vehiclesDisponibles = vehicleService.getVehiclesDisponibles(dataInici, dataFinal);
             model.addAttribute("vehicles", vehiclesDisponibles);
         } else if (matricula != null && !matricula.isEmpty()) {
-            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula); // Filtrar por matrícula
+            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
             model.addAttribute("vehicles", vehicle);
         }
 

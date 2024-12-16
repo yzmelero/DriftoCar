@@ -51,6 +51,12 @@ public class Vehicle {
     // 1 = disponible, 0 = no disponible
     private boolean disponibilitat;
     
+    private double costHora;
+    
+    private double kmMax;
+    
+    private double fianca;
+    
     @ManyToOne
     @JoinColumn(name = "localizacio", referencedColumnName = "codi_postal", nullable = false) 
     private Localitzacio localitzacio;
