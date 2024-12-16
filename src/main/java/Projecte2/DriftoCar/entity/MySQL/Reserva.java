@@ -75,8 +75,10 @@ public class Reserva {
     @Column(name = "descripcio_estat_lliurar")
     private String descripcioEstatLliurar;
 
-    @Column(name = "data_hora_retornar")
-    private LocalDateTime dataHoraRetornar;
+    @Column(name = "data_retornar")
+    private LocalDate dataRetornar;
 
+    @Column(name = "hora_retornar")
+    private LocalDate horaRetornar;
 
 }
