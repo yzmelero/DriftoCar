@@ -69,7 +69,6 @@ public class Reserva {
     @Column(name = "data_lliurar")
     private LocalDate dataLliurar;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "hora_lliurar")
     private LocalTime horaLliurar;
 
