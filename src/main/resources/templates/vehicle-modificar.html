@@ -34,12 +34,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             <div class="form-group mt-3">
                 <label for="any">Any</label>
-                <input type="text" id="any" th:field="*{any}" class="form-control" required />
+                <input type="number" id="any" th:field="*{any}" class="form-control" required />
             </div>
 
             <div class="form-group mt-3">
                 <label for="places">Nombre de places</label>
-                <input type="text" id="places" th:field="*{places}" class="form-control" required />
+                <input type="number" id="places" th:field="*{places}" class="form-control" required />
             </div>
 
             <div class="form-group mt-3">
@@ -88,6 +88,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </option>
                 </select>
                 <p class="text-danger" th:if="${#lists.isEmpty(localitzacions)}">No existeix cap localització</p>
+            </div>
+            <div class="form-group mt-3">
+                <label for="costHora">Cost per hora</label>
+                <input type="number" id="costHora" th:field="*{costHora}" class="form-control" required step="0.01">
+            </div>
+            <div class="form-group mt-3">
+                <label for="kmMax">Kilòmetres Màxims</label>
+                <input type="number" id="kmMax" th:field="*{kmMax}" class="form-control" required step="0.01">
+            </div>
+             <div class="form-group mt-3">
+                <label for="fianca">Fiança</label>
+                <input type="number" id="fianca" th:field="*{fianca}" class="form-control" required step="0.01">
             </div>
 
             <div class="form-group mt-3">
