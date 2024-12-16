@@ -15,8 +15,8 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">Llistat d'Agents</h1>
 
-        <a href="/agent/alta" class="btn btn-primary mb-3">Afegir nou agent</a>
         <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
+        <a href="/agent/alta" class="btn btn-primary mb-3">Afegir nou agent</a>
 
         <!-- Formulari de filtre -->
         <form th:action="@{/agent/llistar}" method="get" class="mb-4">
@@ -34,7 +34,6 @@
             </div>
         </form>
 
-
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
@@ -43,6 +42,7 @@
                     <th scope="col">Nom</th>
                     <th scope="col">Cognoms</th>
                     <th scope="col">Correu electrònic</th>
+                    <th scope="col">Telèfon</th>
                     <th scope="col">Llicència</th>
                     <th scope="col">Caducitat Llicència</th>
                     <th scope="col">Caducitat DNI</th>
@@ -61,6 +61,7 @@
                     <td th:text="${agent.nom}"></td>
                     <td th:text="${agent.cognoms}"></td>
                     <td th:text="${agent.email}"></td>
+                    <td th:text="${agent.telefon}"></td>
                     <td th:text="${agent.llicencia}"></td>
                     <td th:text="${agent.llicCaducitat}"></td>
                     <td th:text="${agent.dniCaducitat}"></td>
@@ -71,6 +72,7 @@
                     <td th:text="${agent.localitzacio?.codiPostal}"></td>
                     <td>
                         <a class="btn btn-success btn-sm" th:href="@{/agent/modificar/{id}(id=${agent.dni})}">Editar</a>
+                        <a class="btn btn-info" th:href="@{/agent/consulta/{dni}(dni=${agent.dni})}">Visualitzar</a>
                         <a class="btn btn-danger btn-sm" th:href="@{/agent/esborrar/{dni}(dni=${agent.dni})}"
                             onclick="return confirm('Segur que vols eliminar aquest agent?');">Eliminar</a>
                     </td>

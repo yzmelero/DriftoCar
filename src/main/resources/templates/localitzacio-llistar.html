@@ -42,9 +42,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="localitzacio : ${localitzacions}" 
-                    th:onclick="|window.location.href='@{/localitzacio/consulta/{codiPostal}(codiPostal=${localitzacio.codiPostal})}'|"
-                    style="cursor: pointer;">
+                <tr th:each="localitzacio : ${localitzacions}">
                     <td th:text="${localitzacio.codiPostal}"></td>
                     <td th:text="${localitzacio.ciutat}"></td>
                     <td th:text="${localitzacio.adrecaLocalitzacio}"></td>
@@ -52,6 +50,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${localitzacio.condicions}"></td>
                     <td>
                         <a class="btn btn-success" th:href="@{/localitzacio/modificar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Editar</a>
+                        <a class="btn btn-info" th:href="@{/localitzacio/consulta/{codiPostal}(codiPostal=${localitzacio.codiPostal})}">Visualitzar</a>
                         <a class="btn btn-danger" th:href="@{/localitzacio/esborrar/{codiPostal}(codiPostal=${localitzacio.codiPostal})}" onclick="return confirm('Estàs segur que vols eliminar aquesta localització?');">Eliminar</a>
                     </td>
                 </tr>
