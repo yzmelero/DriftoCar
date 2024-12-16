@@ -153,4 +153,8 @@ public class ClientService {
                 (telefon != null && !telefon.isEmpty()) ? telefon : null,
                 (email != null && !email.isEmpty()) ? email : null);
     }
+
+    public Optional<Client> findByUsuari(String usuari){
+        return clientRepository.findByUsuari(usuari);
+    }
 }
