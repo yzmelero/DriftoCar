@@ -50,13 +50,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <th scope="col">Matrícula</th>
                                 <th scope="col">Marca</th>
                                 <th scope="col">Model</th>
-                                <th scope="col">Any</th>
                                 <th scope="col">Places</th>
-                                <th scope="col">Transmissió</th>
-                                <th scope="col">Combustible</th>
                                 <th scope="col">Vehicle</th>
                                 <th scope="col">Disponibilitat</th>
                                 <th scope="col">Localització</th>
+                                <th scope="col">Cost/H</th>
                                 <th scope="col">Accions</th>
                             </tr>
                         </thead>
@@ -71,13 +69,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <th scope="row" th:text="${vehicle.matricula}"></th>
                                 <td th:text="${vehicle.marca}"></td>
                                 <td th:text="${vehicle.model}"></td>
-                                <td th:text="${vehicle.any}"></td>
                                 <td th:text="${vehicle.places}"></td>
-                                <td th:text="${vehicle.transmisio}"></td>
-                                <td th:text="${vehicle.combustible}"></td>
                                 <td th:text="${vehicle.tipus}"></td>
                                 <td th:text="${vehicle.disponibilitat ? 'Disponible' : 'No Disponible'}"></td>
                                 <td th:text="${vehicle.localitzacio.codiPostal}"></td>
+                                <td th:text="${vehicle.costHora}"></td>
                                 <td>
                                     <a class="btn btn-warning" th:href="@{/vehicle/desactivar/{matricula}(matricula=${vehicle.matricula})}">Desactivar</a>
                                     <a class="btn btn-success" th:href="@{/vehicle/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>

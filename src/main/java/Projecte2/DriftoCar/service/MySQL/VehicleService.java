@@ -73,6 +73,9 @@ public class VehicleService {
         vehicleAntic.setCombustible(vehicleActualitzat.getCombustible());
         vehicleAntic.setTipus(vehicleActualitzat.getTipus());
         vehicleAntic.setDisponibilitat(vehicleActualitzat.isDisponibilitat());
+        vehicleAntic.setCostHora(vehicleActualitzat.getCostHora());
+        vehicleAntic.setKmMax(vehicleActualitzat.getKmMax());
+        vehicleAntic.setFianca(vehicleActualitzat.getFianca());
 
         log.info("S'ha modificat un vehicle.");
 

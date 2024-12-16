@@ -25,6 +25,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <p><strong>Tipus:</strong> <span th:text="${vehicle.tipus}"></span></p>
             <p><strong>Disponibilitat:</strong> <span th:text="${vehicle.disponibilitat ? 'Disponible' : 'No Disponible'}"></span></p>
             <p><strong>Localització:</strong> <span th:text="${vehicle.localitzacio.codiPostal}"></span></p>
+            <p><strong>Cost/H:</strong><span th:text="${vehicle.costHora}"></span></p>
+            <p><strong>KM/Max:</strong><span th:text="${vehicle.kmMax}"></span></p>
+            <p><strong>Fiança:</strong><span th:text="${vehicle.fianca}"></span></p>
         </div>
         <div class="mt-3">
             <a class="btn btn-secondary" th:href="@{/vehicle/llistar}">Tornar al llistat</a>
