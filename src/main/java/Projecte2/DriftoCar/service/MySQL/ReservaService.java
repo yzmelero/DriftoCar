@@ -88,4 +88,8 @@ public class ReservaService {
         return reservaRepository.cercarReserves(id_reserva, email, matricula);
         
     }
+
+    public void modificarReserva(Reserva reserva) {
+        reservaRepository.save(reserva);
+    }
 }

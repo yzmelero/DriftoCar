@@ -1,5 +1,10 @@
 package Projecte2.DriftoCar.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
@@ -31,7 +37,6 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
 public class ReservaController {
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
-
 
     @Autowired
     private ReservaService reservaService;
@@ -55,12 +60,11 @@ public class ReservaController {
             searchMatricula = null;
         }
 
-        //Verificar per consola que funcioni correctament. 
+        // Verificar per consola que funcioni correctament.
         log.debug("searchEmail: " + searchEmail);
         log.debug("searchId_reserva: " + searchId_reserva);
         log.debug("searchMatricula: " + searchMatricula);
 
-        
         List<Reserva> reserves;
         if ((searchId_reserva != null)
                 || (searchEmail != null && !searchEmail.isEmpty())
@@ -117,5 +121,53 @@ public class ReservaController {
 
         model.addAttribute("reserva", reserva);
         return "reserva-consulta";
+    }
+
+    @GetMapping("/lliurar/{idReserva}")
+    public String mostrarFormulariLliurament(Model model, @PathVariable Long idReserva) {
+
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+        if (reserva == null) {
+            model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
+            return "error";
+        }
+
+        model.addAttribute("reserva", reserva);
+        return "reserva-lliurar";
+
+    }
+
+    @PostMapping("/lliurar/{idReserva}")
+    public String lliurarVehicle(Model model, @PathVariable Long idReserva,
+            @RequestParam("dataLliurar") String dataLliurar,
+            @RequestParam("horaLliurar") String horaLliurar,
+            @RequestParam("descripcioEstat") String descripcioEstat) {
+
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+        if (reserva == null) {
+            model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
+            return "error";
+        }
+
+        try {
+
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
+            LocalTime hora = LocalTime.parse(horaLliurar, horaFormatter);
+
+            reserva.setDataLliurar(data);
+            reserva.setHoraLliurar(hora);
+            reserva.setDescripcioEstatLliurar(descripcioEstat);
+            reserva.setEstat(true);
+
+            reservaService.modificarReserva(reserva);
+        } catch (DateTimeParseException e) {
+            model.addAttribute("error", "El format de la data/hora és incorrecte.");
+            return "reserva-lliurar"; // Torna a mostrar el formulari amb un missatge d'error
+        }
+
+        return "redirect:/reserva/consulta/{idReserva}";
     }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Informació del Lliurament del Vehicle</title>
+</head>
+
+<body>
+    <h1>Informació del Lliurament del Vehicle</h1>
+
+    <form th:action="@{/reserva/lliurar/{idReserva}(idReserva=${reserva.idReserva})}" method="post" onsubmit="return confirmarEnviament()"
+        enctype="multipart/form-data">
+        <!-- Data i hora del lliurament -->
+        <!-- Data del lliurament -->
+        <label for="dataLliurar">Data del lliurament:</label>
+        <input type="date" id="dataLliurar" name="dataLliurar" required>
+        <br><br>
+
+        <!-- Hora del lliurament -->
+        <label for="horaLliurar">Hora del lliurament:</label>
+        <input type="time" id="horaLliurar" name="horaLliurar" required>
+        <br><br>
+
+        <!-- Descripció de l'estat del vehicle -->
+        <label for="descripcioEstat">Descripció de l'estat del vehicle:</label><br>
+        <textarea id="descripcioEstat" name="descripcioEstat" rows="5" cols="40"
+            placeholder="Descripció de l'estat del vehicle..." required></textarea>
+        <br><br>
+
+        <!-- Botó de submissió -->
+        <button type="submit">Enviar Informació</button>
+    </form>
+    <script>
+        function confirmarEnviament() {
+            return confirm("Estàs segur que vols enviar aquesta informació?");
+        }
+    </script>
+</body>
+
+</html>

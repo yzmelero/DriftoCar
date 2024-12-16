@@ -16,6 +16,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.bson.types.Binary;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,5 +64,20 @@ public class Reserva {
     
     @Column(name = "estat", nullable = false)
     private boolean estat;
-  
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "data_lliurar")
+    private LocalDate dataLliurar;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "hora_lliurar")
+    private LocalTime horaLliurar;
+
+    @Column(name = "descripcio_estat_lliurar")
+    private String descripcioEstatLliurar;
+
+    @Column(name = "data_hora_retornar")
+    private LocalDateTime dataHoraRetornar;
+
+
 }
