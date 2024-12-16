@@ -92,7 +92,7 @@ public class Client implements UserDetails{
             Agent agent = (Agent) this;
             ret.add(new Permis( agent.getRol().toString()));
         }else{
-            ret.add(new Permis("CLIENT"));
+            ret.add(new Permis("ROLES_CLIENT"));
         }
         
         return ret;

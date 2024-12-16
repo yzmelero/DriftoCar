@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
+import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class LoginController {
@@ -20,19 +20,31 @@ public class LoginController {
     private ClientService clientService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "logout", required = false) String logout,
+                        Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Usuari o contrasenya incorrectes, torna a intentar");
+        }
+        if (logout != null) {
+            model.addAttribute("logout", "Sessió tancada correctament");
+        }
         return "login";
     }
 
     @PostMapping("/verificar")
     public String postMethodName(@RequestParam("usuari") String usuari,
-            @RequestParam("contrasenya") String contrasenya) {
+            @RequestParam("contrasenya") String contrasenya,
+            Model model) {
 
         Optional<Client> user = clientService.findByUsuari(usuari);
         if (user.isEmpty() || !user.get().getContrasenya().equals(contrasenya)) {
-            return "redirect:/login?error=true";
+            String error = "Usuari o contrasenya incorrectes, torna a intentar";
+            model.addAttribute("error", error);
+            return "/login";
+
         }
-                return "redirect:/";
+        return "redirect:/";
     }
 
 }

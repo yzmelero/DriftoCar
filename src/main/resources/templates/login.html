@@ -10,6 +10,9 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center">Iniciar Sessió</h2>
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>-
+        <div class="alert alert-success" th:if="${logout}" th:text="${logout}"></div>
+        <a href="/registre/client-alta" class="btn btn-primary mb-4">registre</a>
         <form th:action="@{/login}" method="post" class="mt-4">
             <div class="mb-3">
                 <label for="usuari" class="form-label">Usuari</label>
