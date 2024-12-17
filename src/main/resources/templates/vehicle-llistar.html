@@ -22,15 +22,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="col">
 
                     <h1>Llistat de Vehicles</h1>
-                    <a class="btn btn-primary" th:href="@{/vehicle/afegir}">Afegir nou vehicle</a>
-
+                    <div class="mb-4">
+                        <a class="btn btn-primary" th:href="@{/vehicle/afegir}">Afegir nou vehicle</a>
+                    </div>
                     <form th:action="@{/vehicle/llistar}" method="get" class="mb-4">
                         <div class="input-group">
-                            <div class="form-group me-2">
+                            <div class="form-group me-2 text-start">
+                                <label for="matricula" class="form-label">Matrícula:</label>
+                                <input type="text" id="matricula" name="matricula" class="form-control" placeholder="Matrícula"/>
+                            </div>
+                            <div class="form-group me-2 text-start">
                                 <label for="dataInici" class="form-label">Data inici:</label>
                                 <input type="date" id="dataInici" name="dataInici" class="form-control"/>
                             </div>
-                            <div class="form-group me-2">
+                            <div class="form-group me-2 text-start">
                                 <label for="dataFinal" class="form-label">Data final:</label>
                                 <input type="date" id="dataFinal" name="dataFinal" class="form-control"/>
                             </div>
@@ -45,13 +50,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <th scope="col">Matrícula</th>
                                 <th scope="col">Marca</th>
                                 <th scope="col">Model</th>
-                                <th scope="col">Any</th>
                                 <th scope="col">Places</th>
-                                <th scope="col">Transmissió</th>
-                                <th scope="col">Combustible</th>
                                 <th scope="col">Vehicle</th>
                                 <th scope="col">Disponibilitat</th>
                                 <th scope="col">Localització</th>
+                                <th scope="col">Cost/H</th>
                                 <th scope="col">Accions</th>
                             </tr>
                         </thead>
@@ -61,19 +64,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             -->
                             <tr th:each="vehicle : ${vehicles}"
                             
-                                th:onclick="'location.href=\'' + @{/vehicle/detall/{matricula}(matricula=${vehicle.matricula})} + '\''" 
+                                th:onclick="'location.href=\'' + @{/vehicle/consulta/{matricula}(matricula=${vehicle.matricula})} + '\''" 
                                 style="cursor: pointer;">
                                 <th scope="row" th:text="${vehicle.matricula}"></th>
                                 <td th:text="${vehicle.marca}"></td>
                                 <td th:text="${vehicle.model}"></td>
-                                <td th:text="${vehicle.any}"></td>
                                 <td th:text="${vehicle.places}"></td>
-                                <td th:text="${vehicle.transmisio}"></td>
-                                <td th:text="${vehicle.combustible}"></td>
                                 <td th:text="${vehicle.tipus}"></td>
                                 <td th:text="${vehicle.disponibilitat ? 'Disponible' : 'No Disponible'}"></td>
                                 <td th:text="${vehicle.localitzacio.codiPostal}"></td>
+                                <td th:text="${vehicle.costHora}"></td>
                                 <td>
+                                    <a class="btn btn-warning" th:if="${vehicle.disponibilitat == true}" th:href="@{/vehicle/desactivar/{matricula}(matricula=${vehicle.matricula})}">Desactivar</a>
+                                    <a class="btn btn-warning" th:if="${vehicle.disponibilitat == false}" th:href="@{/vehicle/activar/{matricula}(matricula=${vehicle.matricula})}">Activar</a>
                                     <a class="btn btn-success" th:href="@{/vehicle/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>
                                     <a class="btn btn-danger"
                                        th:href="@{/vehicle/esborrar/{matricula}(matricula=${vehicle.matricula})}"

@@ -73,6 +73,9 @@ public class VehicleService {
         vehicleAntic.setCombustible(vehicleActualitzat.getCombustible());
         vehicleAntic.setTipus(vehicleActualitzat.getTipus());
         vehicleAntic.setDisponibilitat(vehicleActualitzat.isDisponibilitat());
+        vehicleAntic.setCostHora(vehicleActualitzat.getCostHora());
+        vehicleAntic.setKmMax(vehicleActualitzat.getKmMax());
+        vehicleAntic.setFianca(vehicleActualitzat.getFianca());
 
         log.info("S'ha modificat un vehicle.");
 
@@ -82,12 +85,19 @@ public class VehicleService {
     public List<Vehicle> llistarVehicles() {
         return vehicleRepository.findAll();
     }
-    
+
     public Vehicle obtenirVehicleMatricula(String matricula) {
         return vehicleRepository.findByMatricula(matricula).orElse(null);
     }
-    
+
     public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
         return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
+    }
+
+    public void desactivarVehicle(String matricula) {
+        Vehicle vehicle = vehicleRepository.findById(matricula)
+                .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
+        vehicle.setDisponibilitat(false);
+        vehicleRepository.save(vehicle);
     }
 }
