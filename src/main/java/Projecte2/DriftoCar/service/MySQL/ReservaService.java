@@ -97,10 +97,10 @@ public class ReservaService {
         return reservaRepository.findByVehicleMatriculaEstat(matricula);
     }
 
-    public void desactivarReserva(Long idReserva) {
+    public Reserva desactivarReserva(Long idReserva) {
         Reserva reserva = reservaRepository.findById(idReserva)
                 .orElseThrow(() -> new RuntimeException("Reserva no trobada: " + idReserva));
         reserva.setEstat(false);
-        reservaRepository.save(reserva);
+        return reservaRepository.save(reserva);
     }
 }
