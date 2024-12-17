@@ -7,6 +7,8 @@ package Projecte2.DriftoCar.service.MongoDB;
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
 import Projecte2.DriftoCar.repository.MongoDB.DocumentacioIncidenciaRepository;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.List;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,33 +18,77 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Anna
  */
-
 @Service
 public class DocumentacioIncidenciaService {
 
     @Autowired
     private DocumentacioIncidenciaRepository documentacioIncidenciaRepository;
-    
-    public DocumentacioIncidencia guardarDocumentacio(String text, MultipartFile[] fotos, MultipartFile[] pdf) throws IOException {
-        // Crear l'objecte DocumentacioIncidencia
-        DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
-        documentacio.setText(text); // Establir el text redactat per l'usuari
-        documentacio.setFotos(convertirMultipartsABinary(fotos)); // Convertir les fotos a Binary
-        documentacio.setPdf(convertirMultipartsABinary(pdf)); // Convertir els PDFs a Binary
 
-        // Guardar la documentació a MongoDB
+    // Métode per guardar la documentació (ja existent)
+    public DocumentacioIncidencia guardarDocumentacio(Long incidenciaId, String text, MultipartFile[] fotos, MultipartFile[] pdf) throws IOException {
+        DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
+        documentacio.setIncidenciaId(incidenciaId); // Asignar incidenciaId al document
+        documentacio.setText(text);
+        documentacio.setFotos(convertirMultipartsABinary(fotos));
+        documentacio.setPdf(convertirMultipartsABinary(pdf));
+
         return documentacioIncidenciaRepository.save(documentacio);
     }
 
-    // Convertir los archivos MultipartFile[] a Binary[]
-    public Binary[] convertirMultipartsABinary(MultipartFile[] files) throws IOException {
-        // Crear un array de Binary amb la mateixa longitud que els fitxers
-        Binary[] binaryFiles = new Binary[files.length];
-        // Convertir cada fitxer a Binary
-        for (int i = 0; i < files.length; i++) {
-            binaryFiles[i] = new Binary(files[i].getBytes());  // Llegir el contingut del fitxer i convertir-lo
+    // Nou métode per obtenir i processar la documentació
+    public List<DocumentacioIncidencia> obtenirDocumentacioAmbBase64() {
+        // Obtenim tota la documentació desde MongoDB
+        List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaRepository.findAll();
+
+        // Procesem les imatges i PDFs, convertim a Base64
+        for (DocumentacioIncidencia doc : documentacioList) {
+            if (doc.getFotos() != null) {
+                doc.setFotosBase64(convertirBinaryABase64(doc.getFotos())); // Convertim les imatges
+            }
+            if (doc.getPdf() != null) {
+                doc.setPdfBase64(convertirBinaryABase64(doc.getPdf())); // Convertim els PDFs
+            }
         }
-        // Retornar l'array de Binary
+
+        return documentacioList;
+    }
+
+    // Conversió d'archius Binary[] a Base64
+    public String[] convertirBinaryABase64(Binary[] binaries) {
+        if (binaries == null) {
+            return null;
+        }
+
+        String[] base64Array = new String[binaries.length];
+        for (int i = 0; i < binaries.length; i++) {
+            base64Array[i] = Base64.getEncoder().encodeToString(binaries[i].getData());
+        }
+        return base64Array;
+    }
+
+    // Conversió de MultipartFile[] a Binary[]
+    public Binary[] convertirMultipartsABinary(MultipartFile[] files) throws IOException {
+        if (files == null || files.length == 0) {
+            return null;
+        }
+
+        Binary[] binaryFiles = new Binary[files.length];
+        for (int i = 0; i < files.length; i++) {
+            binaryFiles[i] = new Binary(files[i].getBytes());
+        }
         return binaryFiles;
     }
+    
+    public List<DocumentacioIncidencia> obtenirTotaDocumentacio() {
+        return documentacioIncidenciaRepository.findAll();
+    }
+
+    public List<DocumentacioIncidencia> obtenirDocumentacioPerIncidenciaId(Long incidenciaId) {
+        return documentacioIncidenciaRepository.findByIncidenciaId(incidenciaId);
+    }
+
+    public DocumentacioIncidencia obtenirDocumentacioPerId(String documentacioId) {
+        return documentacioIncidenciaRepository.findById(documentacioId).orElse(null);
+    }
+
 }

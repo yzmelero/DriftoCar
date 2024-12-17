@@ -80,25 +80,28 @@ public class IncidenciaController {
     }
 
     @PostMapping("/obrir")
-    public String guardarIncidencia(@ModelAttribute("incidencia") Incidencia incidencia, // Captura l'objecte 'Incidencia' des del formulari
-            @RequestParam("fotos") MultipartFile[] fotos, //Captura les fotos  o texts enviades (com un array de fitxers, menys el text)
+    public String guardarIncidencia(@ModelAttribute("incidencia") Incidencia incidencia,
+            @RequestParam("fotos") MultipartFile[] fotos,
             @RequestParam("pdf") MultipartFile[] pdf,
             @RequestParam("text") String text,
             RedirectAttributes redirectAttributes) {
         try {
-            // Guardar l'incidència a MySQL
+            // Desar la incidencia en MySQL
             incidenciaService.obrirIncidencia(incidencia);
 
-            // Crear i guardar la documentació a MongoDB
-            documentacioIncidenciaService.guardarDocumentacio(text, fotos, pdf);
+            // Obtenir l'ID de la incidencia recent creada
+            Long incidenciaId = incidencia.getId();
 
-            // Missatge d'èxit
+            // Desar la documentación associada en MongoDB
+            documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);
+
+            // Missatge d'éxit
             redirectAttributes.addFlashAttribute("success", "Incidència oberta correctament amb documentació.");
-            return "redirect:/incidencia/llistar"; // Redirigir després de guardar
+            return "redirect:/incidencia/llistar";
         } catch (RuntimeException | IOException e) {
             // Missatge d'error
             redirectAttributes.addFlashAttribute("error", "Error en obrir la incidència: " + e.getMessage());
-            return "redirect:/incidencia/llistar"; // Redirigir en cas d'error
+            return "redirect:/incidencia/llistar";
         }
     }
 
@@ -112,4 +115,59 @@ public class IncidenciaController {
         }
         return "redirect:/incidencia/llistar-incidencies";
     }
+
+    @GetMapping("/mostrar-documentacio")
+    public String mostrarDocumentacio(@RequestParam(required = false) Long incidenciaId, Model model) {
+        List<DocumentacioIncidencia> documentacioList;
+
+        if (incidenciaId != null) {
+            // Obtenir documentació associada a una incidencia específica
+            documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(incidenciaId);
+            if (documentacioList.isEmpty()) {
+                model.addAttribute("warning", "No hi ha documentació associada a aquesta incidència.");
+            }
+        } else {
+            // Obtenir tota la documentació si no es especifica incidenciaId
+            documentacioList = documentacioIncidenciaService.obtenirDocumentacioAmbBase64();
+        }
+
+        model.addAttribute("documentacioList", documentacioList);
+        return "documentacio-mostrar";
+    }
+
+    @GetMapping("/detall/{id}")
+    public String mostrarDetallIncidencia(@PathVariable Long id, Model model) {
+        // Obtenir la incidencia per ID
+        Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
+
+        if (incidencia == null) {
+            model.addAttribute("error", "Incidència no trobada.");
+            return "redirect:/incidencia/llistar-incidencies";
+        }
+
+        // Validar si `descripcio` es null
+        if (incidencia.getDescripcio() == null) {
+            incidencia.setDescripcio("Descripció no disponible.");
+        }
+
+        // Obtenir documentació associada a la incidencia
+        List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(id);
+
+        // Convertir imatges i PDFs a Base64
+        for (DocumentacioIncidencia doc : documentacioList) {
+            if (doc.getFotos() != null) {
+                doc.setFotosBase64(documentacioIncidenciaService.convertirBinaryABase64(doc.getFotos())); // Fotos a Base64
+            }
+            if (doc.getPdf() != null) {
+                doc.setPdfBase64(documentacioIncidenciaService.convertirBinaryABase64(doc.getPdf())); // PDFs a Base64
+            }
+        }
+
+        // Afegir atributs al model
+        model.addAttribute("incidencia", incidencia);
+        model.addAttribute("documentacioList", documentacioList);
+
+        return "documentacio-mostrar";
+    }
+
 }
