@@ -37,13 +37,13 @@ public class SecurityConfig {
                         .requestMatchers("/clients/esborrar/**").hasRole("ADMIN")
                         .requestMatchers("/clients/modificar/**").hasRole("ADMIN")
                         .requestMatchers("/clients/consulta/**").hasRole("ADMIN")
-                       
+
                         //Matchers de incidencia sin post
                         .requestMatchers("/incidencia/obrir/**").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/incidencia/llistar-incidencies").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/incidencia/llistar").hasAnyRole("ADMIN", "AGENT")
                         .requestMatchers("/incidencia/tancar/**").hasAnyRole("ADMIN", "AGENT")
-                        
+
                         //Matchers de localitzacio sin post
                         .requestMatchers("/localitzacio/llistar").hasRole("ADMIN")
                         .requestMatchers("/localitzacio/alta").hasRole("ADMIN")
@@ -52,12 +52,12 @@ public class SecurityConfig {
                         .requestMatchers("/localitzacio/consulta/**").hasRole("ADMIN")
 
                         //Matchers de reserva sin post
-                        .requestMatchers("/reserva/llistar").hasAnyRole("ADMIN","CLIENT","AGENT")
+                        .requestMatchers("/reserva/llistar").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/reserva/alta").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/reserva/consulta/**").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/reserva/llistar").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/reserva/lliurar/**").hasAnyRole("ADMIN", "AGENT")
-                        
+
                         //Matchers de vehicle sin post
                         .requestMatchers("/vehicle/llistar").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/vehicle/afegir").hasRole("ADMIN")
@@ -65,8 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/vehicle/modificar/**").hasRole("ADMIN")
                         .requestMatchers("/vehicle/consulta/**").hasAnyRole("ADMIN", "CLIENT", "AGENT")
                         .requestMatchers("/vehicle/desactivar/**").hasAnyRole("ADMIN", "CLIENT")
-                        
-                        
+
+
 
                         .anyRequest().authenticated()) // El resto requiere autenticación
                         
@@ -82,7 +82,9 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout=true") // Redirigir a login tras logout
                         .invalidateHttpSession(true) // Invalida la sesión HTTP
                         .deleteCookies("JSESSIONID") // Elimina las cookies de sesión
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling(handling -> handling
+                        .accessDeniedPage("/errorPermisos"));;
                         //TODO añadir pagina de error chatgpt
 
         return http.build();
