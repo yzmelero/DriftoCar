@@ -125,6 +125,7 @@ public class VehicleController {
     public String desactivarVehicle(@PathVariable("matricula") String matricula,
             @RequestParam(value = "dataFinal", required = false) LocalDate dataFinal,
             Model model) {
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         if (vehicle == null) {
             model.addAttribute("error", "No hi ha cap vehicle amb matrícula: " + matricula);
@@ -132,6 +133,7 @@ public class VehicleController {
         }
 
         List<Reserva> reserves = reservaService.obtenirReservesPerMatricula(matricula);
+
         if (dataFinal != null) {
             List<Reserva> reservasFiltrades = new ArrayList<>();
             for (Reserva reserva : reserves) {
@@ -148,10 +150,17 @@ public class VehicleController {
     }
 
     @PostMapping("/desactivarReserves")
-    public String desactivarReserves(@RequestParam("idReservas") List<Long> idReservas) {
-        for (Long id : idReservas) {
-            reservaService.desactivarReserva(id);
+    public String desactivarReserves(@RequestParam(value = "idReservas", required = false) List<Long> idReservas,
+            @RequestParam("matricula") String matricula) {
+
+        if (idReservas != null && !idReservas.isEmpty()) {
+            for (Long id : idReservas) {
+                reservaService.desactivarReserva(id);
+            }
         }
-        return "redirect:/vehicle/llistar"; 
+
+        vehicleService.desactivarVehicle(matricula);
+
+        return "redirect:/vehicle/llistar";
     }
 }
