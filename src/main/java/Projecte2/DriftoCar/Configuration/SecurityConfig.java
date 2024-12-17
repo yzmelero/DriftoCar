@@ -83,7 +83,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true) // Invalida la sesión HTTP
                         .deleteCookies("JSESSIONID") // Elimina las cookies de sesión
                         .permitAll());
-                        
+                        //TODO añadir pagina de error chatgpt
 
         return http.build();
     }

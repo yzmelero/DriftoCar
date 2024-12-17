@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
  */
 @Controller
 @RequestMapping("/reserva")
+@Scope("session")
 public class ReservaController {
 
     Logger log = LoggerFactory.getLogger(ClientService.class);

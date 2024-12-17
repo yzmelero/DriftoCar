@@ -31,6 +31,8 @@ public class ClientService {
 
     }
 
+
+    //TODO añadir encriptacion de pswd
     public Client altaClient(Client client) throws Exception {
         log.info("S'ha entrat al mètode altaClient");
 

@@ -30,6 +30,7 @@ public class AgentService {
     @Autowired
     LocalitzacioRepository localitzacioRepository;
 
+    // TODO añadir encriptacion de pswd
     public Agent altaAgent(Agent agent) {
         // Verifica si ya existe un agente con el mismo DNI
         if (agentRepository.existsById(agent.getDni())) {
