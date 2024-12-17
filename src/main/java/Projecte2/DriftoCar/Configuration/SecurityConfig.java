@@ -17,17 +17,54 @@ public class SecurityConfig {
     @Autowired
     private ValidadorUsuaris validadorUsuaris;
 
-    @SuppressWarnings("removal")
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/registre/client-alta").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/agent/llistar").hasAnyRole("ADMIN", "AGENT")
-                        .requestMatchers("/agent/alta").hasRole("ADMIN")
-                        .requestMatchers("/client/llistar").hasAnyRole("CLIENT", "ADMIN", "AGENT")
                         .requestMatchers("/").hasAnyRole("CLIENT", "ADMIN", "AGENT")
+
+                        //Matchers d'agent sin post
+                        .requestMatchers("/agent/alta").hasRole("ADMIN")
+                        .requestMatchers("/agent/consulta/**").hasRole("ADMIN")
+                        .requestMatchers("/agent/llistar").hasAnyRole("ADMIN", "AGENT")
+                        .requestMatchers("/agent/modificar/**").hasRole("ADMIN")
+                        .requestMatchers("/agent/esborrar/**").hasRole("ADMIN")
+
+                        //Matchers de client sin post
+                        .requestMatchers("/clients/llistar").hasRole("ADMIN")
+                        .requestMatchers("/clients/esborrar/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/modificar/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/consulta/**").hasRole("ADMIN")
+                       
+                        //Matchers de incidencia sin post
+                        .requestMatchers("/incidencia/obrir/**").hasAnyRole("ADMIN", "AGENT")
+                        .requestMatchers("/incidencia/llistar-incidencies").hasAnyRole("ADMIN", "AGENT")
+                        .requestMatchers("/incidencia/llistar").hasAnyRole("ADMIN", "AGENT")
+                        .requestMatchers("/incidencia/tancar/**").hasAnyRole("ADMIN", "AGENT")
+                        
+                        //Matchers de localitzacio sin post
+                        .requestMatchers("/localitzacio/llistar").hasRole("ADMIN")
+                        .requestMatchers("/localitzacio/alta").hasRole("ADMIN")
+                        .requestMatchers("/localitzacio/esborrar/**").hasRole("ADMIN")
+                        .requestMatchers("/localitzacio/modificar/**").hasRole("ADMIN")
+                        .requestMatchers("/localitzacio/consulta/**").hasRole("ADMIN")
+
+                        //Matchers de reserva sin post
+                        .requestMatchers("/reserva/llistar").hasAnyRole("ADMIN","CLIENT","AGENT")
+                        .requestMatchers("/reserva/alta").hasAnyRole("ADMIN", "CLIENT", "AGENT")
+                        .requestMatchers("/reserva/consulta/**").hasAnyRole("ADMIN", "CLIENT", "AGENT")
+                        .requestMatchers("/reserva/llistar").hasAnyRole("ADMIN", "CLIENT", "AGENT")
+                        .requestMatchers("/reserva/lliurar/**").hasAnyRole("ADMIN", "AGENT")
+                        
+                        //Matchers de vehicle sin post
+                        .requestMatchers("/vehicle/llistar").hasAnyRole("ADMIN", "CLIENT", "AGENT")
+                        .requestMatchers("/vehicle/afegir").hasRole("ADMIN")
+                        .requestMatchers("/vehicle/esborrar/**").hasRole("ADMIN")
+                        .requestMatchers("/vehicle/modificar/**").hasRole("ADMIN")
+                        
+
                         .anyRequest().authenticated()) // El resto requiere autenticación
                         
                 .formLogin(login -> login
@@ -40,7 +77,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true") // Redirigir a login tras logout
+                        .invalidateHttpSession(true) // Invalida la sesión HTTP
+                        .deleteCookies("JSESSIONID") // Elimina las cookies de sesión
                         .permitAll());
+                        
 
         return http.build();
     }

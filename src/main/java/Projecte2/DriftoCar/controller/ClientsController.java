@@ -95,7 +95,7 @@ public class ClientsController {
         return "redirect:/clients/llistar";
     }
 
-    @GetMapping("/visualitzar/{dni}")
+    @GetMapping("/consulta/{dni}")
     public String visualitzarClient(@PathVariable String dni, Model model){
 
         Client client = clientService.obtenirClientPerDni(dni);
