@@ -19,30 +19,37 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, String> {
 
-    // Guarda una instància de client.
-    // Client registreClient(Client client);
+        // Guarda una instància de client.
+        // Client registreClient(Client client);
 
-    // Retorna un client amb l'ID especificat.
-    List<Client> findAll();
-    Optional<Client> findByDni(String dni);
+        // Retorna un client amb l'ID especificat.
+        List<Client> findAll();
 
-    // Mètode necessàri per al filtre en la pantalla de llistar clients.
-    /* List<Client> findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
-            String nom, String dni, String email);*/
+        Optional<Client> findByDni(String dni);
 
-    @Query("SELECT c FROM Client c " +
-            "WHERE (:cognoms IS NULL OR LOWER(c.cognoms) LIKE LOWER(CONCAT('%', :cognoms, '%'))) " +
-            "AND (:nacionalitat IS NULL OR LOWER(c.nacionalitat) LIKE LOWER(CONCAT('%', :nacionalitat, '%'))) " +
-            "AND (:telefon IS NULL OR (c.telefon) LIKE (CONCAT('%', :telefon, '%')))" +
-            "AND (:email IS NULL OR LOWER(c.email) LIKE LOWER(CONCAT('%', :email, '%')))")
-    List<Client> cercarClients(@Param("cognoms") String cognoms,
-            @Param("nacionalitat") String nacionalitat,
-            @Param("telefon") String telefon,
-            @Param("email") String email);
+        // Mètode necessàri per al filtre en la pantalla de llistar clients.
+        /*
+         * List<Client>
+         * findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
+         * String nom, String dni, String email);
+         */
 
-    // Modifica un client.
-    // Client modificarClient(Client client, String dni);
+        @Query("SELECT c FROM Client c " +
+                        "WHERE (:cognoms IS NULL OR LOWER(c.cognoms) LIKE LOWER(CONCAT('%', :cognoms, '%'))) " +
+                        "AND (:nacionalitat IS NULL OR LOWER(c.nacionalitat) LIKE LOWER(CONCAT('%', :nacionalitat, '%'))) "
+                        +
+                        "AND (:telefon IS NULL OR (c.telefon) LIKE (CONCAT('%', :telefon, '%')))" +
+                        "AND (:email IS NULL OR LOWER(c.email) LIKE LOWER(CONCAT('%', :email, '%')))")
+        List<Client> cercarClients(@Param("cognoms") String cognoms,
+                        @Param("nacionalitat") String nacionalitat,
+                        @Param("telefon") String telefon,
+                        @Param("email") String email);
 
-    // void esborrarClient(String id);
+        Optional<Client> findByUsuari(String username);
+
+        // Modifica un client.
+        // Client modificarClient(Client client, String dni);
+
+        // void esborrarClient(String id);
 
 }

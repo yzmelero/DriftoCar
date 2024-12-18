@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,7 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/agent")
+@Scope("session")
 public class AgentController {
 
     Logger log = LoggerFactory.getLogger(AgentController.class);
@@ -133,6 +135,13 @@ public class AgentController {
     public String eliminarAgent(@PathVariable("dni") String dni, Model model, Agent agent) {
         log.info("S'ha entrat al mètode esborrarController.");
         try {
+            
+            /* TODO comprobar si se pueden eliminar agentes que tengan vehiculos asociados, si no se puede, descomentar este codigo
+            if (!agent.getLocalitzacio().getVehicles().isEmpty()) {
+                model.addAttribute("error", "El agent te vehicles asociats");
+                return "agent-llistar";
+            }
+                */
             agentService.eliminarAgent(agent); // Llama al servicio para eliminar
         } catch (RuntimeException e) {
             model.addAttribute("error", "No s'ha pogut eliminar l'agent.");

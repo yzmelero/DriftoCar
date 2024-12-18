@@ -31,6 +31,8 @@ public class ClientService {
 
     }
 
+
+    //TODO añadir encriptacion de pswd
     public Client altaClient(Client client) throws Exception {
         log.info("S'ha entrat al mètode altaClient");
 
@@ -152,5 +154,9 @@ public class ClientService {
                 (nacionalitat != null && !nacionalitat.isEmpty()) ? nacionalitat : null,
                 (telefon != null && !telefon.isEmpty()) ? telefon : null,
                 (email != null && !email.isEmpty()) ? email : null);
+    }
+
+    public Optional<Client> findByUsuari(String usuari){
+        return clientRepository.findByUsuari(usuari);
     }
 }
