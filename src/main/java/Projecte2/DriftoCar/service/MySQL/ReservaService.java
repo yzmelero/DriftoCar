@@ -99,8 +99,12 @@ public class ReservaService {
 
     public Reserva desactivarReserva(Long idReserva) {
         Reserva reserva = reservaRepository.findById(idReserva)
-                .orElseThrow(() -> new RuntimeException("Reserva no trobada: " + idReserva));
-        reserva.setEstat(false);
-        return reservaRepository.save(reserva);
+                .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: " ));
+        if (reserva.isEstat()) {
+            reserva.setEstat(false); // Marca la reserva como inactiva
+            return reservaRepository.save(reserva);
+        } else {
+            throw new RuntimeException("La reserva ja està anul·lada");
+        }
     }
 }
