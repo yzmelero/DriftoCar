@@ -15,7 +15,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="container mt-5">
 
             <h1>Alta Vehicles</h1>
-            <form th:action="@{/vehicle/afegir}" method="POST">
+            <form th:action="@{/vehicle/afegir}" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="imatgeFile" class="form-label">Imatge del Vehicle:</label>
+                    <input type="file" id="imatgeFile" name="imatgeFile" class="form-control">
+                </div>
                 <div class="mb-3">
                     <label for="matricula" class="form-label">Matrícula:</label>
                     <input type="text" id="matricula" class="form-control" name="matricula" required/>
