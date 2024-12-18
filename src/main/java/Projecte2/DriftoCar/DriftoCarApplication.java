@@ -30,6 +30,8 @@ public class DriftoCarApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DriftoCarApplication.class, args);
+
+		//TODO arreglar el main para el script inicial, con un if en cada servicio de alta
 		/*
 		 * var context = SpringApplication.run(DriftoCarApplication.class, args);
 		 * localitzacioService = context.getBean(LocalitzacioService.class);
