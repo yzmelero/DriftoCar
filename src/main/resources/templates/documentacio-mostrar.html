@@ -53,10 +53,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                     <!-- Mostrar PDFs -->
                     <div th:if="${document.pdfBase64 != null}">
-                        <h4>Ver PDFs:</h4>
-                        <div th:each="pdf : ${document.pdfBase64}" class="mb-3">
-                            <iframe th:src="'data:application/pdf;base64,' + ${pdf}" width="100%" height="600px"></iframe>
-                        </div>
+                        <h4>Descarregar PDF:</h4>
+                        <a th:href="@{/incidencia/descargar-pdf/{documentId}(documentId=${document.id})}" 
+                           class="btn btn-primary">Descarregar PDF</a>
                     </div>
                 </div>
             </section>

@@ -79,6 +79,19 @@ public class DocumentacioIncidenciaService {
         return binaryFiles;
     }
     
+    // Métode per obtenir el PDF d'una documentació
+    public byte[] obtenirPdfPerId(String documentacioId) {
+        // Obtenemos el documento desde la base de datos MongoDB
+        DocumentacioIncidencia documentacio = documentacioIncidenciaRepository.findById(documentacioId).orElse(null);
+
+        if (documentacio == null || documentacio.getPdf() == null) {
+            throw new RuntimeException("No s'ha trobat cap PDF associat amb aquest document.");
+        }
+
+        // Devolvemos el PDF en formato de array de bytes
+        return documentacio.getPdf()[0].getData(); // Assuming single PDF per document
+    }
+    
     public List<DocumentacioIncidencia> obtenirTotaDocumentacio() {
         return documentacioIncidenciaRepository.findAll();
     }

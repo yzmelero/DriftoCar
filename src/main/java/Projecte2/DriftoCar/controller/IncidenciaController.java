@@ -10,6 +10,7 @@ import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,4 +171,22 @@ public class IncidenciaController {
         return "documentacio-mostrar";
     }
 
+    @GetMapping("/descargar-pdf/{documentId}")
+    public void descargarPDF(@PathVariable String documentId, HttpServletResponse response) {
+        try {
+            // Obtener el PDF desde el servicio
+            byte[] pdfBytes = documentacioIncidenciaService.obtenirPdfPerId(documentId);
+
+            // Configurar la respuesta para que sea descargado
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=document_" + documentId + ".pdf");
+
+            // Escribir el contenido del PDF en el flujo de salida
+            response.getOutputStream().write(pdfBytes);
+            response.getOutputStream().flush();
+        } catch (RuntimeException | IOException e) {
+            // Manejo de errores si no se encuentra el PDF o hay problemas con la escritura
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
 }
