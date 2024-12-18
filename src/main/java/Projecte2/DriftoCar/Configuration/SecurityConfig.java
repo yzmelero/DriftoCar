@@ -85,7 +85,6 @@ public class SecurityConfig {
                         .permitAll())
                 .exceptionHandling(handling -> handling
                         .accessDeniedPage("/errorPermisos"));;
-                        //TODO añadir pagina de error chatgpt
 
         return http.build();
     }
