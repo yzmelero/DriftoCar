@@ -245,4 +245,44 @@ public class ReservaController {
         }
         return "reserva-retornar";
     }
+
+    //TODO nova url
+    @PostMapping("/alta/calculPreu")
+    public String calcularPreu(Model model, @PathVariable Long idReserva,
+            @RequestParam("dataInici") String dataInici,
+            @RequestParam("horaInici") String horaInici,
+            @RequestParam("dataFi") String dataFi,
+            @RequestParam("horaFi") String horaFi) {
+
+        Reserva reserva = reservaService.cercaPerId(idReserva);
+        // TODO En el cas de que l'ID introduit no existeixi.
+
+        try {
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+            LocalDate dataIniciFin = LocalDate.parse(dataInici, dataFormatter);
+            LocalDate dataFiFin = LocalDate.parse(dataFi, dataFormatter);
+
+            LocalTime horaIniciFin = LocalTime.parse(horaInici, horaFormatter);
+            LocalTime horaFiFin = LocalTime.parse(horaFi, horaFormatter);
+
+        
+            reserva.setDataInici(dataIniciFin);
+            reserva.setDataFi(dataFiFin);
+            reserva.setHoraInici(horaIniciFin);
+            reserva.setHoraFi(horaFiFin);
+
+            double fianca = reservaService.calculFianca(reserva);
+            double costTotal = reservaService.calculPreuReserva(reserva);
+
+            model.addAttribute("reserva", reserva);
+            model.addAttribute("fianca", fianca);
+            model.addAttribute("costTotal", costTotal);
+        } catch (DateTimeParseException e) {
+            model.addAttribute("error", "Els formats data/hora són incorrectes");
+            return "reserva-alta";
+        }
+        return "reserva-alta";
+    }
 }
