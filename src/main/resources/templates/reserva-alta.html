@@ -44,6 +44,15 @@
             </div>
 
             <div class="mb-3">
+                <label for="horaInici" class="form-label">Hora de lliurar: </label>
+                <input type="time" id="horaInici" name="horaInici" class="form-control" th:value="${reserva?.horaInici}" required>
+            </div>
+            <div class="mb-3">
+                <label for="horaFi" class="form-label">Hora de retorn: </label>
+                <input type="time" id="horaFi" name="horaFi" class="form-control" th:value="${reserva?.horaFi}" required>
+            </div>
+
+            <div class="mb-3">
                 <label for="costTotal" class="form-label">Cost Total</label>
                 <input type="number" id="costTotal" name="costTotal" class="form-control" th:value="${reserva?.costTotal}" required>
             </div>

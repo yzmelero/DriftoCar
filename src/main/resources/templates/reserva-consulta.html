@@ -25,20 +25,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <p><strong>Vehicle:</strong> <span th:text="${reserva.vehicle.matricula}"></span></p>
             <p><strong>Data d'inici:</strong> <span th:text="${reserva.dataInici}"></span></p>
             <p><strong>Data final:</strong> <span th:text="${reserva.dataFi}"></span></p>
+            <p><strong>Hora d'inici:</strong> <span th:text="${reserva. horaInici}"></span></p>
+            <p><strong>Hora final:</strong> <span th:text="${reserva.horaFi}"></span></p>
             <p><strong>Cost total:</strong> <span th:text="${reserva.costTotal}"></span></p>
             <p><strong>Fiança:</strong> <span th:text="${reserva.fianca}"></span></p>
             <p><strong>Estat:</strong> <span th:text="${reserva.estat ? 'Actiu' : 'Inactiu'}">
-            <p th:if="${reserva.dataLliurar != null and !#strings.isEmpty(reserva.dataLliurar)}">
-                <strong>Data de lliurament: </strong><span th:text="${reserva.dataLliurar}"></span>
-            </p>
-            <p th:if="${reserva.horaLliurar != null and !#strings.isEmpty(reserva.horaLliurar)}"><strong>
-                Hora de lliurament: </strong><span th:text="${reserva.horaLliurar}"></span>
-            </p>
-            <p th:if="${reserva.descripcioEstatLliurar != null and !#strings.isEmpty(reserva.descripcioEstatLliurar)}">
-                <strong>Descripció de l'estat en el lliurament: </strong><span th:text="${reserva.descripcioEstatLliurar}"></span>
-            </p>
+                    <p th:if="${reserva.dataLliurar != null and !#strings.isEmpty(reserva.dataLliurar)}">
+                        <strong>Data de lliurament: </strong><span th:text="${reserva.dataLliurar}"></span>
+                    </p>
+                    <p th:if="${reserva.horaLliurar != null and !#strings.isEmpty(reserva.horaLliurar)}"><strong>
+                            Hora de lliurament: </strong><span th:text="${reserva.horaLliurar}"></span>
+                    </p>
+                    <p
+                        th:if="${reserva.descripcioEstatLliurar != null and !#strings.isEmpty(reserva.descripcioEstatLliurar)}">
+                        <strong>Descripció de l'estat en el lliurament: </strong><span
+                            th:text="${reserva.descripcioEstatLliurar}"></span>
+                    </p>
                 </span></p>
-            <a class="btn btn-success" th:href="@{/reserva/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>
+                <div th:if="${reserva.horaInici == null or reserva.dataLliurar == null}">
+                    <a class="btn btn-success" th:href="@{/reserva/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>
+                </div>
+                <div th:if="${reserva.horaInici != null and reserva.dataLliurar != null}">
+                    <a class="btn btn-warning" th:href="@{/reserva/retornar/{id}(id=${reserva.idReserva})}">Retornar Vehicle</a>
+                </div>
+            
         </div>
         <a href="/reserva/llistar" class="btn btn-secondary">Tornar al Llistat</a>
     </div>
