@@ -64,6 +64,10 @@ public class VehicleService {
             throw new RuntimeException("No existeix la localitzacio inserida.");
         }
 
+        if (vehicleActualitzat.getImatge() != null && vehicleActualitzat.getImatge().length > 0) {
+            vehicleAntic.setImatge(vehicleActualitzat.getImatge());
+        }
+        
         vehicleAntic.setLocalitzacio(vehicleActualitzat.getLocalitzacio());
         vehicleAntic.setMarca(vehicleActualitzat.getMarca());
         vehicleAntic.setModel(vehicleActualitzat.getModel());
@@ -85,11 +89,11 @@ public class VehicleService {
     public List<Vehicle> llistarVehicles() {
         return vehicleRepository.findAll();
     }
-    
+
     public Vehicle obtenirVehicleMatricula(String matricula) {
         return vehicleRepository.findByMatricula(matricula).orElse(null);
     }
-    
+
     public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
         return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
     }

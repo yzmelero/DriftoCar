@@ -11,8 +11,10 @@ import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.ReservaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -77,9 +80,19 @@ public class VehicleController {
     }
 
     @PostMapping("/afegir")
-    public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle) {
-        vehicleService.altaVehicle(vehicle);
-        log.info("S'ha entrat al metode d'altaReserva.");
+    public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle,
+            @RequestParam("imatgeFile") MultipartFile imatgeFile) {
+
+        try {
+            if (!imatgeFile.isEmpty()) {
+                // Convierte la imagen a un array de bytes
+                vehicle.setImatge(imatgeFile.getBytes());
+            }
+            vehicleService.altaVehicle(vehicle);
+            log.info("S'ha afegit un vehicle amb imatge en SQL.");
+        } catch (IOException e) {
+            log.error("Error al convertir la imatge: " + e.getMessage());
+        }
         return "redirect:/vehicle/llistar";
     }
 
@@ -96,16 +109,40 @@ public class VehicleController {
     @GetMapping("/modificar/{matricula}")
     public String modificarVehicle(@PathVariable("matricula") String matricula, Model model) {
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+
+        if (vehicle == null) {
+            model.addAttribute("error", "No s'ha trobat el vehicle amb matrícula: " + matricula);
+            return "redirect:/vehicle/llistar";
+        }
+
+        if (vehicle.getImatge() != null) {
+            String imatgeBase64 = Base64.getEncoder().encodeToString(vehicle.getImatge());
+            model.addAttribute("imatgeBase64", imatgeBase64);
+        }
         model.addAttribute("vehicle", vehicle);
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
+        
         return "vehicle-modificar";
     }
 
     @PostMapping("/modificar")
-    public String guardarVehicleModificat(@ModelAttribute("vehicle") Vehicle vehicle) {
-        vehicleService.modificaVehicle(vehicle);
+    public String guardarVehicleModificat(@ModelAttribute("vehicle") Vehicle vehicle,
+            @RequestParam("imatgeFile") MultipartFile imatgeFile) {
+        try {
+            if (!imatgeFile.isEmpty()) {
+                vehicle.setImatge(imatgeFile.getBytes());
+            } else {
+                Vehicle vehicleAnterior = vehicleService.obtenirVehicleMatricula(vehicle.getMatricula());
+                vehicle.setImatge(vehicleAnterior.getImatge());
+            }
+            vehicleService.modificaVehicle(vehicle);
+            log.info("S'ha modificat el vehicle amb matrícula: " + vehicle.getMatricula());
+        } catch (IOException e) {
+            log.error("Error al carregar la imatge: " + e.getMessage());
+        }
         return "redirect:/vehicle/llistar";
+        
     }
 
     @GetMapping("/consulta/{matricula}")
@@ -114,6 +151,12 @@ public class VehicleController {
         if (vehicle == null) {
             model.addAttribute("error", "No s'ha trobat vehicle amb matrícula: " + matricula);
             return "redirect:/vehicle/llistar";
+        }
+        if (vehicle.getImatge() != null) {
+            String imatgeBase64 = Base64.getEncoder().encodeToString(vehicle.getImatge());
+            model.addAttribute("imatgeBase64", imatgeBase64);
+        } else {
+            model.addAttribute("imatgeBase64", null);
         }
         model.addAttribute("vehicle", vehicle);
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -152,6 +195,6 @@ public class VehicleController {
         for (Long id : idReservas) {
             reservaService.desactivarReserva(id);
         }
-        return "redirect:/vehicle/llistar"; 
+        return "redirect:/vehicle/llistar";
     }
 }
