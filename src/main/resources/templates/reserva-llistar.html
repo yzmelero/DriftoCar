@@ -15,6 +15,7 @@
         <h1>Listado de Reservas</h1>
         <a href="/reserva/alta" class="btn btn-primary mb-3">Crear reserva</a>
         <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
         <form th:action="@{/reserva/llistar}" method="get" class="row g-3">
             <div class="col-auto">
                 <input type="number" class="form-control" name="searchId_reserva" th:value="${searchId_reserva}"
@@ -62,8 +63,10 @@
                             <td>
                                 <a class="btn btn-info"
                                     th:href="@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}">Visualitzar</a>
-                                <a class="btn btn-danger btn-sm" th:href="@{/reserva/anular/{idReserva}(idReserva=${reserva.idReserva})}"
-                                    onclick="return confirm('Segur que vols anular aquesta reserva?');">Anular</a>
+                                <form th:action="@{/reserva/anular/{idReserva}(idReserva=${reserva.idReserva})}" method="post"
+                                    th:if="${reserva.estat}">
+                                    <button type="submit" class="btn btn-danger">Anul·lar</button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>
