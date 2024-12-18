@@ -19,6 +19,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 @RequestMapping("/vehicle")
+@Scope("session")
 public class VehicleController {
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
@@ -168,6 +170,7 @@ public class VehicleController {
     public String desactivarVehicle(@PathVariable("matricula") String matricula,
             @RequestParam(value = "dataFinal", required = false) LocalDate dataFinal,
             Model model) {
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         if (vehicle == null) {
             model.addAttribute("error", "No hi ha cap vehicle amb matrícula: " + matricula);
@@ -175,6 +178,7 @@ public class VehicleController {
         }
 
         List<Reserva> reserves = reservaService.obtenirReservesPerMatricula(matricula);
+
         if (dataFinal != null) {
             List<Reserva> reservasFiltrades = new ArrayList<>();
             for (Reserva reserva : reserves) {
@@ -191,10 +195,17 @@ public class VehicleController {
     }
 
     @PostMapping("/desactivarReserves")
-    public String desactivarReserves(@RequestParam("idReservas") List<Long> idReservas) {
-        for (Long id : idReservas) {
-            reservaService.desactivarReserva(id);
+    public String desactivarReserves(@RequestParam(value = "idReservas", required = false) List<Long> idReservas,
+            @RequestParam("matricula") String matricula) {
+
+        if (idReservas != null && !idReservas.isEmpty()) {
+            for (Long id : idReservas) {
+                reservaService.desactivarReserva(id);
+            }
         }
+
+        vehicleService.desactivarVehicle(matricula);
+
         return "redirect:/vehicle/llistar";
     }
 }

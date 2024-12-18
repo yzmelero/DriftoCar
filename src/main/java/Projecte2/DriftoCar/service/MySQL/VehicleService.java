@@ -97,4 +97,11 @@ public class VehicleService {
     public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
         return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
     }
+
+    public void desactivarVehicle(String matricula) {
+        Vehicle vehicle = vehicleRepository.findById(matricula)
+                .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
+        vehicle.setDisponibilitat(false);
+        vehicleRepository.save(vehicle);
+    }
 }
