@@ -7,6 +7,7 @@ package Projecte2.DriftoCar.controller;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @RequestMapping("/registre")
+@Scope("session")
 public class RegistreController {
 
     @Autowired
