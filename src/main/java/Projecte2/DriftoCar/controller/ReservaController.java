@@ -105,7 +105,7 @@ public class ReservaController {
 
         // Verificar que el client existeix
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
-
+        reserva.setEstat(true);
         reservaService.altaReserva(reserva);
         return "redirect:/reserva/llistar";
     }
@@ -169,5 +169,15 @@ public class ReservaController {
         }
 
         return "redirect:/reserva/consulta/{idReserva}";
+    }
+
+    @PostMapping("/anular/{id}")
+    public String anularReserva(@PathVariable Long id, Model model) {
+        try {
+            reservaService.desactivarReserva(id);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "redirect:/reserva/llistar";
     }
 }

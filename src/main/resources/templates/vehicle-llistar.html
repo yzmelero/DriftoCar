@@ -59,13 +59,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             </tr>
                         </thead>
                         <tbody>
-                            <!--
-                            TODO cambiar la consulta a boton
-                            -->
-                            <tr th:each="vehicle : ${vehicles}"
-                            
-                                th:onclick="'location.href=\'' + @{/vehicle/consulta/{matricula}(matricula=${vehicle.matricula})} + '\''" 
-                                style="cursor: pointer;">
+                            <tr th:each="vehicle : ${vehicles}">
                                 <th scope="row" th:text="${vehicle.matricula}"></th>
                                 <td th:text="${vehicle.marca}"></td>
                                 <td th:text="${vehicle.model}"></td>
@@ -75,6 +69,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <td th:text="${vehicle.localitzacio.codiPostal}"></td>
                                 <td th:text="${vehicle.costHora}"></td>
                                 <td>
+                                    <a class="btn btn-primary" th:href="@{/vehicle/consulta/{matricula}(matricula=${vehicle.matricula})}">Visualitzar</a>
                                     <a class="btn btn-warning" th:if="${vehicle.disponibilitat == true}" th:href="@{/vehicle/desactivar/{matricula}(matricula=${vehicle.matricula})}">Desactivar</a>
                                     <a class="btn btn-warning" th:if="${vehicle.disponibilitat == false}" th:href="@{/vehicle/activar/{matricula}(matricula=${vehicle.matricula})}">Activar</a>
                                     <a class="btn btn-success" th:href="@{/vehicle/modificar/{matricula}(matricula=${vehicle.matricula})}">Editar</a>
