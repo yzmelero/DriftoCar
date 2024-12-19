@@ -36,23 +36,22 @@ public class DocumentacioIncidenciaService {
     }
 
     // Nou métode per obtenir i processar la documentació
-    public List<DocumentacioIncidencia> obtenirDocumentacioAmbBase64() {
-        // Obtenim tota la documentació desde MongoDB
-        List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaRepository.findAll();
+    public List<DocumentacioIncidencia> obtenirDocumentacioAmbBase64PerIncidencia(Long incidenciaId) {
+        // Reutilizar el método existent per obtenir la documentació
+        List<DocumentacioIncidencia> documentacioList = obtenirDocumentacioPerIncidenciaId(incidenciaId);
 
-        // Procesem les imatges i PDFs, convertim a Base64
+        // Convertir fotos y PDFs a Base64
         for (DocumentacioIncidencia doc : documentacioList) {
             if (doc.getFotos() != null) {
-                doc.setFotosBase64(convertirBinaryABase64(doc.getFotos())); // Convertim les imatges
+                doc.setFotosBase64(convertirBinaryABase64(doc.getFotos())); // Convertir fotos a Base64
             }
             if (doc.getPdf() != null) {
-                doc.setPdfBase64(convertirBinaryABase64(doc.getPdf())); // Convertim els PDFs
+                doc.setPdfBase64(convertirBinaryABase64(doc.getPdf())); // Convertir PDFs a Base64
             }
         }
-
         return documentacioList;
     }
-
+        
     // Conversió d'archius Binary[] a Base64
     public String[] convertirBinaryABase64(Binary[] binaries) {
         if (binaries == null) {
@@ -78,7 +77,7 @@ public class DocumentacioIncidenciaService {
         }
         return binaryFiles;
     }
-    
+
     // Métode per obtenir el PDF d'una documentació
     public byte[] obtenirPdfPerId(String documentacioId) {
         // Obtenemos el documento desde la base de datos MongoDB
@@ -91,7 +90,7 @@ public class DocumentacioIncidenciaService {
         // Devolvemos el PDF en formato de array de bytes
         return documentacio.getPdf()[0].getData(); // Assuming single PDF per document
     }
-    
+
     public List<DocumentacioIncidencia> obtenirTotaDocumentacio() {
         return documentacioIncidenciaRepository.findAll();
     }

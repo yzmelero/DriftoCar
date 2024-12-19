@@ -119,58 +119,34 @@ public class IncidenciaController {
         return "redirect:/incidencia/llistar-incidencies";
     }
 
-    @GetMapping("/mostrar-documentacio")
-    public String mostrarDocumentacio(@RequestParam(required = false) Long incidenciaId, Model model) {
-        List<DocumentacioIncidencia> documentacioList;
-
-        if (incidenciaId != null) {
-            // Obtenir documentació associada a una incidencia específica
-            documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(incidenciaId);
-            if (documentacioList.isEmpty()) {
-                model.addAttribute("warning", "No hi ha documentació associada a aquesta incidència.");
-            }
-        } else {
-            // Obtenir tota la documentació si no es especifica incidenciaId
-            documentacioList = documentacioIncidenciaService.obtenirDocumentacioAmbBase64();
-        }
-
-        model.addAttribute("documentacioList", documentacioList);
-        return "documentacio-mostrar";
-    }
-
     @GetMapping("/detall/{id}")
     public String mostrarDetallIncidencia(@PathVariable Long id, Model model) {
-        // Obtenir la incidencia per ID
-        Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
+        try {
+            // Obtener la incidencia desde el servicio
+            Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
 
-        if (incidencia == null) {
-            model.addAttribute("error", "Incidència no trobada.");
+            if (incidencia == null) {
+                model.addAttribute("error", "Incidència no trobada.");
+                return "redirect:/incidencia/llistar-incidencies";
+            }
+
+            // Validar si la descripción es null
+            if (incidencia.getDescripcio() == null) {
+                incidencia.setDescripcio("Descripció no disponible.");
+            }
+
+            // Obtener la documentación asociada con procesamiento Base64
+            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioAmbBase64PerIncidencia(id);
+
+            // Agregar atributos al modelo
+            model.addAttribute("incidencia", incidencia);
+            model.addAttribute("documentacioList", documentacioList);
+
+            return "documentacio-mostrar";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
             return "redirect:/incidencia/llistar-incidencies";
         }
-
-        // Validar si `descripcio` es null
-        if (incidencia.getDescripcio() == null) {
-            incidencia.setDescripcio("Descripció no disponible.");
-        }
-
-        // Obtenir documentació associada a la incidencia
-        List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(id);
-
-        // Convertir imatges i PDFs a Base64
-        for (DocumentacioIncidencia doc : documentacioList) {
-            if (doc.getFotos() != null) {
-                doc.setFotosBase64(documentacioIncidenciaService.convertirBinaryABase64(doc.getFotos())); // Fotos a Base64
-            }
-            if (doc.getPdf() != null) {
-                doc.setPdfBase64(documentacioIncidenciaService.convertirBinaryABase64(doc.getPdf())); // PDFs a Base64
-            }
-        }
-
-        // Afegir atributs al model
-        model.addAttribute("incidencia", incidencia);
-        model.addAttribute("documentacioList", documentacioList);
-
-        return "documentacio-mostrar";
     }
 
     @GetMapping("/descargar-pdf/{documentId}")
