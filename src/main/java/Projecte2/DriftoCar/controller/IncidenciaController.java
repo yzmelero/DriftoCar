@@ -5,9 +5,11 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
+import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
+import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +46,9 @@ public class IncidenciaController {
 
     @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
+
+    @Autowired
+    private HistoricIncidenciesService historicIncidenciesService;
 
     @GetMapping("/llistar-incidencies")
     public String llistarIncidencies(Model model) {
@@ -95,8 +100,11 @@ public class IncidenciaController {
             // Obtenir l'ID de la incidencia recent creada
             Long incidenciaId = incidencia.getId();
 
+            // Guardar el historial de la incidencia en MongoDB
+            historicIncidenciesService.guardarHistoricIncidencia(incidencia); // Aquí es guarda a l'historial
+
             // Desar la documentación associada en MongoDB
-            documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);
+            documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);  
 
             // Missatge d'éxit
             redirectAttributes.addFlashAttribute("success", "Incidència oberta correctament amb documentació.");
