@@ -40,9 +40,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${#temporals.format(incidencia.dataIniciIncidencia, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${incidencia.dataFiIncidencia != null ? #temporals.format(incidencia.dataFiIncidencia, 'yyyy-MM-dd HH:mm') : '---'}"></td>
                     <td>
-                        <!-- Botón para cerrar la incidencia -->
+                        <!-- Botó per tancar l'incidencia -->
                         <a class="btn btn-danger" th:if="${incidencia.estat}" th:href="@{/incidencia/tancar/{id}(id=${incidencia.id})}" 
                            onclick="return confirm('Estàs segur de tancar aquesta incidència?');">Tancar</a>
+                        <a class="btn btn-info" th:href="@{/incidencia/detall/{id}(id=${incidencia.id})}">Visualitzar</a>
                     </td>
                 </tr>
             </tbody>
