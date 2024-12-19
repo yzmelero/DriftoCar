@@ -27,23 +27,27 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <!-- Información del vehículo -->
                                 <div class="col-md-8">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <p><strong>Matrícula:</strong> <span th:text="${vehicle.matricula}"></span></p>
                                             <p><strong>Marca:</strong> <span th:text="${vehicle.marca}"></span></p>
                                             <p><strong>Model:</strong> <span th:text="${vehicle.model}"></span></p>
                                             <p><strong>Any:</strong> <span th:text="${vehicle.any}"></span></p>
                                             <p><strong>Places:</strong> <span th:text="${vehicle.places}"></span></p>
                                             <p><strong>Transmissió:</strong> <span th:text="${vehicle.transmisio}"></span></p>
+                                            <p><strong>Combustible:</strong> <span th:text="${vehicle.combustible}"></span></p>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <p><strong>Combustible:</strong> <span th:text="${vehicle.combustible}"></span></p>
+                                        <div class="col-md-4">
                                             <p><strong>Tipus:</strong> <span th:text="${vehicle.tipus}"></span></p>
                                             <p><strong>Disponibilitat:</strong> <span th:text="${vehicle.disponibilitat ? 'Disponible' : 'No Disponible'}"></span></p>
                                             <p><strong>Localització:</strong> <span th:text="${vehicle.localitzacio.codiPostal}"></span></p>
-                                            <p><strong>Cost/H:</strong> <span th:text="${vehicle.costHora}"></span></p>
-                                            <p><strong>KM/Max:</strong> <span th:text="${vehicle.kmMax}"></span></p>
-                                            <p><strong>Fiança:</strong> <span th:text="${vehicle.fianca}"></span></p>
+                                            <p><strong>Cost/H:</strong> <span th:text="${vehicle.costHora}"></span> €</p>
+                                            <p><strong>KM/Max:</strong> <span th:text="${vehicle.kmMax}"></span> Km</p>
+                                            <p><strong>Fiança:</strong> <span th:text="${vehicle.fianca}"></span> €</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p th:if="${vehicle.motiu != null and !vehicle.motiu.isEmpty()}"><strong>Motiu última activació:</strong> <span th:text="${vehicle.motiu}"></span></p>
+                                            <p th:if="${vehicle.importe != null and vehicle.importe > 0}"><strong>Import última activació:</strong> <span th:text="${vehicle.importe}"></span> €</p>
                                         </div>
                                     </div>
                                 </div>

@@ -64,4 +64,10 @@ public class Vehicle {
     @Lob
     @Column(name = "imatge", columnDefinition = "MEDIUMBLOB")
     private byte[] imatge;
+    
+    @JoinColumn(nullable = true)
+    private String motiu;
+    
+    @JoinColumn(nullable = true)
+    private double importe;
 }

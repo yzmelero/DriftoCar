@@ -67,7 +67,7 @@ public class VehicleService {
         if (vehicleActualitzat.getImatge() != null && vehicleActualitzat.getImatge().length > 0) {
             vehicleAntic.setImatge(vehicleActualitzat.getImatge());
         }
-        
+
         vehicleAntic.setLocalitzacio(vehicleActualitzat.getLocalitzacio());
         vehicleAntic.setMarca(vehicleActualitzat.getMarca());
         vehicleAntic.setModel(vehicleActualitzat.getModel());
@@ -80,6 +80,8 @@ public class VehicleService {
         vehicleAntic.setCostHora(vehicleActualitzat.getCostHora());
         vehicleAntic.setKmMax(vehicleActualitzat.getKmMax());
         vehicleAntic.setFianca(vehicleActualitzat.getFianca());
+        vehicleAntic.setMotiu(vehicleActualitzat.getMotiu());
+        vehicleAntic.setImporte(vehicleActualitzat.getImporte());
 
         log.info("S'ha modificat un vehicle.");
 
@@ -102,6 +104,13 @@ public class VehicleService {
         Vehicle vehicle = vehicleRepository.findById(matricula)
                 .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
         vehicle.setDisponibilitat(false);
+        vehicleRepository.save(vehicle);
+    }
+
+    public void activarVehicle(String matricula) {
+        Vehicle vehicle = vehicleRepository.findById(matricula)
+                .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
+        vehicle.setDisponibilitat(true);
         vehicleRepository.save(vehicle);
     }
 }

@@ -157,7 +157,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <label for="fianca">Fiança</label>
                     <input type="number" id="fianca" th:field="*{fianca}" class="form-control" required step="0.01">
                 </div>
-
+                <div class="form-group mt-3" hidden>
+                    <label for="motiu">Motiu</label>
+                    <input type="text" id="motiu" th:field="*{motiu}" class="form-control"/>
+                </div>
+                <div class="form-group mt-3" hidden>
+                    <label for="importe">Import</label>
+                    <input type="number" id="importe" th:field="*{importe}" class="form-control" step="0.01">
+                </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Guardar Canvis</button>
                     <a href="/vehicle/llistar" class="btn btn-secondary">Cancelar</a>
