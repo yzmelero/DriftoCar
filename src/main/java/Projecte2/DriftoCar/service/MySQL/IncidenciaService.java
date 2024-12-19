@@ -26,7 +26,7 @@ public class IncidenciaService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-    
+
     public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
         List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
 
@@ -45,7 +45,7 @@ public class IncidenciaService {
 
         return vehiclesSenseIncidencies;
     }
-  
+
     public void obrirIncidencia(Incidencia incidencia) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findByMatricula(incidencia.getMatricula().getMatricula());
 
@@ -63,10 +63,10 @@ public class IncidenciaService {
             vehicleRepository.save(vehicle);
         }
     }
-    
+
     public void tancarIncidencia(Long id) {
         Optional<Incidencia> incidenciaOpt = incidenciaRepository.findById(id);
-        
+
         if (!incidenciaOpt.isPresent()) {
             throw new RuntimeException("Incidència no trobada amb l'ID: " + id);
         }
@@ -75,10 +75,12 @@ public class IncidenciaService {
         incidencia.setEstat(false);
         incidenciaRepository.save(incidencia);
     }
-    
+
     public List<Incidencia> llistarIncidencies() {
         return incidenciaRepository.findAll();
     }
+
+    public Incidencia obtenirIncidenciaPerId(Long id) {
+        return incidenciaRepository.findById(id).orElse(null);
+    }
 }
-
-

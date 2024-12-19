@@ -4,6 +4,7 @@
  */
 package Projecte2.DriftoCar.entity.MongoDB;
 
+import jakarta.persistence.Transient;
 import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Id;
@@ -21,12 +22,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DocumentacioIncidencia {
     @Id
-    private Long id;
+    private String id;
+    
+    private Long incidenciaId;
 
     private Binary[] fotos;
 
     private String text;
 
     private Binary[] pdf;
+    
+    @Transient
+    private String[] fotosBase64; // Atribut per les imatges convertides
+
+    @Transient
+    private String[] pdfBase64; // Atribut per els PDFs convertides
     
 }
