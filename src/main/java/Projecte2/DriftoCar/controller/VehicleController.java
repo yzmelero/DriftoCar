@@ -124,7 +124,7 @@ public class VehicleController {
         model.addAttribute("vehicle", vehicle);
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
-        
+
         return "vehicle-modificar";
     }
 
@@ -144,7 +144,7 @@ public class VehicleController {
             log.error("Error al carregar la imatge: " + e.getMessage());
         }
         return "redirect:/vehicle/llistar";
-        
+
     }
 
     @GetMapping("/consulta/{matricula}")
@@ -203,9 +203,38 @@ public class VehicleController {
                 reservaService.desactivarReserva(id);
             }
         }
-
         vehicleService.desactivarVehicle(matricula);
 
+        return "redirect:/vehicle/llistar";
+    }
+
+    @GetMapping("/activar/{matricula}")
+    public String activarVehicles(@PathVariable("matricula") String matricula, Model model) {
+        Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+        model.addAttribute("vehicle", vehicle);
+        return "vehicle-activar";
+    }
+
+    @PostMapping("/activar/{matricula}")
+    public String confirmarActivarVehicles(@PathVariable("matricula") String matricula,
+            @RequestParam(value = "motiu", required = false) String motiu,
+            @RequestParam(value = "importe", required = false) Double importe) {
+
+        Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
+
+        vehicle.setDisponibilitat(true);
+        if (motiu == null || motiu.isEmpty()) {
+            vehicle.setMotiu(null);
+        } else {
+            vehicle.setMotiu(motiu);
+        }
+        if (importe == null) {
+            vehicle.setImporte(0);
+        } else {
+            vehicle.setImporte(importe);
+        }
+
+        vehicleService.modificaVehicle(vehicle);
         return "redirect:/vehicle/llistar";
     }
 }
