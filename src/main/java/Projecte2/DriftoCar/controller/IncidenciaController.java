@@ -175,4 +175,20 @@ public class IncidenciaController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
+    
+    @GetMapping("/historial")
+    public String verHistorial(Model model) {
+        try {
+            // Obtener todas las incidencias históricas
+            List<HistoricIncidencies> historial = historicIncidenciesService.obtenirHistoric();
+            
+            // Pasar el historial al modelo para que sea accesible en la vista
+            model.addAttribute("historial", historial);
+            return "historial-incidencia"; // Nombre de la vista
+        } catch (Exception e) {
+            // Manejar error si no se encuentra el historial
+            model.addAttribute("error", "No s'ha pogut obtenir el historial de les incidències.");
+            return "error"; // Vista de error
+        }
+    }
 }

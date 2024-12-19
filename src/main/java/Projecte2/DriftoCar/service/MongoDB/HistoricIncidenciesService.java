@@ -7,8 +7,6 @@ package Projecte2.DriftoCar.service.MongoDB;
 import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.repository.MongoDB.HistoricIncidenciaRepository;
-import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,13 +21,12 @@ public class HistoricIncidenciesService {
     @Autowired
     private HistoricIncidenciaRepository historicIncidenciesRepository;
 
-    @Autowired
-    private IncidenciaService incidenciaService;
-
     // Mètode per guardar la incidència a l'historial
     public void guardarHistoricIncidencia(Incidencia incidencia) {
         // Crear una nueva instancia de HistoricIncidencies y llenar los campos
         HistoricIncidencies historicIncidencia = new HistoricIncidencies();
+
+        historicIncidencia.setId(String.valueOf(incidencia.getId()));
 
         historicIncidencia.setEstat(incidencia.isEstat());  // Estado de la incidencia (abierta/cerrada)
         historicIncidencia.setMotiu(incidencia.getMotiu());  // Motivo de la incidencia
@@ -48,16 +45,5 @@ public class HistoricIncidenciesService {
     // Mètode per obtenir una incidència històrica per ID
     public HistoricIncidencies obtenirHistoricoPerId(String id) {
         return historicIncidenciesRepository.findById(id).orElse(null);
-    }
-
-    // Mètodes per obtenir les fotos i PDFs en Base64
-    private String[] obtenirFotosBase64(Long incidenciaId) {
-        // Lògica per obtenir fotos en Base64 (pot ser des d'un sistema de fitxers o base de dades)
-        return new String[]{}; // Torna les fotos en Base64
-    }
-
-    private String[] obtenirPdfBase64(Long incidenciaId) {
-        // Lògica per obtenir PDFs en Base64
-        return new String[]{}; // Torna els PDFs en Base64
     }
 }
