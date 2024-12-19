@@ -135,13 +135,6 @@ public class AgentController {
     public String eliminarAgent(@PathVariable("dni") String dni, Model model, Agent agent) {
         log.info("S'ha entrat al mètode esborrarController.");
         try {
-            
-            /* TODO comprobar si se pueden eliminar agentes que tengan vehiculos asociados, si no se puede, descomentar este codigo
-            if (!agent.getLocalitzacio().getVehicles().isEmpty()) {
-                model.addAttribute("error", "El agent te vehicles asociats");
-                return "agent-llistar";
-            }
-                */
             agentService.eliminarAgent(agent); // Llama al servicio para eliminar
         } catch (RuntimeException e) {
             model.addAttribute("error", "No s'ha pogut eliminar l'agent.");
