@@ -46,8 +46,15 @@ public class IncidenciaController {
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
     @GetMapping("/llistar-incidencies")
-    public String llistarIncidencies(Model model) {
+    public String llistarIncidencies(@RequestParam(value = "matricula", required = false) String matricula,
+            @RequestParam(value = "localitzacio.codiPostal", required = false) String codiPostal,
+            @RequestParam(value = "estat", required = false) Boolean estat,
+            Model model) {
         List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
+
+         List<Incidencia> llistarIncidencies = incidenciaService.filtrarIncidencies(matricula, codiPostal, estat);
+        
+        model.addAttribute("listarIncidencies", llistarIncidencies);
         model.addAttribute("incidencies", incidencies);
         return "incidencia-llistar";
     }

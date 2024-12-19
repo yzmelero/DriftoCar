@@ -83,4 +83,14 @@ public class IncidenciaService {
     public Incidencia obtenirIncidenciaPerId(Long id) {
         return incidenciaRepository.findById(id).orElse(null);
     }
+
+    public List<Incidencia> filtrarIncidencies(String matricula, String codiPostal, Boolean estat) {
+        if ((matricula == null || matricula.isEmpty())
+                && (codiPostal == null || codiPostal.isEmpty())
+                && estat == null) {
+            return incidenciaRepository.findAll();
+        }
+
+        return incidenciaRepository.findByFiltres(matricula, codiPostal, estat);
+    }
 }
