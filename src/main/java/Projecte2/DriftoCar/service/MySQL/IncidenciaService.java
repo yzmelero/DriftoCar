@@ -27,7 +27,10 @@ public class IncidenciaService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-    
+
+    @Autowired
+    private HistoricIncidenciesService historicIncidenciesService;
+
     public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
         List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
 
@@ -66,15 +69,22 @@ public class IncidenciaService {
     }
 
     public void tancarIncidencia(Long id) {
+        // Buscar la incidencia por ID
         Optional<Incidencia> incidenciaOpt = incidenciaRepository.findById(id);
 
         if (!incidenciaOpt.isPresent()) {
             throw new RuntimeException("Incidència no trobada amb l'ID: " + id);
         }
 
+        // Obtener la incidencia
         Incidencia incidencia = incidenciaOpt.get();
-        incidencia.setEstat(false);
-        incidenciaRepository.save(incidencia);
+
+        // Marcar la incidencia como cerrada en MySQL (cambiar el estado a 'false')
+        incidencia.setEstat(false); // Estado 'false' significa cerrada (Tancada)
+        incidenciaRepository.save(incidencia);  // Guardar el cambio en MySQL
+
+        // Crear una nueva entrada en MongoDB con la misma incidencia pero con el estado 'Tancada'
+        historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia); // Guardar la incidencia cerrada en MongoDB
     }
 
     public List<Incidencia> llistarIncidencies() {

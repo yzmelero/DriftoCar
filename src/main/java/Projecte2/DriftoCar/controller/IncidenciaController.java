@@ -104,7 +104,7 @@ public class IncidenciaController {
             historicIncidenciesService.guardarHistoricIncidencia(incidencia); // Aquí es guarda a l'historial
 
             // Desar la documentación associada en MongoDB
-            documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);  
+            documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);
 
             // Missatge d'éxit
             redirectAttributes.addFlashAttribute("success", "Incidència oberta correctament amb documentació.");
@@ -119,7 +119,9 @@ public class IncidenciaController {
     @GetMapping("/tancar/{id}")
     public String tancarIncidencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            // Tancar la incidència i crear la nova entrada en MongoDB
             incidenciaService.tancarIncidencia(id);
+
             redirectAttributes.addFlashAttribute("success", "Incidència tancada correctament.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", "Error en tancar la incidència: " + e.getMessage());
@@ -175,13 +177,13 @@ public class IncidenciaController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
-    
+
     @GetMapping("/historial")
     public String verHistorial(Model model) {
         try {
             // Obtener todas las incidencias históricas
             List<HistoricIncidencies> historial = historicIncidenciesService.obtenirHistoric();
-            
+
             // Pasar el historial al modelo para que sea accesible en la vista
             model.addAttribute("historial", historial);
             return "historial-incidencia"; // Nombre de la vista

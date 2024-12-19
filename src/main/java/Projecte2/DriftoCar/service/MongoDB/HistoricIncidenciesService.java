@@ -28,12 +28,26 @@ public class HistoricIncidenciesService {
 
         historicIncidencia.setId(String.valueOf(incidencia.getId()));
 
-        historicIncidencia.setEstat(incidencia.isEstat());  // Estado de la incidencia (abierta/cerrada)
+        historicIncidencia.setEstat(true);  // Estado de la incidencia (abierta/cerrada)
         historicIncidencia.setMotiu(incidencia.getMotiu());  // Motivo de la incidencia
         historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia());  // Fecha de inicio de la incidencia
         historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula());  // Matrícula del vehículo (relacionado con la entidad Vehicle)
 
-        // Guardar la incidencia en MongoDB
+        historicIncidenciesRepository.save(historicIncidencia);
+    }
+    
+    // Método para guardar la incidencia tancada en el historial
+    public void guardarHistoricIncidenciaTancada(Incidencia incidencia) {
+        HistoricIncidencies historicIncidencia = new HistoricIncidencies();
+
+        // Duplicar la información de la incidencia original, pero con estado tancado
+        historicIncidencia.setId(String.valueOf(incidencia.getId()));  // ID de la incidencia
+        historicIncidencia.setEstat(false);  // Estado tancado (falso)
+        historicIncidencia.setMotiu(incidencia.getMotiu());
+        historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia());
+        historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula());
+
+        // Guardar la incidencia tancada al historial de MongoDB (como un nuevo documento)
         historicIncidenciesRepository.save(historicIncidencia);
     }
 
