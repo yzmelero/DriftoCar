@@ -62,6 +62,7 @@ public class AgentController {
 
         if (!model.containsAttribute("agent")) {
             model.addAttribute("agent", new Agent());
+            //TODO listar por localizaciones no ocupadas
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
         }
