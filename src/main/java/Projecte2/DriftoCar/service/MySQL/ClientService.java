@@ -172,4 +172,16 @@ public class ClientService {
     public Optional<Client> findByUsuari(String usuari) {
         return clientRepository.findByUsuari(usuari);
     }
+
+    public List<Client> listarClientsInactius() {
+        return clientRepository.findByActivoFalse();
+    }
+
+    public void activarClient(String dni) {
+        Client client = clientRepository.findById(dni)
+                .orElseThrow(() -> new RuntimeException("Client no trobat"));
+
+        client.setActivo(true); // Activa el usuario
+        clientRepository.save(client);
+    }
 }

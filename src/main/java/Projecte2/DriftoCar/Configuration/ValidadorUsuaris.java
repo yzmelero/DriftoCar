@@ -31,6 +31,7 @@ public class ValidadorUsuaris implements UserDetailsService {
     }*/
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         // Buscar en la tabla de agentes
         Optional<Agent> agent = agentRepository.findByUsuari(username);
         if (agent.isPresent()) {
@@ -45,6 +46,9 @@ public class ValidadorUsuaris implements UserDetailsService {
         Optional<Client> client = clientRepository.findByUsuari(username);
         if (client.isPresent()) {
             Client clientExistent = client.get();
+            if (!clientExistent.isActivo()) {
+                throw new UsernameNotFoundException("El compte encara no ha estat validat per un administrador.");
+            }
             return User.builder()
                     .username(clientExistent.getUsuari())
                     .password(clientExistent.getContrasenya()) // La contraseña debe estar codificada

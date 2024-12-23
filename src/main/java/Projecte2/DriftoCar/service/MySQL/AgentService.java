@@ -49,6 +49,7 @@ public class AgentService {
         }
         String contrasenyaEncriptada = passwordEncoder.encode(agent.getContrasenya());
         agent.setContrasenya(contrasenyaEncriptada);
+        agent.setActivo(true);
         // Guarda el nuevo agente
         return agentRepository.save(agent);
         

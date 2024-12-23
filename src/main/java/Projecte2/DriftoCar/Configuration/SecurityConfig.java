@@ -36,6 +36,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/clients/esborrar/**").hasRole("ADMIN")
                                                 .requestMatchers("/clients/modificar/**").hasRole("ADMIN")
                                                 .requestMatchers("/clients/consulta/**").hasRole("ADMIN")
+                                                .requestMatchers("/clients/validar").hasRole("ADMIN")
+                                                .requestMatchers("/clients/activar/**").hasRole("ADMIN")
 
                                                 // Matchers de incidencia sin post
                                                 .requestMatchers("/incidencia/obrir/**").hasAnyRole("ADMIN", "AGENT")
