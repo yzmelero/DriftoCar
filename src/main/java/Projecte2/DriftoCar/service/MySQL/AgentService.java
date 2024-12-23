@@ -109,6 +109,7 @@ public class AgentService {
         agentNou.setNumTarjetaCredit(agent.getNumTarjetaCredit());
         agentNou.setAdreca(agent.getAdreca());
         agentNou.setEmail(agent.getEmail());
+        agentNou.setNacionalitat(agent.getNacionalitat());
         agentNou.setContrasenya(agent.getContrasenya());
         agentNou.setUsuari(agent.getUsuari());
         agentNou.setReputacio(agent.isReputacio());

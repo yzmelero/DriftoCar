@@ -26,6 +26,8 @@
                 </div>
             </div>
 
+
+            <!--TODO no muestra la contraseña en la pagina de modificacion-->
             <div class="mb-3">
                 <label for="contrasenya" class="form-label">Contrasenya</label>
                 <input type="password" id="contrasenya" th:field="*{contrasenya}" class="form-control" required />
@@ -104,7 +106,9 @@
 
             <div class="mb-3">
                 <label for="nacionalitat" class="form-label">Nacionalitat</label>
-                <input type="text" id="nacionalitat" th:field="*{nacionalitat}" class="form-control" required />
+                <select id="nacionalitat" name="nacionalitat" class="form-select" required>
+                    <option value="" disabled selected>Seleccioneu una nacionalitat</option>
+                </select>
                 <div class="invalid-feedback">
                     Si us plau, introdueix una nacionalitat.
                 </div>
@@ -125,6 +129,38 @@
             <a th:href="@{/agent/llistar}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lista de nacionalidades
+            const nacionalidades = [
+                "Espanya", "França", "Alemanya", "Itàlia", "Portugal",
+                "Regne Unit", "Estats Units", "Canadà", "Mèxic", "Argentina"
+            ];
+
+            // Elemento select para nacionalidades
+            const selectNacionalitat = document.getElementById("nacionalitat");
+
+            // Nacionalitat actual del cliente o agente (para modificación)
+            const selectedNacionalitat = /*[[${agent?.nacionalitat ?: client?.nacionalitat ?: ''}]]*/ "";
+
+            // Generar opciones
+            nacionalidades.forEach(nacionalitat => {
+                const option = document.createElement("option");
+                option.value = nacionalitat;
+                option.textContent = nacionalitat;
+
+                // Preseleccionar la opción correspondiente
+                if (nacionalitat === selectedNacionalitat) {
+                    option.selected = true;
+                }
+
+                selectNacionalitat.appendChild(option);
+            });
+        });
+    </script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

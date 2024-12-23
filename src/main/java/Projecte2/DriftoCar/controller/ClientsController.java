@@ -89,6 +89,8 @@ public class ClientsController {
         return "client-modificar";
     }
 
+
+    //TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
 
