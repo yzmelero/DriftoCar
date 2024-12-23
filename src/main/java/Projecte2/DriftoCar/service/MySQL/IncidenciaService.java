@@ -8,7 +8,10 @@ import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.IncidenciaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +76,7 @@ public class IncidenciaService {
 
         Incidencia incidencia = incidenciaOpt.get();
         incidencia.setEstat(false);
+        incidencia.setDataFiIncidencia(LocalDateTime.now());
         incidenciaRepository.save(incidencia);
     }
 
