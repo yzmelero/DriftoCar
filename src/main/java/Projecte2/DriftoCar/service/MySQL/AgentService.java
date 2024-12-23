@@ -118,8 +118,7 @@ public class AgentService {
         log.info("S'ha modificat l'agent.");
 
 
-        String contrasenyaEncriptada = passwordEncoder.encode(agentNou.getContrasenya());
-        agentNou.setContrasenya(contrasenyaEncriptada);
+        agentNou.setContrasenya(agent.getContrasenya());
 
         log.info("S'ha encriptat la contrasenya");
         return agentRepository.save(agentNou);

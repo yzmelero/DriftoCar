@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +32,8 @@ public class AgentController {
     private AgentService agentService;
     @Autowired
     private LocalitzacioService localitzacioService;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder; 
 
     /**
      * Filtra els agents pel seu DNI.
@@ -43,8 +45,7 @@ public class AgentController {
      */
     @GetMapping("/llistar")
     public String llistarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
-        
-        
+
         List<Agent> agents;
 
         if (dni != null && !dni.isEmpty()) {
@@ -62,7 +63,7 @@ public class AgentController {
 
         if (!model.containsAttribute("agent")) {
             model.addAttribute("agent", new Agent());
-            //TODO listar por localizaciones no ocupadas
+            // TODO listar por localizaciones no ocupadas
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
         }
@@ -71,7 +72,7 @@ public class AgentController {
 
     @PostMapping("/guardar")
     public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model) {
-        
+
         if (bindingResult.hasErrors()) {
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
@@ -107,7 +108,7 @@ public class AgentController {
      * @return La vista del formulario de edición.
      */
     @GetMapping("/modificar/{dni}")
-    public String modificarClients(@PathVariable("dni") String dni, Model model) {
+    public String modificarAgent(@PathVariable("dni") String dni, Model model) {
 
         Agent agent = agentService.obtenirAgentPerDni(dni);
         if (agent == null) {
@@ -120,10 +121,19 @@ public class AgentController {
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@Valid Agent agent, Model model) {
+    public String guardarAgentModificat(@Valid Agent agent, Model model) {
         Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
         agent.setRol(existent.getRol());
+        if (agent.getContrasenya() == null || agent.getContrasenya().isEmpty()) {
+            agent.setContrasenya(existent.getContrasenya());
+        } else {
+            // Si se ha proporcionado una nueva contraseña, encriptarla
+            String contrasenyaEncriptada = passwordEncoder.encode(agent.getContrasenya());
+            agent.setContrasenya(contrasenyaEncriptada);
+        }
+
         try {
+
             agentService.modificarAgent(agent);
         } catch (RuntimeException e) {
             String error = e.getMessage();

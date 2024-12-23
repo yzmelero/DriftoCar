@@ -27,12 +27,12 @@
             </div>
 
 
-            <!--TODO no muestra la contraseña en la pagina de modificacion-->
             <div class="mb-3">
                 <label for="contrasenya" class="form-label">Contrasenya</label>
-                <input type="password" id="contrasenya" th:field="*{contrasenya}" class="form-control" required />
+                <input type="password" id="contrasenya" name="contrasenya" class="form-control">
+                <small class="form-text text-muted">Deixa el camp buit si no vols canviar la contrasenya.</small>
                 <div class="invalid-feedback">
-                    Si us plau, introdueix una contrasenya.
+                    Si us plau, introdueix una contrasenya vàlida.
                 </div>
             </div>
 
