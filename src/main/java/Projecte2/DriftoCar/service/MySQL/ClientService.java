@@ -127,11 +127,10 @@ public class ClientService {
         clientNou.setContrasenya(client.getContrasenya());
         clientNou.setUsuari(client.getUsuari());
         clientNou.setReputacio(client.isReputacio());
+        clientNou.setContrasenya(client.getContrasenya());
 
         log.info("S'ha modificat el client.");
 
-        String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
-        clientNou.setContrasenya(contrasenyaEncriptada);
 
         return clientRepository.save(clientNou);
 

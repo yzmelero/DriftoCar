@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,8 @@ public class ClientsController {
 
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
 
@@ -89,11 +92,20 @@ public class ClientsController {
         return "client-modificar";
     }
 
-
-    //TODO añadir lista de nacionalidades de agente a cliente
+    // TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
-
+        Client existent = clientService.obtenirClientPerDni(client.getDni());
+        if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
+            client.setNacionalitat(existent.getNacionalitat());
+        }
+        if (client.getContrasenya() == null || client.getContrasenya().isEmpty()) {
+            client.setContrasenya(existent.getContrasenya());
+        } else {
+            // Si se ha proporcionado una nueva contraseña, encriptarla
+            String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
+            client.setContrasenya(contrasenyaEncriptada);
+        }
         clientService.modificarClient(client);
         log.info("Caducitat llicència rebuda: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI rebut: {}", client.getDniCaducitat());
@@ -110,7 +122,8 @@ public class ClientsController {
     }
 
     @GetMapping("/validar")
-    public String llistarUsuarisPendents(Model model, @RequestParam(value = "success", required = false) String success) {
+    public String llistarUsuarisPendents(Model model,
+            @RequestParam(value = "success", required = false) String success) {
         // Listar usuarios inactivos
         model.addAttribute("client", clientService.listarClientsInactius());
         if (success != null) {
