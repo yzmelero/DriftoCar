@@ -115,11 +115,15 @@ public class AgentController {
 
         }
         model.addAttribute("agent", agent);
+
         return "agent-modificar";
     }
 
+    //TODO arreglar nacionalidad y comprobar
     @PostMapping("/modificar")
     public String guardarClientModificat(@Valid Agent agent, Model model) {
+        Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
+        agent.setRol(existent.getRol());
         try {
             agentService.modificarAgent(agent);
         } catch (RuntimeException e) {
