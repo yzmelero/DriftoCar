@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 
@@ -143,5 +144,8 @@ public class AgentService {
     public List<Agent> buscarPorDni(String dni) {
         return agentRepository.findByDniContaining(dni); // Delega la búsqueda al repositorio
     }
-    
+    public List<Localitzacio> getLocalitzacionsDisponibles() {
+        // Devuelve las localizaciones que no tienen asignado un agente
+        return localitzacioRepository.findByAgentIsNull();
+    }
 }
