@@ -34,6 +34,7 @@ public class RegistreController {
         return "client-alta";  
     }
 
+    //TODO cuando registras a un cliente, el siguiente loggeo te lleva siempre al listado de clientes
     @PostMapping("/client-alta")
     public String registrarClient(@ModelAttribute("client") Client client, 
                                   @RequestParam("confirmacioContrasenya") String confirmacioContrasenya, 

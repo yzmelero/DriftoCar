@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -32,6 +34,8 @@ public class ClientsController {
 
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
 
@@ -88,9 +92,20 @@ public class ClientsController {
         return "client-modificar";
     }
 
+    // TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
-
+        Client existent = clientService.obtenirClientPerDni(client.getDni());
+        if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
+            client.setNacionalitat(existent.getNacionalitat());
+        }
+        if (client.getContrasenya() == null || client.getContrasenya().isEmpty()) {
+            client.setContrasenya(existent.getContrasenya());
+        } else {
+            // Si se ha proporcionado una nueva contraseña, encriptarla
+            String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
+            client.setContrasenya(contrasenyaEncriptada);
+        }
         clientService.modificarClient(client);
         log.info("Caducitat llicència rebuda: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI rebut: {}", client.getDniCaducitat());
@@ -98,11 +113,30 @@ public class ClientsController {
     }
 
     @GetMapping("/consulta/{dni}")
-    public String visualitzarClient(@PathVariable String dni, Model model){
+    public String visualitzarClient(@PathVariable String dni, Model model) {
 
         Client client = clientService.obtenirClientPerDni(dni);
         model.addAttribute("client", client);
         model.addAttribute("modeVisualitzar", true);
         return "client-modificar";
     }
+
+    @GetMapping("/validar")
+    public String llistarUsuarisPendents(Model model,
+            @RequestParam(value = "success", required = false) String success) {
+        // Listar usuarios inactivos
+        model.addAttribute("client", clientService.listarClientsInactius());
+        if (success != null) {
+            model.addAttribute("success", "El compte de l'usuari s'ha activat correctament.");
+        }
+        return "client-validar";
+    }
+
+    @PostMapping("/activar/{dni}")
+    public String activarUsuari(@PathVariable String dni, RedirectAttributes redirectAttributes) {
+        clientService.activarClient(dni);
+        redirectAttributes.addAttribute("success", "true");
+        return "redirect:/clients/validar";
+    }
+
 }

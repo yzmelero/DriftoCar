@@ -19,6 +19,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, String> {
 
+        //Lista todos los clientes por validar
+        List<Client> findByActivoFalse();
+
+
         // Guarda una instància de client.
         // Client registreClient(Client client);
 

@@ -62,7 +62,7 @@ public class DriftoCarApplication {
 			localitzacioService.altaLocalitzacio(localitzacio2);
 		}
 
-		Client client = new Client("47544582C", "client", "client",
+		Client client = new Client("47544582C", true, "client", "client",
 				"cliente", "apellidoCliente", "clienteDefault@gmail.com", "123456789",
 				"CienteLandia", "c1", LocalDate.parse("2024-12-12"),
 				LocalDate.parse("2024-12-12"), "999316536728", "La calle del cliente",
