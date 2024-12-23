@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -32,7 +33,7 @@ public class LocalitzacioController {
     @Autowired
     private LocalitzacioService localitzacioService;
 
-    //Llista
+    // Llista
     @GetMapping("/llistar")
     public String llistarLocalitzacions(Model model) {
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -40,7 +41,7 @@ public class LocalitzacioController {
         return "localitzacio-llistar";
     }
 
-    //Alta
+    // Alta
     @GetMapping("/alta")
     public String mostrarFormularioAlta(Model model) {
         model.addAttribute("localitzacio", new Localitzacio());
@@ -48,9 +49,14 @@ public class LocalitzacioController {
     }
 
     @PostMapping("/alta")
-    public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio, Model model) {
+    public String altaLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio, Model model,
+            @RequestParam("horaObertura") String horaObertura,
+            @RequestParam("horaTancament") String horaTancament) {
         try {
+            localitzacio.setHorari(horaObertura + " - " + horaTancament);
+            
             localitzacioService.altaLocalitzacio(localitzacio);
+
             log.info("S'ha donat d'alta una localització..");
             return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
@@ -59,7 +65,7 @@ public class LocalitzacioController {
         }
     }
 
-    //Esborrar
+    // Esborrar
     @GetMapping("/esborrar/{codiPostal}")
     public String esborrarLocalitzacio(@PathVariable String codiPostal, RedirectAttributes redirectAttributes) {
         try {
@@ -71,8 +77,8 @@ public class LocalitzacioController {
         }
         return "redirect:/localitzacio/llistar";
     }
-    
-    //Modificar
+
+    // Modificar
     @GetMapping("/modificar/{codiPostal}")
     public String mostrarFormularioModificar(@PathVariable String codiPostal, Model model) {
         Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
@@ -95,7 +101,7 @@ public class LocalitzacioController {
         }
     }
 
-    //Consultar
+    // Consultar
     @GetMapping("/consulta/{codiPostal}")
     public String consultarLocalitzacio(@PathVariable String codiPostal, Model model) {
         Localitzacio localitzacio = localitzacioService.obtenirLocalitzacioCodiPostal(codiPostal);
