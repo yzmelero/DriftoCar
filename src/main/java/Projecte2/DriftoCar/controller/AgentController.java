@@ -124,6 +124,9 @@ public class AgentController {
     public String guardarAgentModificat(@Valid Agent agent, Model model) {
         Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
         agent.setRol(existent.getRol());
+        if (agent.getNacionalitat()== null ||agent.getNacionalitat().isEmpty()) {
+            agent.setNacionalitat(existent.getNacionalitat());
+        }
         if (agent.getContrasenya() == null || agent.getContrasenya().isEmpty()) {
             agent.setContrasenya(existent.getContrasenya());
         } else {
