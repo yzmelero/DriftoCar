@@ -54,7 +54,7 @@ public class LocalitzacioController {
             @RequestParam("horaTancament") String horaTancament) {
         try {
             localitzacio.setHorari(horaObertura + " - " + horaTancament);
-            
+
             localitzacioService.altaLocalitzacio(localitzacio);
 
             log.info("S'ha donat d'alta una localització..");
@@ -91,9 +91,14 @@ public class LocalitzacioController {
     }
 
     @PostMapping("/modificar")
-    public String modificarLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio) {
+    public String modificarLocalitzacio(@ModelAttribute("localitzacio") Localitzacio localitzacio,
+            @RequestParam("horaObertura") String horaObertura,
+            @RequestParam("horaTancament") String horaTancament) {
         try {
+            localitzacio.setHorari(horaObertura + " - " + horaTancament);
+
             localitzacioService.modificarLocalitzacio(localitzacio.getCodiPostal(), localitzacio);
+            
             log.info("S'ha modificat una localització..");
             return "redirect:/localitzacio/llistar";
         } catch (RuntimeException e) {
