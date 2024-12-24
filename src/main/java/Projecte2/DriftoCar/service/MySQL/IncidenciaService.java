@@ -8,6 +8,7 @@ import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.IncidenciaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public class IncidenciaService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+    
+    @Autowired
+    private HistoricIncidenciesService historicIncidenciesService;
 
     public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
         List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
@@ -80,6 +84,8 @@ public class IncidenciaService {
         incidencia.setEstat(false);
         incidencia.setDataFiIncidencia(LocalDateTime.now());
         incidenciaRepository.save(incidencia);
+        
+        historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia);
     }
 
     public List<Incidencia> llistarIncidencies() {

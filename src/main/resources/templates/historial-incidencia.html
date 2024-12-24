@@ -34,21 +34,18 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <th>Motiu</th>
                             <th>Estat</th>
                             <th>Data Inici</th>
-                            <th>Accions</th>
+                            <th>Data Final</th> <!-- Nueva columna para la data final -->
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Iterar sobre la lista de incidencias -->
                         <tr th:each="incidencia : ${historial}">
                             <td th:text="${incidencia.id}"></td>
-                            <td><strong th:text="${incidencia.matricula}"></strong></td> <!-- Matrícula en negreta -->
+                            <td><strong th:text="${incidencia.matricula}"></strong></td> <!-- Matrícula en negrita -->
                             <td th:text="${incidencia.motiu}"></td>
                             <td th:text="${incidencia.estat ? 'Oberta' : 'Tancada'}"></td>
-                            <td th:text="${incidencia.dataIniciIncidencia}"></td>
-                            <td>
-                                <!-- Enlace para ver más detalles de la incidencia -->
-                                <a th:href="@{/incidencia/detall/{id}(id=${incidencia.id})}" class="btn btn-info">Veure Detalls</a>
-                            </td>
+                            <td th:text="${incidencia.dataIniciIncidencia != null ? #temporals.format(incidencia.dataIniciIncidencia, 'dd/MM/yyyy HH:mm') : 'No disponible'}"></td>
+                            <td th:text="${incidencia.dataFiIncidencia != null ? #temporals.format(incidencia.dataFiIncidencia, 'dd/MM/yyyy HH:mm') : 'No disponible'}"></td>
                         </tr>
                     </tbody>
                 </table>

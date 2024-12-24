@@ -33,6 +33,9 @@ public class HistoricIncidencies {
 
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
+    
+    @Field(name="data_fi_incidencia")
+    private LocalDateTime dataFiIncidencia;
 
     private String matricula;
 }

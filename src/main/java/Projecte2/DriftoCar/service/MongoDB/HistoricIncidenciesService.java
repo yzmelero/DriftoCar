@@ -35,19 +35,40 @@ public class HistoricIncidenciesService {
 
         historicIncidenciesRepository.save(historicIncidencia);
     }
-    
-    // Método para guardar la incidencia tancada en el historial
+
+    // Mètode per guardar la incidència tancada al historial amb una nova ID
     public void guardarHistoricIncidenciaTancada(Incidencia incidencia) {
+        // Obtenir totes les incidències de l'historial
+        List<HistoricIncidencies> totesLesIncidencies = obtenirHistoric();
+
+        // Inicialitzar la màxima ID a 0
+        long maximaId = 0;
+
+        // Recórrer totes les incidències per trobar la màxima ID
+        for (HistoricIncidencies incidenciaHist : totesLesIncidencies) {
+            if (incidenciaHist.getId() != null) { // Comprovem que l'ID no sigui nul
+                long idActual = Long.parseLong(incidenciaHist.getId());
+                if (idActual > maximaId) {
+                    maximaId = idActual;
+                }
+            }
+        }
+
+        // Calcular la nova ID com a màxima ID més 1
+        long novaId = maximaId + 1;
+
+        // Crear una nova instància de HistoricIncidencies
         HistoricIncidencies historicIncidencia = new HistoricIncidencies();
 
-        // Duplicar la información de la incidencia original, pero con estado tancado
-        historicIncidencia.setId(String.valueOf(incidencia.getId()));  // ID de la incidencia
-        historicIncidencia.setEstat(false);  // Estado tancado (falso)
-        historicIncidencia.setMotiu(incidencia.getMotiu());
-        historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia());
-        historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula());
+        // Assignar els valors a la nova incidència històrica
+        historicIncidencia.setId(String.valueOf(novaId)); // Assignem la nova ID
+        historicIncidencia.setEstat(false); // Estat tancat (fals)
+        historicIncidencia.setMotiu(incidencia.getMotiu()); // Motiu de la incidència
+        historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia()); // Data d'inici
+        historicIncidencia.setDataFiIncidencia(incidencia.getDataFiIncidencia()); // Data de tancament
+        historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula()); // Matrícula del vehicle
 
-        // Guardar la incidencia tancada al historial de MongoDB (como un nuevo documento)
+        // Guardar la nova incidència tancada a MongoDB
         historicIncidenciesRepository.save(historicIncidencia);
     }
 

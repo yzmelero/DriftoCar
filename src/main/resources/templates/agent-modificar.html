@@ -62,9 +62,10 @@
 
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telèfon</label>
-                <input type="text" id="telefon" th:field="*{telefon}" class="form-control" required />
-                <div class="invalid-feedback">
-                    Si us plau, introdueix un telèfon.
+                <input type="tel" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
+                    title="El telèfon ha de tenir exactament 9 dígits." th:value="${agent.telefon}">
+                <div id="telefonError" class="text-danger" style="display: none;">
+                    El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
                 </div>
             </div>
 
@@ -129,6 +130,32 @@
             <a th:href="@{/agent/llistar}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const telefonInput = document.getElementById("telefon");
+            const telefonError = document.getElementById("telefonError");
+            const telefonPattern = /^[0-9]{9}$/;
+
+            // Validar Teléfono en tiempo real
+            telefonInput.addEventListener("input", function () {
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                } else {
+                    telefonError.style.display = "none";
+                }
+            });
+
+            // Validar al enviar el formulario
+            const form = telefonInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                    event.preventDefault(); // Evita que se envíe el formulario
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
