@@ -192,4 +192,8 @@ public class ClientService {
         client.setActivo(true); // Activa el usuario
         clientRepository.save(client);
     }
+
+    public Optional<Client> findByDni(String dni) {
+        return clientRepository.findByDni(dni);
+    }
 }
