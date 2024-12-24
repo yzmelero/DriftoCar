@@ -35,7 +35,6 @@ public class ClientService {
 
     }
 
-    // TODO añadir encriptacion de pswd
     public Client altaClient(Client client) throws Exception {
         log.info("S'ha entrat al mètode altaClient");
 
@@ -128,11 +127,10 @@ public class ClientService {
         clientNou.setContrasenya(client.getContrasenya());
         clientNou.setUsuari(client.getUsuari());
         clientNou.setReputacio(client.isReputacio());
+        clientNou.setContrasenya(client.getContrasenya());
 
         log.info("S'ha modificat el client.");
 
-        String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
-        clientNou.setContrasenya(contrasenyaEncriptada);
 
         return clientRepository.save(clientNou);
 
@@ -171,5 +169,17 @@ public class ClientService {
 
     public Optional<Client> findByUsuari(String usuari) {
         return clientRepository.findByUsuari(usuari);
+    }
+
+    public List<Client> listarClientsInactius() {
+        return clientRepository.findByActivoFalse();
+    }
+
+    public void activarClient(String dni) {
+        Client client = clientRepository.findById(dni)
+                .orElseThrow(() -> new RuntimeException("Client no trobat"));
+
+        client.setActivo(true); // Activa el usuario
+        clientRepository.save(client);
     }
 }

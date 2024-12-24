@@ -8,8 +8,10 @@ import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.IncidenciaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
-import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,6 @@ public class IncidenciaService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-
-    @Autowired
-    private HistoricIncidenciesService historicIncidenciesService;
 
     public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
         List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
@@ -78,13 +77,9 @@ public class IncidenciaService {
 
         // Obtener la incidencia
         Incidencia incidencia = incidenciaOpt.get();
-
-        // Marcar la incidencia como cerrada en MySQL (cambiar el estado a 'false')
-        incidencia.setEstat(false); // Estado 'false' significa cerrada (Tancada)
-        incidenciaRepository.save(incidencia);  // Guardar el cambio en MySQL
-
-        // Crear una nueva entrada en MongoDB con la misma incidencia pero con el estado 'Tancada'
-        historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia); // Guardar la incidencia cerrada en MongoDB
+        incidencia.setEstat(false);
+        incidencia.setDataFiIncidencia(LocalDateTime.now());
+        incidenciaRepository.save(incidencia);
     }
 
     public List<Incidencia> llistarIncidencies() {

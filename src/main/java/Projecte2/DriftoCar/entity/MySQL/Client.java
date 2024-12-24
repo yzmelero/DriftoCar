@@ -43,6 +43,8 @@ public class Client implements UserDetails{
     @Id
     private String dni;
 
+    private boolean activo;
+
     @Column(unique = true)
     private String usuari;
     

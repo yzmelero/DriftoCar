@@ -1,66 +1,103 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>REGISTRE</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <!--TODO posible modificacion de tipo de campos, number y password-->
-        <div>
-            <form th:action="@{/registre/client-alta}" method="POST">
-                <label for="usuari">Nom d'usuari :</label>
-                <input type="text" id="usuari" name="usuari" required>
 
-                <label for="email">Email :</label>
-                <input type="email" id="email" name="email" required>
+<head>
+    <title>Registrar Client</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-                <label for="contrasenya">Contasenya : </label>
-                <input type="text" id="contrasenya" name="contrasenya" required>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Registrar Client</h1>
+        <form th:action="@{/registre/client-alta}" method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="dni" class="form-label">DNI</label>
+                <input type="text" id="dni" name="dni" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
+                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="usuari" class="form-label">Nom d'usuari</label>
+                <input type="text" id="usuari" name="usuari" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="contrasenya" class="form-label">Contrasenya</label>
+                <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirmacioContrasenya" class="form-label">Confirmar contrasenya</label>
+                <input type="password" id="confirmacioContrasenya" name="confirmacioContrasenya" class="form-control"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" id="nom" name="nom" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="cognoms" class="form-label">Cognoms</label>
+                <input type="text" id="cognoms" name="cognoms" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                <select id="nacionalitat" name="nacionalitat" class="form-control" required>
+                    <option value="" disabled selected>Seleccioneu una nacionalitat</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="telefon" class="form-label">Telèfon</label>
+                <input type="number" id="telefon" name="telefon" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="llicencia" class="form-label">Llicència de conduïr</label>
+                <input type="text" id="llicencia" name="llicencia" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
+                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="adreca" class="form-label">Adreça</label>
+                <input type="text" id="adreca" name="adreca" class="form-control" required>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input" required>
+                <label for="reputacio" class="form-check-label">Reputació</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Crear Client</button>
+        </form>
+    </div>
 
-                <label for="confirmacioContrasenya">Confirmar contrasenya: </label>
-                <input type="text" id="confirmacioContrasenya" name="confirmacioContrasenya" required>
-                
-                <label for="dni">DNI : </label>
-                <input type="text" id="dni" name="dni" required>
-                
-                <label for="confirmacioContrasenya">Nom : </label>
-                <input type="text" id="nom" name="nom" required>
-                
-                <label for="cognoms">Cognoms : </label>
-                <input type="text" id="cognoms" name="cognoms" required>
-                
-                <label for="nacionalitat">Nacionalitat : </label>
-                <input type="text" id="nacionalitat" name="nacionalitat" required>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const nacionalidades = [
+                "Espanya", "França", "Alemanya", "Itàlia", "Portugal",
+                "Regne Unit", "Estats Units", "Canadà", "Mèxic", "Argentina"
+            ];
 
-                <label for="telefon">Telèfon : </label>
-                <input type="text" id="telefon" name="telefon" required>
+            const selectNacionalitat = document.getElementById("nacionalitat");
 
-                <label for="llicencia">Llicència de conduïr : </label>
-                <input type="text" id="llicencia" name="llicencia" required>
-                
-                <label for="llicCaducitat"> Data d'expiració de la llicència : </label>
-                <input type="date" id="llicCaducitat" name="llicCaducitat" required> 
-                
-                <label for="dniCaducitat">Data d'expiració del DNI : </label>
-                <input type="date" id="dniCaducitat" name="dniCaducitat" required>
-                
-                <label for="numTarjetaCredit">Núm. tarjeta de crèdit : </label>
-                <input type="text" id="numTarjetaCredit" name="numTarjetaCredit" required>
-                
-                <label for="adreca">Adreça : </label>
-                <input type="text" id="adreca" name="adreca" required>
-                
-                <label for="reputacio">Reputació (1-0): </label>
-                <input type="text" id="reputacio" name="reputacio" required>
-                
-                <button type="submit">Crear Client</button>
-            </form>
-        </div>
-    </body>
+            nacionalidades.forEach(nacionalidad => {
+                const option = document.createElement("option");
+                option.value = nacionalidad;
+                option.textContent = nacionalidad;
+                selectNacionalitat.appendChild(option);
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
-

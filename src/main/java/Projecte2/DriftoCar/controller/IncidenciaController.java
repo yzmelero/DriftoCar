@@ -108,11 +108,11 @@ public class IncidenciaController {
 
             // Missatge d'éxit
             redirectAttributes.addFlashAttribute("success", "Incidència oberta correctament amb documentació.");
-            return "redirect:/incidencia/llistar";
+            return "redirect:/incidencia/llistar-incidencies";
         } catch (RuntimeException | IOException e) {
             // Missatge d'error
             redirectAttributes.addFlashAttribute("error", "Error en obrir la incidència: " + e.getMessage());
-            return "redirect:/incidencia/llistar";
+            return "redirect:/incidencia/llistar-incidencies";
         }
     }
 

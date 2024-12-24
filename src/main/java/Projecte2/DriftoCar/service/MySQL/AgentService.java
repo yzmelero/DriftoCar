@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 
@@ -49,6 +50,7 @@ public class AgentService {
         }
         String contrasenyaEncriptada = passwordEncoder.encode(agent.getContrasenya());
         agent.setContrasenya(contrasenyaEncriptada);
+        agent.setActivo(true);
         // Guarda el nuevo agente
         return agentRepository.save(agent);
         
@@ -108,6 +110,7 @@ public class AgentService {
         agentNou.setNumTarjetaCredit(agent.getNumTarjetaCredit());
         agentNou.setAdreca(agent.getAdreca());
         agentNou.setEmail(agent.getEmail());
+        agentNou.setNacionalitat(agent.getNacionalitat());
         agentNou.setContrasenya(agent.getContrasenya());
         agentNou.setUsuari(agent.getUsuari());
         agentNou.setReputacio(agent.isReputacio());
@@ -116,8 +119,7 @@ public class AgentService {
         log.info("S'ha modificat l'agent.");
 
 
-        String contrasenyaEncriptada = passwordEncoder.encode(agentNou.getContrasenya());
-        agentNou.setContrasenya(contrasenyaEncriptada);
+        agentNou.setContrasenya(agent.getContrasenya());
 
         log.info("S'ha encriptat la contrasenya");
         return agentRepository.save(agentNou);
@@ -142,5 +144,8 @@ public class AgentService {
     public List<Agent> buscarPorDni(String dni) {
         return agentRepository.findByDniContaining(dni); // Delega la búsqueda al repositorio
     }
-    
+    public List<Localitzacio> getLocalitzacionsDisponibles() {
+        // Devuelve las localizaciones que no tienen asignado un agente
+        return localitzacioRepository.findByAgentIsNull();
+    }
 }
