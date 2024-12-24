@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,6 +24,9 @@ public class ClientService {
     @Autowired
     ClientRepository clientRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; 
+
     Logger log = LoggerFactory.getLogger(ClientService.class);
 
     public ClientService(ClientRepository clientRepository) {
@@ -31,8 +35,6 @@ public class ClientService {
 
     }
 
-
-    //TODO añadir encriptacion de pswd
     public Client altaClient(Client client) throws Exception {
         log.info("S'ha entrat al mètode altaClient");
 
@@ -83,6 +85,12 @@ public class ClientService {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
         log.info("S'ha entrat donat d'alta a un client.");
+
+        String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
+        client.setContrasenya(contrasenyaEncriptada);
+
+        log.info("S'ha encriptat la contrasenya");
+
         return clientRepository.save(client);
 
     }
@@ -99,29 +107,32 @@ public class ClientService {
 
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
-        Client clientAntic = clientExistent.get();
-        
-        //Loggers per a corregir un bug.
+        Client clientNou = clientExistent.get();
+
+        // Loggers per a corregir un bug.
         log.info("Client rebut: {}", client);
         log.info("Telèfon rebut: {}", client.getTelefon());
         log.info("Nacionalitat rebuda: {}", client.getNacionalitat());
 
-        clientAntic.setNom(client.getNom());
-        clientAntic.setCognoms(client.getCognoms());
-        clientAntic.setLlicencia(client.getLlicencia());
-        clientAntic.setLlicCaducitat(client.getLlicCaducitat());
-        clientAntic.setDniCaducitat(client.getDniCaducitat());
-        clientAntic.setNumTarjetaCredit(client.getNumTarjetaCredit());
-        clientAntic.setAdreca(client.getAdreca());
-        clientAntic.setEmail(client.getEmail());
-        clientAntic.setNacionalitat(client.getNacionalitat());
-        clientAntic.setTelefon(client.getTelefon());
-        clientAntic.setContrasenya(client.getContrasenya());
-        clientAntic.setUsuari(client.getUsuari());
-        clientAntic.setReputacio(client.isReputacio());
+        clientNou.setNom(client.getNom());
+        clientNou.setCognoms(client.getCognoms());
+        clientNou.setLlicencia(client.getLlicencia());
+        clientNou.setLlicCaducitat(client.getLlicCaducitat());
+        clientNou.setDniCaducitat(client.getDniCaducitat());
+        clientNou.setNumTarjetaCredit(client.getNumTarjetaCredit());
+        clientNou.setAdreca(client.getAdreca());
+        clientNou.setEmail(client.getEmail());
+        clientNou.setNacionalitat(client.getNacionalitat());
+        clientNou.setTelefon(client.getTelefon());
+        clientNou.setContrasenya(client.getContrasenya());
+        clientNou.setUsuari(client.getUsuari());
+        clientNou.setReputacio(client.isReputacio());
+        clientNou.setContrasenya(client.getContrasenya());
 
         log.info("S'ha modificat el client.");
-        return clientRepository.save(clientAntic);
+
+
+        return clientRepository.save(clientNou);
 
     }
 
@@ -156,7 +167,19 @@ public class ClientService {
                 (email != null && !email.isEmpty()) ? email : null);
     }
 
-    public Optional<Client> findByUsuari(String usuari){
+    public Optional<Client> findByUsuari(String usuari) {
         return clientRepository.findByUsuari(usuari);
+    }
+
+    public List<Client> listarClientsInactius() {
+        return clientRepository.findByActivoFalse();
+    }
+
+    public void activarClient(String dni) {
+        Client client = clientRepository.findById(dni)
+                .orElseThrow(() -> new RuntimeException("Client no trobat"));
+
+        client.setActivo(true); // Activa el usuario
+        clientRepository.save(client);
     }
 }

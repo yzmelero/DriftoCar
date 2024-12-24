@@ -46,7 +46,7 @@ public class Agent extends Client {
             String email, String telefon, String nacionalitat, String llicencia, LocalDate llicCaducitat, LocalDate dniCaducitat,
             String numTarjetaCredit, String adreca, boolean reputacio, List<Reserva> reserva,
             TipusRol rol, Localitzacio localitzacio) {
-        super(dni, usuari, contrasenya, nom, cognoms, email, telefon, nacionalitat, llicencia, llicCaducitat,
+        super(dni, true, usuari, contrasenya, nom, cognoms, email, telefon, nacionalitat, llicencia, llicCaducitat,
             dniCaducitat, numTarjetaCredit, adreca, reputacio, reserva);
         this.rol = rol;
         this.localitzacio = localitzacio;

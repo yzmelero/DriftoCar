@@ -16,22 +16,22 @@
         <h1 class="mb-4">Menú Principal</h1>
 
         <div class="row g-3">
-            <div class="col-12 col-md-6">
+            <div sec:authorize="isAuthenticated()" class="col-12 col-md-6">
                 <a href="/vehicle/llistar" class="btn btn-primary w-100">Llistat de Vehicles</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div sec:authorize="hasAnyRole('ADMIN')" class="col-12 col-md-6">
                 <a href="/localitzacio/llistar" class="btn btn-primary w-100">Llistat de Localitzacions</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div sec:authorize="hasAnyRole('ADMIN')" class="col-12 col-md-6">
                 <a href="/agent/llistar" class="btn btn-primary w-100">Llistat d'Agents</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div sec:authorize="hasAnyRole('ADMIN')" class="col-12 col-md-6">
                 <a href="/clients/llistar" class="btn btn-primary w-100">Llistat de Clients</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div sec:authorize="isAuthenticated()" class="col-12 col-md-6">
                 <a href="/reserva/llistar" class="btn btn-primary w-100">Llistat de Reserves</a>
             </div>
-            <div class="col-12 col-md-6">
+            <div sec:authorize="hasAnyRole('ADMIN', 'AGENT')" class="col-12 col-md-6">
                 <a href="/incidencia/llistar-incidencies" class="btn btn-primary w-100">Llistat d'Incidencies</a>
             </div>
         </div>

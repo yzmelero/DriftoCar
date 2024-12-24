@@ -11,6 +11,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,7 +42,10 @@ import lombok.ToString;
 public class Client implements UserDetails{
     
     @Id
+    @Pattern(regexp = "^[0-9]{8}[A-Z]$", message = "El DNI ha de tenir 8 números i una lletra majúscula.")
     private String dni;
+
+    private boolean activo;
 
     @Column(unique = true)
     private String usuari;
@@ -56,6 +60,7 @@ public class Client implements UserDetails{
     private String email;
 
     @Column(unique = true)
+    @Pattern(regexp = "^[0-9]{9}$", message = "El telèfon ha de tenir 9 dígits.")
     private String telefon;
 
     @Column
