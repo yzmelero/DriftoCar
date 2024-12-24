@@ -68,9 +68,14 @@ public class ClientsController {
     }
 
     @GetMapping("/esborrar/{dni}")
-    public String esborrarClients(@PathVariable("dni") String dni, Client client) {
-
-        clientService.baixaClient(client);
+    public String esborrarClients(@PathVariable("dni") String dni, Client client, 
+            RedirectAttributes redirectAttributes) {
+        try {
+            clientService.baixaClient(client);
+            redirectAttributes.addFlashAttribute("success", "El client s'ha esborrat correctament.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
 
         return "redirect:/clients/llistar";
 
@@ -92,7 +97,6 @@ public class ClientsController {
         return "client-modificar";
     }
 
-    // TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
         Client existent = clientService.obtenirClientPerDni(client.getDni());
