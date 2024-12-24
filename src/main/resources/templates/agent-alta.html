@@ -16,13 +16,18 @@
 
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
         <form th:action="@{/agent/guardar}" method="post">
+
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" name="dni" class="form-control" th:value="${agent?.dni}" required>
+                <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
+                    title="El DNI ha de tenir 8 números i una lletra majúscula.">
+                <div id="dniError" class="text-danger" style="display: none;">
+                    El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="usuari" class="form-label">Usuari</label>
+                <label for="usuari" class="form-label">Nom d'Usuari</label>
                 <input type="text" id="usuari" name="usuari" class="form-control" th:value="${agent?.usuari}" required>
             </div>
 
@@ -50,8 +55,11 @@
 
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telèfon</label>
-                <input type="number" id="telefon" name="telefon" class="form-control" th:value="${agent?.telefon}"
-                    required>
+                <input type="number" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
+                    title="El telèfon ha de tenir 9 dígits.">
+                <div id="telefonError" class="text-danger" style="display: none;">
+                    El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
+                </div>
             </div>
 
             <div class="mb-3">
@@ -124,23 +132,73 @@
         </form>
     </div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const nacionalidades = [
-                    "Espanya", "França", "Alemanya", "Itàlia", "Portugal",
-                    "Regne Unit", "Estats Units", "Canadà", "Mèxic", "Argentina"
-                ];
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dniInput = document.getElementById("dni");
+            const dniError = document.getElementById("dniError");
+            const telefonInput = document.getElementById("telefon");
+            const telefonError = document.getElementById("telefonError");
 
-                const selectNacionalitat = document.getElementById("nacionalitat");
+            const dniPattern = /^[0-9]{8}[A-Z]$/;
+            const telefonPattern = /^[0-9]{9}$/;
 
-                nacionalidades.forEach(nacionalidad => {
-                    const option = document.createElement("option");
-                    option.value = nacionalidad;
-                    option.textContent = nacionalidad;
-                    selectNacionalitat.appendChild(option);
-                });
+            // Validar DNI en tiempo real
+            dniInput.addEventListener("input", function () {
+                if (!dniPattern.test(dniInput.value)) {
+                    dniError.style.display = "block";
+                } else {
+                    dniError.style.display = "none";
+                }
             });
-        </script>
+
+            // Validar Teléfono en tiempo real
+            telefonInput.addEventListener("input", function () {
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                } else {
+                    telefonError.style.display = "none";
+                }
+            });
+
+            // Validar al enviar el formulario
+            const form = dniInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                if (!dniPattern.test(dniInput.value)) {
+                    dniError.style.display = "block";
+                    isValid = false;
+                }
+
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Evita que se envíe el formulario
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const nacionalidades = [
+                "Espanya", "França", "Alemanya", "Itàlia", "Portugal",
+                "Regne Unit", "Estats Units", "Canadà", "Mèxic", "Argentina"
+            ];
+
+            const selectNacionalitat = document.getElementById("nacionalitat");
+
+            nacionalidades.forEach(nacionalidad => {
+                const option = document.createElement("option");
+                option.value = nacionalidad;
+                option.textContent = nacionalidad;
+                selectNacionalitat.appendChild(option);
+            });
+        });
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
