@@ -17,6 +17,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <div class="container mt-5">
         <h2 class="mb-4">Informació del Client</h2>
 
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
         <!-- Formulario para editar cliente -->
         <form th:action="@{/clients/modificar}" th:object="${client}" method="post" class="needs-validation" novalidate>
             <!-- Campo oculto para el DNI -->

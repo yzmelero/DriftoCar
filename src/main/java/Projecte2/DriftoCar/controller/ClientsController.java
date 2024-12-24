@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 /**
  *
  * @author Anna
@@ -101,7 +100,7 @@ public class ClientsController {
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("client") Client client) {
+    public String guardarClientModificat(@ModelAttribute("client") Client client, Model model) {
         Client existent = clientService.obtenirClientPerDni(client.getDni());
         if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
             client.setNacionalitat(existent.getNacionalitat());
@@ -113,7 +112,13 @@ public class ClientsController {
             String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
             client.setContrasenya(contrasenyaEncriptada);
         }
-        clientService.modificarClient(client);
+        try {
+            clientService.modificarClient(client);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("client", client);
+            return "client-modificar";
+        }
         log.info("Caducitat llicència rebuda: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI rebut: {}", client.getDniCaducitat());
         return "redirect:/clients/llistar";
@@ -148,8 +153,8 @@ public class ClientsController {
         }
 
         Client existent = client.get();
-        
-        model.addAttribute("client", existent );
+
+        model.addAttribute("client", existent);
         return "client-consulta"; // Nom del fitxer HTML
     }
 
