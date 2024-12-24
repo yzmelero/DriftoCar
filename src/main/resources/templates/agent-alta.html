@@ -27,6 +27,11 @@
             </div>
 
             <div class="mb-3">
+                <label for="usuari" class="form-label">Nom d'Usuari</label>
+                <input type="text" id="usuari" name="usuari" class="form-control" th:value="${agent?.usuari}" required>
+            </div>
+
+            <div class="mb-3">
                 <label for="contrasenya" class="form-label">Contrasenya</label>
                 <input type="password" id="contrasenya" name="contrasenya" class="form-control"
                     th:value="${agent?.contrasenya}" required>
