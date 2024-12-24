@@ -38,4 +38,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     @Query("SELECT r FROM Reserva r WHERE r.vehicle.matricula = :matricula AND r.dataInici <= :dataFinal")
     List<Reserva> findByVehicleMatriculaData(@Param("matricula") String matricula, @Param("dataFinal") LocalDate dataFinal);
 
+    boolean existsByClientDni(String dni);
+
 }
