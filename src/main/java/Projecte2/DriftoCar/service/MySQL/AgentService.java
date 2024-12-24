@@ -35,12 +35,18 @@ public class AgentService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // TODO comprobar duplicidad de telefono
     public Agent altaAgent(Agent agent) {
         // Verifica si ya existe un agente con el mismo DNI
         if (agentRepository.existsById(agent.getDni())) {
             throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
         }
 
+        Optional<Agent> telefonExistent = agentRepository.findByTelefon(agent.getTelefon());
+
+        if (telefonExistent.isPresent()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre agent");
+        }
         // Verifica si la localización ya tiene un agente asignado
         if (agent.getLocalitzacio() != null
                 && localitzacioRepository.existsById(agent.getLocalitzacio().getCodiPostal())) {
@@ -53,9 +59,8 @@ public class AgentService {
         agent.setActivo(true);
         // Guarda el nuevo agente
         return agentRepository.save(agent);
-        
-    }
 
+    }
 
     /**
      * Retorna tots els agents.
@@ -76,6 +81,7 @@ public class AgentService {
         return agentRepository.findByDniContaining(dni);
     }
 
+    // TODO comprovar duplicidad de telefono
     public Agent modificarAgent(Agent agent) {
 
         log.info("S'ha entrat al mètode modificarAgent");
@@ -99,7 +105,13 @@ public class AgentService {
         }
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
-        
+
+        Optional<Agent> telefonExistent = agentRepository.findByTelefon(agent.getTelefon());
+
+        if (telefonExistent.isPresent() && telefonExistent.get().getDni() != agent.getDni()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre agent");
+        }
+
         Agent agentNou = agentExistent.get();
 
         agentNou.setNom(agent.getNom());
@@ -118,7 +130,6 @@ public class AgentService {
 
         log.info("S'ha modificat l'agent.");
 
-
         agentNou.setContrasenya(agent.getContrasenya());
 
         log.info("S'ha encriptat la contrasenya");
@@ -129,7 +140,7 @@ public class AgentService {
     public Agent obtenirAgentPerDni(String dni) {
         return agentRepository.findById(dni).orElse(null);
     }
-    
+
     public void eliminarAgent(Agent agent) {
         log.info("S'ha entrat al mètode eliminarAgent.");
 
@@ -144,6 +155,7 @@ public class AgentService {
     public List<Agent> buscarPorDni(String dni) {
         return agentRepository.findByDniContaining(dni); // Delega la búsqueda al repositorio
     }
+
     public List<Localitzacio> getLocalitzacionsDisponibles() {
         // Devuelve las localizaciones que no tienen asignado un agente
         return localitzacioRepository.findByAgentIsNull();

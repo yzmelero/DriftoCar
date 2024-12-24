@@ -43,8 +43,13 @@ public class RegistreController {
         if (!client.getContrasenya().equals(confirmacioContrasenya)){
             throw new IllegalArgumentException("La contrasenya no coincideix");
         }
-        
+        try {
         clientService.altaClient(client);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("client", client);
+            return "client-alta";
+        }
         
         return "redirect:/clients/llistar";
                         

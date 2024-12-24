@@ -5,7 +5,6 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
-import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 
 import java.util.List;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 /**
  *
@@ -101,9 +99,8 @@ public class ClientsController {
         return "client-modificar";
     }
 
-    // TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("client") Client client) {
+    public String guardarClientModificat(@ModelAttribute("client") Client client, Model model) {
         Client existent = clientService.obtenirClientPerDni(client.getDni());
         if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
             client.setNacionalitat(existent.getNacionalitat());
@@ -115,20 +112,17 @@ public class ClientsController {
             String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
             client.setContrasenya(contrasenyaEncriptada);
         }
-        clientService.modificarClient(client);
+        try {
+            clientService.modificarClient(client);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("client", client);
+            return "client-modificar";
+        }
         log.info("Caducitat llicència rebuda: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI rebut: {}", client.getDniCaducitat());
         return "redirect:/clients/llistar";
     }
-
-    /*@GetMapping("/consulta/{dni}")
-    public String visualitzarClient(@PathVariable String dni, Model model) {
-
-        Client client = clientService.obtenirClientPerDni(dni);
-        model.addAttribute("client", client);
-        model.addAttribute("modeVisualitzar", true);
-        return "client-modificar";
-    }*/
 
     @GetMapping("/validar")
     public String llistarUsuarisPendents(Model model,
@@ -159,8 +153,8 @@ public class ClientsController {
         }
 
         Client existent = client.get();
-        
-        model.addAttribute("client", existent );
+
+        model.addAttribute("client", existent);
         return "client-consulta"; // Nom del fitxer HTML
     }
 

@@ -51,6 +51,9 @@ public interface ClientRepository extends JpaRepository<Client, String> {
 
         Optional<Client> findByUsuari(String username);
 
+
+        Optional<Client> findByTelefon(String telefon);
+
         // Modifica un client.
         // Client modificarClient(Client client, String dni);
 
