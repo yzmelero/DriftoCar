@@ -5,8 +5,11 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
+import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
+
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 /**
  *
@@ -68,9 +72,14 @@ public class ClientsController {
     }
 
     @GetMapping("/esborrar/{dni}")
-    public String esborrarClients(@PathVariable("dni") String dni, Client client) {
-
-        clientService.baixaClient(client);
+    public String esborrarClients(@PathVariable("dni") String dni, Client client,
+            RedirectAttributes redirectAttributes) {
+        try {
+            clientService.baixaClient(client);
+            redirectAttributes.addFlashAttribute("success", "El client s'ha esborrat correctament.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
 
         return "redirect:/clients/llistar";
 
@@ -92,7 +101,6 @@ public class ClientsController {
         return "client-modificar";
     }
 
-    // TODO añadir lista de nacionalidades de agente a cliente
     @PostMapping("/modificar")
     public String guardarClientModificat(@ModelAttribute("client") Client client) {
         Client existent = clientService.obtenirClientPerDni(client.getDni());
@@ -112,14 +120,14 @@ public class ClientsController {
         return "redirect:/clients/llistar";
     }
 
-    @GetMapping("/consulta/{dni}")
+    /*@GetMapping("/consulta/{dni}")
     public String visualitzarClient(@PathVariable String dni, Model model) {
 
         Client client = clientService.obtenirClientPerDni(dni);
         model.addAttribute("client", client);
         model.addAttribute("modeVisualitzar", true);
         return "client-modificar";
-    }
+    }*/
 
     @GetMapping("/validar")
     public String llistarUsuarisPendents(Model model,
@@ -137,6 +145,22 @@ public class ClientsController {
         clientService.activarClient(dni);
         redirectAttributes.addAttribute("success", "true");
         return "redirect:/clients/validar";
+    }
+
+    @GetMapping("/consulta/{dni}")
+    public String consultaClient(@PathVariable("dni") String dni, Model model, RedirectAttributes redirectAttributes) {
+
+        Optional<Client> client = clientService.findByDni(dni);
+
+        if (client.isEmpty()) {
+            redirectAttributes.addAttribute("error", "No s'ha trobat el client");
+            return "redirect:/clients/llistar";
+        }
+
+        Client existent = client.get();
+        
+        model.addAttribute("client", existent );
+        return "client-consulta"; // Nom del fitxer HTML
     }
 
 }

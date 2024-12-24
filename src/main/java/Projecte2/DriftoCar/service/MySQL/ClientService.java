@@ -6,6 +6,8 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
+import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
+
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -26,6 +28,9 @@ public class ClientService {
 
     @Autowired
     private PasswordEncoder passwordEncoder; 
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
 
@@ -141,6 +146,11 @@ public class ClientService {
         log.info("S'ha entrat al mètode baixaClient");
 
         Optional<Client> clientExistent = clientRepository.findByDni(client.getDni());
+       
+        //si el client te reservas asociades no pot ser eliminat
+        if (reservaRepository.existsByClientDni(client.getDni())) {
+            throw new RuntimeException("No es pot esborrar el client perquè té reserves associades.");
+        }
 
         if (clientExistent.isEmpty()) {
             throw new RuntimeException("No hi ha cap client amb aquest DNI");
@@ -181,5 +191,9 @@ public class ClientService {
 
         client.setActivo(true); // Activa el usuario
         clientRepository.save(client);
+    }
+
+    public Optional<Client> findByDni(String dni) {
+        return clientRepository.findByDni(dni);
     }
 }
