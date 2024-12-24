@@ -82,13 +82,7 @@ public class AgentController {
         try {
             agentService.altaAgent(agent);
         } catch (RuntimeException e) {
-            String error = e.getMessage();
-
-            if (error.contains("DNI")) {
-                agent.setDni(""); // Limpia el campo DNI si hay error de duplicidad
-            }
-
-            model.addAttribute("error", error);
+            model.addAttribute("error", e.getMessage());
             model.addAttribute("agent", agent); // Mantiene los demás datos en el formulario
 
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
