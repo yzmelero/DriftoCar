@@ -89,7 +89,14 @@ public class ClientService {
         if (clientExistent.isPresent()) {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
-        log.info("S'ha entrat donat d'alta a un client.");
+
+        Optional<Client> telefonExistent = clientRepository.findByTelefon(client.getTelefon());
+
+        if (telefonExistent.isPresent()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre client");
+        }
+
+        log.info("S'ha donat d'alta a un client.");
 
         String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
         client.setContrasenya(contrasenyaEncriptada);
@@ -133,7 +140,12 @@ public class ClientService {
         clientNou.setUsuari(client.getUsuari());
         clientNou.setReputacio(client.isReputacio());
         clientNou.setContrasenya(client.getContrasenya());
+        Optional<Client> telefonExistent = clientRepository.findByTelefon(client.getTelefon());
 
+        if (telefonExistent.isPresent() && telefonExistent.get().getDni()!=client.getDni()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre client");
+        }
+        
         log.info("S'ha modificat el client.");
 
 

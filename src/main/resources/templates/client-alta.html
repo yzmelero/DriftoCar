@@ -10,37 +10,42 @@
 
 <body>
     <div class="container mt-5">
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                <div class="alert alert-info text-center" role="alert">
-                   Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
-                </div>
+        <div class="alert alert-info text-center" role="alert">
+            Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
+        </div>
 
 
         <h1 class="text-center mb-4">Registrar Client</h1>
-        <form th:action="@{/registre/client-alta}" method="POST" class="needs-validation" novalidate>
+        <form th:action="@{/registre/client-alta}" th:object="${client}" method="POST" class="needs-validation"
+            novalidate>
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
-                    title="El DNI ha de tenir 8 números i una lletra majúscula.">
-                <div id="dniError" class="text-danger" style="display: none;">
-                    El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
-                </div>
+                <input type="text" id="dni" name="dni" class="form-control" th:value="*{dni}" required
+                    pattern="^[0-9]{8}[A-Z]$" title="El DNI ha de tenir 8 números i una lletra majúscula.">
+                <div class="text-danger" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
             </div>
             <div class="mb-3">
                 <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
-                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required>
+                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" th:value="*{dniCaducitat}"
+                    required>
+                <div class="text-danger" th:if="${#fields.hasErrors('dniCaducitat')}" th:errors="*{dniCaducitat}"></div>
             </div>
             <div class="mb-3">
                 <label for="usuari" class="form-label">Nom d'usuari</label>
-                <input type="text" id="usuari" name="usuari" class="form-control" required>
+                <input type="text" id="usuari" name="usuari" class="form-control" th:value="*{usuari}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('usuari')}" th:errors="*{usuari}"></div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <input type="email" id="email" name="email" class="form-control" th:value="*{email}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
             <div class="mb-3">
                 <label for="contrasenya" class="form-label">Contrasenya</label>
                 <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"></div>
             </div>
             <div class="mb-3">
                 <label for="confirmacioContrasenya" class="form-label">Confirmar contrasenya</label>
@@ -49,44 +54,54 @@
             </div>
             <div class="mb-3">
                 <label for="nom" class="form-label">Nom</label>
-                <input type="text" id="nom" name="nom" class="form-control" required>
+                <input type="text" id="nom" name="nom" class="form-control" th:value="*{nom}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
             </div>
             <div class="mb-3">
                 <label for="cognoms" class="form-label">Cognoms</label>
-                <input type="text" id="cognoms" name="cognoms" class="form-control" required>
+                <input type="text" id="cognoms" name="cognoms" class="form-control" th:value="*{cognoms}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
             </div>
             <div class="mb-3">
-                <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                <label for="nacionalitat" class="form-label" th:value="*{nacionalitat}">Nacionalitat</label>
                 <select id="nacionalitat" name="nacionalitat" class="form-control" required>
                     <option value="" disabled selected>Seleccioneu una nacionalitat</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telèfon</label>
-                <input type="number" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
-                    title="El telèfon ha de tenir 9 dígits.">
-                <div id="telefonError" class="text-danger" style="display: none;">
-                    El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
-                </div>
+                <input type="number" id="telefon" name="telefon" class="form-control" th:value="*{telefon}" required
+                    pattern="^[0-9]{9}$" title="El telèfon ha de tenir 9 dígits.">
+                <div class="text-danger" th:if="${#fields.hasErrors('telefon')}" th:errors="*{telefon}"></div>
             </div>
             <div class="mb-3">
                 <label for="llicencia" class="form-label">Llicència de conduïr</label>
-                <input type="text" id="llicencia" name="llicencia" class="form-control" required>
+                <input type="text" id="llicencia" name="llicencia" class="form-control" th:value="*{llicencia}"
+                    required>
+                <div class="text-danger" th:if="${#fields.hasErrors('llicencia')}" th:errors="*{llicencia}"></div>
             </div>
             <div class="mb-3">
                 <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
-                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required>
+                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control"
+                    th:value="*{llicCaducitat}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('llicCaducitat')}" th:errors="*{llicCaducitat}">
+                </div>
             </div>
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
-                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control"
+                    th:value="*{numTarjetaCredit}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('numTarjetaCredit')}"
+                    th:errors="*{numTarjetaCredit}">
+                </div>
             </div>
             <div class="mb-3">
                 <label for="adreca" class="form-label">Adreça</label>
-                <input type="text" id="adreca" name="adreca" class="form-control" required>
+                <input type="text" id="adreca" name="adreca" class="form-control" th:value="*{adreca}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('adreca')}" th:errors="*{adreca}"></div>
             </div>
             <div class="form-check mb-3">
-                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input" required>
+                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input" th:field="*{reputacio}">
                 <label for="reputacio" class="form-check-label">Reputació</label>
             </div>
             <button type="submit" class="btn btn-primary w-100">Crear Client</button>
