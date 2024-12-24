@@ -10,6 +10,12 @@
 
 <body>
     <div class="container mt-5">
+
+                <div class="alert alert-info text-center" role="alert">
+                   Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
+                </div>
+
+
         <h1 class="text-center mb-4">Registrar Client</h1>
         <form th:action="@{/registre/client-alta}" method="POST" class="needs-validation" novalidate>
             <div class="mb-3">
