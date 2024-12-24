@@ -5,9 +5,11 @@
 package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
+import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
+import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +46,9 @@ public class IncidenciaController {
 
     @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
+
+    @Autowired
+    private HistoricIncidenciesService historicIncidenciesService;
 
     @GetMapping("/llistar-incidencies")
     public String llistarIncidencies(Model model) {
@@ -95,6 +100,9 @@ public class IncidenciaController {
             // Obtenir l'ID de la incidencia recent creada
             Long incidenciaId = incidencia.getId();
 
+            // Guardar el historial de la incidencia en MongoDB
+            historicIncidenciesService.guardarHistoricIncidencia(incidencia); // Aquí es guarda a l'historial
+
             // Desar la documentación associada en MongoDB
             documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);
 
@@ -111,7 +119,9 @@ public class IncidenciaController {
     @GetMapping("/tancar/{id}")
     public String tancarIncidencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
+            // Tancar la incidència i crear la nova entrada en MongoDB
             incidenciaService.tancarIncidencia(id);
+
             redirectAttributes.addFlashAttribute("success", "Incidència tancada correctament.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", "Error en tancar la incidència: " + e.getMessage());
@@ -165,6 +175,22 @@ public class IncidenciaController {
         } catch (RuntimeException | IOException e) {
             // Manejo de errores si no se encuentra el PDF o hay problemas con la escritura
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/historial")
+    public String verHistorial(Model model) {
+        try {
+            // Obtener todas las incidencias históricas
+            List<HistoricIncidencies> historial = historicIncidenciesService.obtenirHistoric();
+
+            // Pasar el historial al modelo para que sea accesible en la vista
+            model.addAttribute("historial", historial);
+            return "historial-incidencia"; // Nombre de la vista
+        } catch (Exception e) {
+            // Manejar error si no se encuentra el historial
+            model.addAttribute("error", "No s'ha pogut obtenir el historial de les incidències.");
+            return "error"; // Vista de error
         }
     }
 }

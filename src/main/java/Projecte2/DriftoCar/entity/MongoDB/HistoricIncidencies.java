@@ -5,6 +5,7 @@
 package Projecte2.DriftoCar.entity.MongoDB;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,7 +13,6 @@ import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.Binary;
 
 /**
  *
@@ -24,19 +24,18 @@ import org.bson.types.Binary;
 @AllArgsConstructor
 public class HistoricIncidencies {
     @Id
-    private Long id;
+    private String id;
     
     // 1 = oberta, 0 = tancada
     private boolean estat;
 
     private String motiu;
 
-    private double cost;
-
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
-
-    private Binary[] documentacion;
+    
+    @Field(name="data_fi_incidencia")
+    private LocalDateTime dataFiIncidencia;
 
     private String matricula;
 }
