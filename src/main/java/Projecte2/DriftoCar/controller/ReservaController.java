@@ -136,6 +136,8 @@ public class ReservaController {
             return "error";
         }
 
+        reserva.setDataLliurar(LocalDate.now());
+        
         model.addAttribute("reserva", reserva);
         return "reserva-lliurar";
 
@@ -143,7 +145,6 @@ public class ReservaController {
 
     @PostMapping("/lliurar/{idReserva}")
     public String lliurarVehicle(Model model, @PathVariable Long idReserva,
-            @RequestParam("dataLliurar") String dataLliurar,
             @RequestParam("horaLliurar") String horaLliurar,
             @RequestParam("descripcioEstat") String descripcioEstat) {
 
@@ -155,13 +156,13 @@ public class ReservaController {
 
         try {
 
-            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            //DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-            LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
+            LocalDate dataLliurar = LocalDate.now(); // Assignem la data actual
+            //LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
             LocalTime hora = LocalTime.parse(horaLliurar, horaFormatter);
 
-            reserva.setDataLliurar(data);
+            reserva.setDataLliurar(dataLliurar);
             reserva.setHoraLliurar(hora);
             reserva.setDescripcioEstatLliurar(descripcioEstat);
             reserva.setEstat(true);
