@@ -77,7 +77,6 @@ public class AgentController {
         return "agent-alta";
     }
 
-    // TODO si hay un error en el dni, el telefono se pierde
     /**
      * Guarda un nuevo agente en la base de datos.
      * 
