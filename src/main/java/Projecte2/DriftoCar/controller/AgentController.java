@@ -44,7 +44,7 @@ public class AgentController {
     private DocumentacioClientRepository documentacioClientRepository;
 
     /**
-     * Filtra els agents pel seu DNI.
+     *  Mostra el llistat d'agents, amb la possibilitat de filtrar per DNI.
      *
      * @param dni   El DNI per filtrar. Si no s'especifica, es mostren tots els
      *              agents.

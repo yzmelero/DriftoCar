@@ -146,7 +146,8 @@ public class IncidenciaController {
             }
 
             // Obtener la documentación asociada con procesamiento Base64
-            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioAmbBase64PerIncidencia(id);
+            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService
+                    .obtenirDocumentacioAmbBase64PerIncidencia(id);
 
             // Agregar atributos al modelo
             model.addAttribute("incidencia", incidencia);
@@ -179,13 +180,13 @@ public class IncidenciaController {
     }
 
     @GetMapping("/historial")
-    public String verHistorial(Model model) {
+    public String verHistorial(@RequestParam(value = "matricula", required = false) String matricula, Model model) {
         try {
-            // Obtener todas las incidencias históricas
-            List<HistoricIncidencies> historial = historicIncidenciesService.obtenirHistoric();
+            List<HistoricIncidencies> historial = historicIncidenciesService.findByMatricula(matricula);
 
             // Pasar el historial al modelo para que sea accesible en la vista
             model.addAttribute("historial", historial);
+            model.addAttribute("matricula", matricula); // Para mantener el filtro en la vista
             return "historial-incidencia"; // Nombre de la vista
         } catch (Exception e) {
             // Manejar error si no se encuentra el historial
