@@ -25,6 +25,7 @@ import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.ReservaService;
+import Projecte2.DriftoCar.service.MySQL.VehicleService;
 
 /**
  * @author mario
@@ -43,6 +44,12 @@ public class ReservaController {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private ClientService clientService;
+
+    @Autowired
+    private VehicleService vehicleService;
 
     @GetMapping("/llistar")
     public String llistarReservas(Model model,
@@ -214,7 +221,7 @@ public class ReservaController {
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
-    //TODO nova url
+    // TODO nova url
     @PostMapping("/retornar/calculPreu/{idReserva}")
     public String calcularPreuRetorn(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") String dataRetorn,
@@ -246,16 +253,16 @@ public class ReservaController {
         return "reserva-retornar";
     }
 
-    //TODO nova url
+    // TODO nova url
     @PostMapping("/alta/calculPreu")
-    public String calcularPreu(Model model, @PathVariable Long idReserva,
+    public String calcularPreu(Model model,
             @RequestParam("dataInici") String dataInici,
             @RequestParam("horaInici") String horaInici,
             @RequestParam("dataFi") String dataFi,
-            @RequestParam("horaFi") String horaFi) {
-
-        Reserva reserva = reservaService.cercaPerId(idReserva);
-        // TODO En el cas de que l'ID introduit no existeixi.
+            @RequestParam("horaFi") String horaFi,
+            @RequestParam(required = false, defaultValue = "0") Double costTotal,
+            @RequestParam(required = false, defaultValue = "0") Double fianca,
+            Reserva reserva) {
 
         try {
             DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -267,15 +274,28 @@ public class ReservaController {
             LocalTime horaIniciFin = LocalTime.parse(horaInici, horaFormatter);
             LocalTime horaFiFin = LocalTime.parse(horaFi, horaFormatter);
 
-        
             reserva.setDataInici(dataIniciFin);
             reserva.setDataFi(dataFiFin);
             reserva.setHoraInici(horaIniciFin);
             reserva.setHoraFi(horaFiFin);
+            
+            reserva.setClient(clientRepository.findByDni(reserva.getClient().getDni())
+                    .orElseThrow(() -> new IllegalArgumentException("Client no trobat")));
+            reserva.setVehicle(vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula())
+                    .orElseThrow(() -> new IllegalArgumentException("Vehicle no trobat")));
 
-            double fianca = reservaService.calculFianca(reserva);
-            double costTotal = reservaService.calculPreuReserva(reserva);
 
+            System.out.println("Vehicle: " + reserva.getVehicle());
+            System.out.println("Client: " + reserva.getClient());
+            System.out.println("Data Inici: " + reserva.getDataInici());
+            System.out.println("Data Fi: " + reserva.getDataFi());
+
+            fianca = reservaService.calculFianca(reserva);
+            costTotal = reservaService.calculPreuReserva(reserva);
+
+
+            model.addAttribute("clients", clientRepository.findAll()); // Manté la llista de clients
+            model.addAttribute("vehicles", vehicleRepository.findAll()); // Manté la llista de vehicles
             model.addAttribute("reserva", reserva);
             model.addAttribute("fianca", fianca);
             model.addAttribute("costTotal", costTotal);

@@ -56,10 +56,10 @@ public class Reserva {
 
     //TODO Calcular precio total i fiança al crear una reserva teniendo en cuenta el tipo de cliente
     @Column(name = "cost_total", nullable = false)
-    private double costTotal; 
+    private Double costTotal; 
 
     @Column(name = "fianca", nullable = false)
-    private double fianca;
+    private Double fianca;
     
     @Column(name = "estat", nullable = false)
     private boolean estat;
