@@ -50,8 +50,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     @Query("""
             SELECT v FROM Vehicle v
-            WHERE v.disponibilitat = true
-              AND (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%', :matricula, '%')))
+            WHERE (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%', :matricula, '%')))
               AND NOT EXISTS (
                   SELECT 1
                   FROM Reserva r
