@@ -9,10 +9,12 @@ import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -96,8 +99,24 @@ public class ClientsController {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
 
         }
+        // Recuperar la documentación del cliente en MongoDB
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
         model.addAttribute("client", client);
-        model.addAttribute("modeVisualitzar", false);
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
 
         log.info("Caducitat llicència al model: {}", client.getLlicCaducitat());
         log.info("Caducitat DNI al model: {}", client.getDniCaducitat());
@@ -105,7 +124,11 @@ public class ClientsController {
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@ModelAttribute("client") Client client, Model model) {
+    public String guardarClientModificat(@ModelAttribute("client") Client client,
+            @RequestParam("imatgeDni") MultipartFile imatgeDniFile,
+            @RequestParam("imatgeLlicencia") MultipartFile imatgeLlicenciaFile,
+            Model model) {
+
         Client existent = clientService.obtenirClientPerDni(client.getDni());
         if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
             client.setNacionalitat(existent.getNacionalitat());
@@ -117,8 +140,27 @@ public class ClientsController {
             String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
             client.setContrasenya(contrasenyaEncriptada);
         }
+
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(existent.getDni());
+        DocumentacioClient doc = docOpt.orElse(new DocumentacioClient());
+        doc.setDni(existent.getDni());
+
+        try {
+            if (!imatgeDniFile.isEmpty()) {
+                doc.setImatgeDni(new Binary[] { new Binary(imatgeDniFile.getBytes()) });
+            }
+            if (!imatgeLlicenciaFile.isEmpty()) {
+                doc.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicenciaFile.getBytes()) });
+            }
+        } catch (IOException e) {
+            model.addAttribute("error", "Error al carregar les imatges.");
+            return "client-modificar";
+        }
+
         try {
             clientService.modificarClient(client);
+            documentacioClientRepository.save(doc);
+
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("client", client);
