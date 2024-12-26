@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Repository;
 public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
     Optional<Vehicle> findByMatricula(String matricula);
+
+    List<Vehicle> findByMatriculaContaining(String matricula);
 
     List<Vehicle> findByMarca(String marca);
 
@@ -46,14 +49,21 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
     List<Vehicle> findByLocalitzacio_CodiPostal(String codiPostal);
 
     @Query("""
-        SELECT v FROM Vehicle v
-        WHERE v.disponibilitat = true
-        AND v.matricula NOT IN (
-            SELECT r.vehicle.matricula
-            FROM Reserva r
-            WHERE (r.dataInici <= :dataFinal AND r.dataFi >= :dataInici)
-        )
-    """)
-    List<Vehicle> findVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal);
+            SELECT v FROM Vehicle v
+            WHERE v.disponibilitat = true
+              AND (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%', :matricula, '%')))
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM Reserva r
+                  WHERE r.vehicle.matricula = v.matricula
+                    AND r.estat = true
+                    AND ((:dataInici IS NOT NULL AND :dataFinal IS NOT NULL AND r.dataInici <= :dataFinal AND r.dataFi >= :dataInici)
+                         OR (:dataInici IS NOT NULL AND :dataFinal IS NULL AND r.dataFi >= :dataInici)
+                         OR (:dataInici IS NULL AND :dataFinal IS NOT NULL AND r.dataInici <= :dataFinal))
+              )
+            """)
+    List<Vehicle> findVehiclesLista(@Param("dataInici") LocalDate dataInici,
+            @Param("dataFinal") LocalDate dataFinal,
+            @Param("matricula") String matricula);
 
 }

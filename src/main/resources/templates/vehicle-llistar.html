@@ -28,21 +28,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <a class="btn btn-primary" th:href="@{/vehicle/afegir}">Afegir nou vehicle</a>
                 </div>
                 <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-
+                <div th:if="${vehicles.size() == 0}" class="alert alert-warning text-center">
+                    No s'han trobat vehicles que coincideixin amb els criteris de cerca.
+                </div>
                 <form th:action="@{/vehicle/llistar}" method="get" class="mb-4" id="formulariFiltrar">
                     <div class="input-group">
                         <div class="form-group me-2 text-start">
                             <label for="matricula" class="form-label">Matrícula:</label>
                             <input type="text" id="matricula" name="matricula" class="form-control"
-                                placeholder="Matrícula" />
+                                th:value="${matricula}" placeholder="Matrícula" />
                         </div>
                         <div class="form-group me-2 text-start">
                             <label for="dataInici" class="form-label">Data inici:</label>
-                            <input type="date" id="dataInici" name="dataInici" class="form-control" />
+                            <input type="date" id="dataInici" name="dataInici" class="form-control" th:value="${dataInici}"/>
                         </div>
                         <div class="form-group me-2 text-start">
                             <label for="dataFinal" class="form-label">Data final:</label>
-                            <input type="date" id="dataFinal" name="dataFinal" class="form-control" />
+                            <input type="date" id="dataFinal" name="dataFinal" class="form-control" th:value="${dataFinal}"/>
                         </div>
                         <div class="d-flex align-items-end">
                             <button type="submit" id="botoFiltrar" class="btn btn-primary">Filtrar</button>
