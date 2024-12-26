@@ -14,8 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Projecte2.DriftoCar.entity.MySQL.Agent;
+import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
+import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 
 /**
@@ -34,15 +36,22 @@ public class AgentService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ClientRepository clientRepository;
 
-    // TODO comprobar duplicidad de telefono
+    /**
+     * Crea un nou agent.
+     *
+     * @param agent L'agent a crear.
+     * @return L'agent creat.
+     */
     public Agent altaAgent(Agent agent) {
         // Verifica si ya existe un agente con el mismo DNI
-        if (agentRepository.existsById(agent.getDni())) {
+        if (clientRepository.existsById(agent.getDni())) {
             throw new RuntimeException("Ja existeix un agent amb aquest DNI.");
         }
 
-        Optional<Agent> telefonExistent = agentRepository.findByTelefon(agent.getTelefon());
+        Optional<Client> telefonExistent = clientRepository.findByTelefon(agent.getTelefon());
 
         if (telefonExistent.isPresent()) {
             throw new RuntimeException("Aquest telefon ya esta asignat a un altre agent");

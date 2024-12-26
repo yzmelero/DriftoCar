@@ -20,9 +20,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
         <!-- Formulario para editar cliente -->
-        <form th:action="@{/clients/modificar}" th:object="${client}" method="post" class="needs-validation" novalidate>
+        <form th:action="@{/clients/modificar}" th:object="${client}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             <!-- Campo oculto para el DNI -->
             <input type="hidden" th:field="*{dni}" />
+
+            <div class="mb-3">
+                <label for="imatgeDni" class="form-label">Imatge DNI</label>
+                <div>
+                    <img th:if="${imatgeDni}" th:src="'data:image/jpeg;base64,' + ${imatgeDni}" alt="Imatge DNI"
+                        class="img-fluid mb-2">
+                    <p th:if="${imatgeDni == null}">No hi ha cap imatge actual del DNI.</p>
+                </div>
+                <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*">
+            </div>
 
             <div class="mb-3">
                 <label for="usuari" class="form-label">Usuari</label>
@@ -97,6 +107,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="invalid-feedback">
                     Si us plau, introdueix una llicència.
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
+                <div>
+                    <img th:if="${imatgeLlicencia}" th:src="'data:image/jpeg;base64,' + ${imatgeLlicencia}" alt="Imatge Llicència"
+                        class="img-fluid mb-2">
+                    <p th:if="${imatgeLlicencia == null}">No hi ha cap imatge actual de la Llicència.</p>
+                </div>
+                <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*">
             </div>
 
             <div class="mb-3">

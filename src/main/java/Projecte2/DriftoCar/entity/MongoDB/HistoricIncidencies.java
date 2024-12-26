@@ -5,7 +5,6 @@
 package Projecte2.DriftoCar.entity.MongoDB;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

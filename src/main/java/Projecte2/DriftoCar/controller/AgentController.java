@@ -1,8 +1,11 @@
 package Projecte2.DriftoCar.controller;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
+import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -15,9 +18,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import Projecte2.DriftoCar.entity.MongoDB.DocumentacioClient;
 import Projecte2.DriftoCar.entity.MySQL.Agent;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.AgentService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import jakarta.validation.Valid;
@@ -33,7 +39,9 @@ public class AgentController {
     @Autowired
     private LocalitzacioService localitzacioService;
     @Autowired
-    private PasswordEncoder passwordEncoder; 
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DocumentacioClientRepository documentacioClientRepository;
 
     /**
      * Filtra els agents pel seu DNI.
@@ -69,8 +77,22 @@ public class AgentController {
         return "agent-alta";
     }
 
+    // TODO si hay un error en el dni, el telefono se pierde
+    /**
+     * Guarda un nuevo agente en la base de datos.
+     * 
+     * @param agent           El agente a guardar.
+     * @param bindingResult   El resultado de la validación.
+     * @param model           El modelo para pasar los datos a la vista.
+     * @param imatgeDni       La imagen del DNI.
+     * @param imatgeLlicencia La imagen de la licencia.
+     * @return La vista de la lista de agentes si todo es correcto, o el formulario
+     *         de alta si hay errores.
+     */
     @PostMapping("/guardar")
-    public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model) {
+    public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model,
+            @RequestParam(value = "imatgeDni", required = false) MultipartFile imatgeDni,
+            @RequestParam(value = "imatgeLlicencia", required = false) MultipartFile imatgeLlicencia) {
 
         if (bindingResult.hasErrors()) {
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -78,11 +100,22 @@ public class AgentController {
             model.addAttribute("agent", agent);
             return "agent-alta";
         }
-
+        String contrasenya = agent.getContrasenya();
         try {
             agentService.altaAgent(agent);
-        } catch (RuntimeException e) {
+            DocumentacioClient documentacio = new DocumentacioClient();
+            documentacio.setDni(agent.getDni());
+
+            if (imatgeDni != null && !imatgeDni.isEmpty()) {
+                documentacio.setImatgeDni(new Binary[] { new Binary(imatgeDni.getBytes()) });
+            }
+            if (imatgeLlicencia != null && !imatgeLlicencia.isEmpty()) {
+                documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicencia.getBytes()) });
+            }
+            documentacioClientRepository.save(documentacio);
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
+            agent.setContrasenya(contrasenya);
             model.addAttribute("agent", agent); // Mantiene los demás datos en el formulario
 
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -108,16 +141,35 @@ public class AgentController {
             throw new RuntimeException("No existeix cap agent amb aquest DNI.");
 
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
         model.addAttribute("agent", agent);
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
 
         return "agent-modificar";
     }
 
     @PostMapping("/modificar")
-    public String guardarAgentModificat(@Valid Agent agent, Model model) {
+    public String guardarAgentModificat(@Valid Agent agent,
+            @RequestParam("imatgeDni") MultipartFile imatgeDniFile,
+            @RequestParam("imatgeLlicencia") MultipartFile imatgeLlicenciaFile,
+            Model model) {
         Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
         agent.setRol(existent.getRol());
-        if (agent.getNacionalitat()== null ||agent.getNacionalitat().isEmpty()) {
+        if (agent.getNacionalitat() == null || agent.getNacionalitat().isEmpty()) {
             agent.setNacionalitat(existent.getNacionalitat());
         }
         if (agent.getContrasenya() == null || agent.getContrasenya().isEmpty()) {
@@ -129,9 +181,21 @@ public class AgentController {
         }
 
         try {
-
             agentService.modificarAgent(agent);
-        } catch (RuntimeException e) {
+
+            // Recuperar o crear documentación en MongoDB
+            DocumentacioClient documentacio = documentacioClientRepository.findById(agent.getDni())
+                    .orElse(new DocumentacioClient());
+            documentacio.setDni(agent.getDni());
+
+            if (!imatgeDniFile.isEmpty()) {
+                documentacio.setImatgeDni(new Binary[] { new Binary(imatgeDniFile.getBytes()) });
+            }
+            if (!imatgeLlicenciaFile.isEmpty()) {
+                documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicenciaFile.getBytes()) });
+            }
+            documentacioClientRepository.save(documentacio);
+        } catch (Exception e) {
             String error = e.getMessage();
             model.addAttribute("error", error);
             model.addAttribute("agent", agent);
@@ -167,6 +231,22 @@ public class AgentController {
         if (agent == null) {
             throw new RuntimeException("No s'ha trobat cap agent amb el DNI especificat.");
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
         model.addAttribute("agent", agent);
         return "agent-consulta"; // Nom de la plantilla
     }

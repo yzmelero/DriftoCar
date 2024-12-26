@@ -11,13 +11,19 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Detall de l'Agent</h1>
-        
+
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Informació General</h5>
                 <p><strong>DNI:</strong> <span th:text="${agent.dni}"></span></p>
+                <div>
+                    <p><strong>Imatge del DNI:</strong></p>
+                    <img th:if="${imatgeDni}" th:src="'data:image/jpeg;base64,' + ${imatgeDni}" alt="DNI"
+                        class="img-fluid" />
+                    <p th:if="${imatgeDni == null}">Cap imatge del DNI disponible</p>
+                </div>
                 <p><strong>Usuari:</strong> <span th:text="${agent.usuari}"></span></p>
                 <p><strong>Nom:</strong> <span th:text="${agent.nom}"></span></p>
                 <p><strong>Cognoms:</strong> <span th:text="${agent.cognoms}"></span></p>
@@ -26,6 +32,12 @@
                 <h5 class="card-title mt-4">Altres Dades</h5>
                 <p><strong>Nacionalitat:</strong> <span th:text="${agent.nacionalitat}"></span></p>
                 <p><strong>Llicència:</strong> <span th:text="${agent.llicencia}"></span></p>
+                <div class="mt-3">
+                    <p><strong>Imatge de la llicència de conducció:</strong></p>
+                    <img th:if="${imatgeLlicencia}" th:src="'data:image/jpeg;base64,' + ${imatgeLlicencia}"
+                        alt="Llicència de conducció" class="img-fluid" />
+                    <p th:if="${imatgeLlicencia == null}">Cap imatge de la llicència disponible</p>
+                </div>
                 <p><strong>Caducitat de la llicència:</strong> <span th:text="${agent.llicCaducitat}"></span></p>
                 <p><strong>Caducitat del DNI:</strong> <span th:text="${agent.dniCaducitat}"></span></p>
                 <p><strong>Adreça:</strong> <span th:text="${agent.adreca}"></span></p>
