@@ -101,6 +101,33 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </div>
     </div>
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dataInici = document.getElementById("dataInici");
+            const dataFinal = document.getElementById("dataFinal");
+            const dateError = document.getElementById("dateError");
+            const filterForm = document.getElementById("filterForm");
+
+            // Actualiza el valor mínimo de "dataFinal" cuando cambia "dataInici"
+            dataInici.addEventListener("change", function () {
+                if (dataInici.value) {
+                    dataFinal.min = dataInici.value; // Ajusta el valor mínimo permitido
+                } else {
+                    dataFinal.removeAttribute("min"); // Resetea si no hay fecha inicial
+                }
+            });
+
+            // Valida el formulario antes de enviarlo
+            filterForm.addEventListener("submit", function (event) {
+                if (dataInici.value && dataFinal.value && dataFinal.value < dataInici.value) {
+                    dateError.style.display = "block"; // Muestra el mensaje de error
+                    event.preventDefault(); // Evita el envío del formulario
+                } else {
+                    dateError.style.display = "none"; // Oculta el mensaje si todo es correcto
+                }
+            });
+        });
+    </script>
+    <script>
         document.getElementById('formulariFiltrar').addEventListener('submit', function (event) {
             const dataInici = document.getElementById('dataInici').value;
             const dataFinal = document.getElementById('dataFinal').value;
