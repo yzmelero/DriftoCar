@@ -56,6 +56,26 @@ public class AgentService {
         if (telefonExistent.isPresent()) {
             throw new RuntimeException("Aquest telefon ya esta asignat a un altre agent");
         }
+
+        Optional<Client> agentExistent = clientRepository.findByUsuari(agent.getUsuari());
+
+        if (agentExistent.isPresent()) {
+            throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
+        }
+
+        agentExistent = clientRepository.findByEmail(agent.getEmail());
+
+        if (agentExistent.isPresent()) {
+            throw new RuntimeException("Aquest email ja esta en us.");
+        }
+
+        agentExistent = clientRepository.findByNumTarjetaCredit(agent.getNumTarjetaCredit());
+
+        if (agentExistent.isPresent()) {
+            throw new RuntimeException("Aquesta tarjeta de credit ja esta en us.");
+        }
+
+
         // Verifica si la localización ya tiene un agente asignado
         if (agent.getLocalitzacio() != null
                 && localitzacioRepository.existsById(agent.getLocalitzacio().getCodiPostal())) {
@@ -90,27 +110,26 @@ public class AgentService {
         return agentRepository.findByDniContaining(dni);
     }
 
-    // TODO comprovar duplicidad de telefono
     public Agent modificarAgent(Agent agent) {
 
         log.info("S'ha entrat al mètode modificarAgent");
 
-        Optional<Agent> agentExistent = agentRepository.findById(agent.getDni());
+        Optional<Client> agentExistent = clientRepository.findById(agent.getDni());
 
         if (agentExistent.isEmpty()) {
             throw new RuntimeException("No existeix cap client amb aquest DNI.");
         }
-        agentExistent = agentRepository.findByUsuari(agent.getUsuari());
+        agentExistent = clientRepository.findByUsuari(agent.getUsuari());
         if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
             throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
         }
-        agentExistent = agentRepository.findByEmail(agent.getEmail());
+        agentExistent = clientRepository.findByEmail(agent.getEmail());
         if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
             throw new RuntimeException("Aquest email ja esta en us.");
         }
-        agentExistent = agentRepository.findByNumTarjetaCredit(agent.getNumTarjetaCredit());
+        agentExistent = clientRepository.findByNumTarjetaCredit(agent.getNumTarjetaCredit());
         if (agentExistent.isPresent() && !agentExistent.get().getDni().equals(agent.getDni())) {
-            throw new RuntimeException("Aquesta tarjeta de credit no es valida");
+            throw new RuntimeException("Aquesta tarjeta de credit ja esta en us.");
         }
         // Amb aquesta línia recuperem el client que ja existeix per a poder-lo
         // modificar.
@@ -121,7 +140,8 @@ public class AgentService {
             throw new RuntimeException("Aquest telefon ya esta asignat a un altre agent");
         }
 
-        Agent agentNou = agentExistent.get();
+        Optional<Agent> agentValidat = agentRepository.findById(agent.getDni());
+        Agent agentNou = agentValidat.get();
 
         agentNou.setNom(agent.getNom());
         agentNou.setCognoms(agent.getCognoms());

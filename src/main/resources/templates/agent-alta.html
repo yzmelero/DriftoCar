@@ -149,10 +149,9 @@
         document.addEventListener("DOMContentLoaded", function () {
             const tarjetaInput = document.getElementById("numTarjetaCredit");
             const tarjetaError = document.getElementById("cardError");
-            const form = document.getElementById("altaAgenteForm");
 
             // Expresión regular para validar tarjeta de crédito (16 dígitos)
-            const tarjetaPattern = /^\d{16}$/;
+            const tarjetaPattern = /^[0-9]{16}$/;
 
             // Validación en tiempo real
             tarjetaInput.addEventListener("input", function () {
@@ -164,12 +163,12 @@
             });
 
             // Validación al enviar el formulario
+            const form = tarjetaInput.closest("form");
             form.addEventListener("submit", function (event) {
                 if (!tarjetaPattern.test(tarjetaInput.value)) {
                     tarjetaError.style.display = "block";
                     event.preventDefault(); // Evita el envío del formulario
-                } else {
-                    tarjetaError.style.display = "none";
+                    alert("La tarjeta de crèdit no és vàlida. Comprova que tingui 16 dígits.");
                 }
             });
         });
