@@ -72,7 +72,7 @@
 
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telèfon</label>
-                <input type="tel" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
+                <input type="number" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
                     title="El telèfon ha de tenir exactament 9 dígits." th:value="${agent.telefon}">
                 <div id="telefonError" class="text-danger" style="display: none;">
                     El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
@@ -111,7 +111,7 @@
 
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Nombre de Tarjeta de Crèdit</label>
-                <input type="text" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control" required />
+                <input type="number" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control" required />
                 <div class="invalid-feedback">
                     Si us plau, introdueix un nombre de la tarjeta de crèdit.
                 </div>
