@@ -15,7 +15,7 @@
         <h1 class="text-center mb-4">Alta d'Agent</h1>
 
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-        <form th:action="@{/agent/guardar}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/agent/guardar}" method="post" class="needs-validation" enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
@@ -91,9 +91,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="numTarjetaCredit" class="form-label">Número de targeta de crèdit</label>
-                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control"
-                    th:value="${agent?.numTarjetaCredit}" required>
+                <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
+                    placeholder="16 dígits numèrics" th:value="${agent?.dniCaducitat}">
+                <div id="cardError" class="text-danger mt-1" style="display: none;">
+                    La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
+                </div>
             </div>
 
             <div class="mb-3">
@@ -141,6 +144,36 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tarjetaInput = document.getElementById("numTarjetaCredit");
+            const tarjetaError = document.getElementById("cardError");
+            const form = document.getElementById("altaAgenteForm");
+
+            // Expresión regular para validar tarjeta de crédito (16 dígitos)
+            const tarjetaPattern = /^\d{16}$/;
+
+            // Validación en tiempo real
+            tarjetaInput.addEventListener("input", function () {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                } else {
+                    tarjetaError.style.display = "none";
+                }
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener("submit", function (event) {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                    event.preventDefault(); // Evita el envío del formulario
+                } else {
+                    tarjetaError.style.display = "none";
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
