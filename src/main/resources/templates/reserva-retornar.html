@@ -47,6 +47,9 @@
                 formmethod="post">Actualitzar Preus</button>
 
             <button type="submit" class="btn btn-primary">Enviar Informació</button>
+            <a class="btn btn-danger"
+                th:href="@{/incidencia/obrir/{matricula}(matricula=${reserva.vehicle.matricula})}">Obrir Incidència</a>
+
             <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
         </form>
     </div>
