@@ -15,7 +15,7 @@
         <h1 class="text-center mb-4">Alta d'Agent</h1>
 
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-        <form th:action="@{/agent/guardar}" method="post">
+        <form th:action="@{/agent/guardar}" method="post" enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
@@ -24,6 +24,11 @@
                 <div id="dniError" class="text-danger" style="display: none;">
                     El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imatgeDni" class="form-label">Imatge DNI</label>
+                <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*">
             </div>
 
             <div class="mb-3">
@@ -69,6 +74,11 @@
             </div>
 
             <div class="mb-3">
+                <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
+                <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*">
+            </div>
+
+            <div class="mb-3">
                 <label for="llicCaducitat" class="form-label">Caducitat de la llicència</label>
                 <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control"
                     th:value="${agent?.llicCaducitat}" required>
@@ -82,7 +92,7 @@
 
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Número de targeta de crèdit</label>
-                <input type="text" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control"
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control"
                     th:value="${agent?.numTarjetaCredit}" required>
             </div>
 
