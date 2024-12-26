@@ -77,15 +77,17 @@ public class AgentController {
         return "agent-alta";
     }
 
-    //TODO si hay un error en el dni, el telefono se pierde
+    // TODO si hay un error en el dni, el telefono se pierde
     /**
      * Guarda un nuevo agente en la base de datos.
-     * @param agent El agente a guardar.
-     * @param bindingResult El resultado de la validación.
-     * @param model El modelo para pasar los datos a la vista.
-     * @param imatgeDni La imagen del DNI.
+     * 
+     * @param agent           El agente a guardar.
+     * @param bindingResult   El resultado de la validación.
+     * @param model           El modelo para pasar los datos a la vista.
+     * @param imatgeDni       La imagen del DNI.
      * @param imatgeLlicencia La imagen de la licencia.
-     * @return La vista de la lista de agentes si todo es correcto, o el formulario de alta si hay errores.
+     * @return La vista de la lista de agentes si todo es correcto, o el formulario
+     *         de alta si hay errores.
      */
     @PostMapping("/guardar")
     public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model,
@@ -100,6 +102,7 @@ public class AgentController {
         }
         String contrasenya = agent.getContrasenya();
         try {
+            agentService.altaAgent(agent);
             DocumentacioClient documentacio = new DocumentacioClient();
             documentacio.setDni(agent.getDni());
 
@@ -110,7 +113,6 @@ public class AgentController {
                 documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicencia.getBytes()) });
             }
             documentacioClientRepository.save(documentacio);
-            agentService.altaAgent(agent);
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             agent.setContrasenya(contrasenya);
@@ -139,13 +141,32 @@ public class AgentController {
             throw new RuntimeException("No existeix cap agent amb aquest DNI.");
 
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
         model.addAttribute("agent", agent);
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
 
         return "agent-modificar";
     }
 
     @PostMapping("/modificar")
-    public String guardarAgentModificat(@Valid Agent agent, Model model) {
+    public String guardarAgentModificat(@Valid Agent agent,
+            @RequestParam("imatgeDni") MultipartFile imatgeDniFile,
+            @RequestParam("imatgeLlicencia") MultipartFile imatgeLlicenciaFile,
+            Model model) {
         Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
         agent.setRol(existent.getRol());
         if (agent.getNacionalitat() == null || agent.getNacionalitat().isEmpty()) {
@@ -160,9 +181,21 @@ public class AgentController {
         }
 
         try {
-
             agentService.modificarAgent(agent);
-        } catch (RuntimeException e) {
+
+            // Recuperar o crear documentación en MongoDB
+            DocumentacioClient documentacio = documentacioClientRepository.findById(agent.getDni())
+                    .orElse(new DocumentacioClient());
+            documentacio.setDni(agent.getDni());
+
+            if (!imatgeDniFile.isEmpty()) {
+                documentacio.setImatgeDni(new Binary[] { new Binary(imatgeDniFile.getBytes()) });
+            }
+            if (!imatgeLlicenciaFile.isEmpty()) {
+                documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicenciaFile.getBytes()) });
+            }
+            documentacioClientRepository.save(documentacio);
+        } catch (Exception e) {
             String error = e.getMessage();
             model.addAttribute("error", error);
             model.addAttribute("agent", agent);
