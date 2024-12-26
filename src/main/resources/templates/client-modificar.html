@@ -20,7 +20,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
         <!-- Formulario para editar cliente -->
-        <form th:action="@{/clients/modificar}" th:object="${client}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form th:action="@{/clients/modificar}" th:object="${client}" method="post" enctype="multipart/form-data"
+            class="needs-validation" novalidate>
             <!-- Campo oculto para el DNI -->
             <input type="hidden" th:field="*{dni}" />
 
@@ -112,8 +113,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div class="mb-3">
                 <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
                 <div>
-                    <img th:if="${imatgeLlicencia}" th:src="'data:image/jpeg;base64,' + ${imatgeLlicencia}" alt="Imatge Llicència"
-                        class="img-fluid mb-2">
+                    <img th:if="${imatgeLlicencia}" th:src="'data:image/jpeg;base64,' + ${imatgeLlicencia}"
+                        alt="Imatge Llicència" class="img-fluid mb-2">
                     <p th:if="${imatgeLlicencia == null}">No hi ha cap imatge actual de la Llicència.</p>
                 </div>
                 <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*">
@@ -138,11 +139,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
 
             <div class="mb-3">
-                <label for="numTarjetaCredit" class="form-label">Nombre de Tarjeta de Crèdit</label>
-                <input type="number" id="numTarjetaCredit" th:field="*{numTarjetaCredit}" class="form-control"
-                    th:readonly="${modeVisualitzar}" required />
-                <div class="invalid-feedback">
-                    Si us plau, introdueix un nombre de la tarjeta de crèdit.
+                <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
+                    th:field="${client.numTarjetaCredit}" placeholder="16 dígits numèrics">
+                <div id="cardError" class="text-danger mt-1" style="display: none;">
+                    La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
                 </div>
             </div>
 
@@ -172,6 +173,35 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/clients/llistar}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tarjetaInput = document.getElementById("numTarjetaCredit");
+            const tarjetaError = document.getElementById("cardError");
+
+            // Expresión regular para validar tarjeta de crédito (16 dígitos)
+            const tarjetaPattern = /^[0-9]{16}$/;
+
+            // Validación en tiempo real
+            tarjetaInput.addEventListener("input", function () {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                } else {
+                    tarjetaError.style.display = "none";
+                }
+            });
+
+            // Validación al enviar el formulario
+            const form = tarjetaInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                    event.preventDefault(); // Evita el envío del formulario
+                    alert("La tarjeta de crèdit no és vàlida. Comprova que tingui 16 dígits.");
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
