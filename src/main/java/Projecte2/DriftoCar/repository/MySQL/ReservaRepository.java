@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
+
 import java.time.LocalDate;
 import org.springframework.stereotype.Repository;
 
@@ -39,5 +40,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByVehicleMatriculaData(@Param("matricula") String matricula, @Param("dataFinal") LocalDate dataFinal);
 
     boolean existsByClientDni(String dni);
+
+    boolean existsByVehicleMatricula(String matricula);
+
 
 }

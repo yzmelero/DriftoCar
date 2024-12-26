@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -51,7 +52,7 @@ public class VehicleController {
     @Autowired
     private ReservaService reservaService;
 
-    // Llistar 
+    // Llistar
     @GetMapping("/llistar")
     public String llistarVehicles(
             @RequestParam(value = "matricula", required = false) String matricula,
@@ -100,8 +101,13 @@ public class VehicleController {
 
     // Esborrar
     @GetMapping("/esborrar/{matricula}")
-    public String esborrarVehicle(@PathVariable("matricula") String matricula) {
-        vehicleService.baixaVehicle(matricula);
+    public String esborrarVehicle(@PathVariable("matricula") String matricula, RedirectAttributes redirectAttributes) {
+        try {
+            vehicleService.baixaVehicle(matricula);
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/vehicle/llistar";
+        }
         log.info("S'ha esborrat un vehicle.");
 
         return "redirect:/vehicle/llistar";
