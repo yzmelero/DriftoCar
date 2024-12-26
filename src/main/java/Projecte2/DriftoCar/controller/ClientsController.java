@@ -4,9 +4,12 @@
  */
 package Projecte2.DriftoCar.controller;
 
+import Projecte2.DriftoCar.entity.MongoDB.DocumentacioClient;
 import Projecte2.DriftoCar.entity.MySQL.Client;
+import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,8 @@ public class ClientsController {
     private ClientService clientService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DocumentacioClientRepository documentacioClientRepository;
 
     Logger log = LoggerFactory.getLogger(ClientService.class);
 
@@ -154,6 +159,23 @@ public class ClientsController {
 
         Client existent = client.get();
 
+        // Cosas de imagenes
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
         model.addAttribute("client", existent);
         return "client-consulta"; // Nom del fitxer HTML
     }
