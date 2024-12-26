@@ -1,6 +1,8 @@
 package Projecte2.DriftoCar.controller;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.bson.types.Binary;
@@ -196,6 +198,22 @@ public class AgentController {
         if (agent == null) {
             throw new RuntimeException("No s'ha trobat cap agent amb el DNI especificat.");
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
         model.addAttribute("agent", agent);
         return "agent-consulta"; // Nom de la plantilla
     }
