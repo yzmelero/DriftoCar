@@ -116,7 +116,8 @@ public class ReservaController {
 
     @GetMapping("/consulta/{idReserva}")
     public String consultarReserva(@PathVariable Long idReserva, Model model) {
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
 
         if (reserva == null) {
             model.addAttribute("error", "No s'ha trobat la reserva amb aquest id: " + idReserva);
@@ -130,14 +131,18 @@ public class ReservaController {
     @GetMapping("/lliurar/{idReserva}")
     public String mostrarFormulariLliurament(Model model, @PathVariable Long idReserva) {
 
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
+
         if (reserva == null) {
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
 
-        reserva.setDataLliurar(LocalDate.now());
-        
+        if (reserva.getDataLliurar() == null) {
+            reserva.setDataLliurar(LocalDate.now());
+        }
+
         model.addAttribute("reserva", reserva);
         return "reserva-lliurar";
 
@@ -146,9 +151,11 @@ public class ReservaController {
     @PostMapping("/lliurar/{idReserva}")
     public String lliurarVehicle(Model model, @PathVariable Long idReserva,
             @RequestParam("horaLliurar") String horaLliurar,
+            @RequestParam("dataLliurar") String dataLliurar,
             @RequestParam("descripcioEstat") String descripcioEstat) {
 
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
         if (reserva == null) {
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
@@ -156,13 +163,13 @@ public class ReservaController {
 
         try {
 
-            //DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalDate dataLliurar = LocalDate.now(); // Assignem la data actual
-            //LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
+            LocalDate data = LocalDate.parse(dataLliurar, dataFormatter); // Assignem la data actual
+            // LocalDate data = LocalDate.parse(dataLliurar, dataFormatter);
             LocalTime hora = LocalTime.parse(horaLliurar, horaFormatter);
 
-            reserva.setDataLliurar(dataLliurar);
+            reserva.setDataLliurar(data);
             reserva.setHoraLliurar(hora);
             reserva.setDescripcioEstatLliurar(descripcioEstat);
             reserva.setEstat(true);
@@ -180,7 +187,8 @@ public class ReservaController {
     @GetMapping("/retornar/{idReserva}")
     public String mostrarFormulariRetornar(Model model, @PathVariable Long idReserva) {
 
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
         if (reserva == null) {
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
@@ -196,9 +204,12 @@ public class ReservaController {
     @PostMapping("/retornar/{idReserva}")
     public String retornarVehicle(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") LocalDate dataRetorn,
-            @RequestParam("horaRetorn") LocalTime horaRetorn) {
+            @RequestParam("horaRetorn") LocalTime horaRetorn,
+            @RequestParam String action) {
 
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
+
         if (reserva == null) {
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
@@ -219,6 +230,10 @@ public class ReservaController {
             return "reserva-retornar"; // Torna a mostrar el formulari amb un missatge d'error
         }
 
+        if ("incidencia".equals(action)) {
+            return "redirect:/incidencia/obrir/" + reserva.getVehicle().getMatricula();
+        }
+
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
@@ -228,7 +243,8 @@ public class ReservaController {
             @RequestParam("dataRetorn") String dataRetorn,
             @RequestParam("horaRetorn") String horaRetorn) {
 
-        Reserva reserva = reservaService.cercaPerId(idReserva);
+        Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
+        Reserva reserva = reservaOptional.get();
         // TODO En el cas de que l'ID introduit no existeixi.
 
         try {
@@ -279,12 +295,11 @@ public class ReservaController {
             reserva.setDataFi(dataFiFin);
             reserva.setHoraInici(horaIniciFin);
             reserva.setHoraFi(horaFiFin);
-            
+
             reserva.setClient(clientRepository.findByDni(reserva.getClient().getDni())
                     .orElseThrow(() -> new IllegalArgumentException("Client no trobat")));
             reserva.setVehicle(vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula())
                     .orElseThrow(() -> new IllegalArgumentException("Vehicle no trobat")));
-
 
             System.out.println("Vehicle: " + reserva.getVehicle());
             System.out.println("Client: " + reserva.getClient());
@@ -293,7 +308,6 @@ public class ReservaController {
 
             fianca = reservaService.calculFianca(reserva);
             costTotal = reservaService.calculPreuReserva(reserva);
-
 
             model.addAttribute("clients", clientRepository.findAll()); // Manté la llista de clients
             model.addAttribute("vehicles", vehicleRepository.findAll()); // Manté la llista de vehicles
@@ -306,4 +320,5 @@ public class ReservaController {
         }
         return "reserva-alta";
     }
+
 }

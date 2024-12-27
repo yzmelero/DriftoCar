@@ -41,6 +41,16 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <strong>Descripció de l'estat en el lliurament: </strong><span
                             th:text="${reserva.descripcioEstatLliurar}"></span>
                     </p>
+                    <p
+                        th:if="${reserva.dataRetornar != null and !#strings.isEmpty(reserva.dataRetornar)}">
+                        <strong>Data de retorn: </strong><span
+                            th:text="${reserva.dataRetornar}"></span>
+                    </p>
+                    <p
+                        th:if="${reserva.horaRetornar != null and !#strings.isEmpty(reserva.horaRetornar)}">
+                        <strong>Hora de retorn: </strong><span
+                            th:text="${reserva.horaRetornar}"></span>
+                    </p>
                 </span></p>
                 <div th:if="${reserva.horaInici == null or reserva.dataLliurar == null}">
                     <a class="btn btn-success" th:href="@{/reserva/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>

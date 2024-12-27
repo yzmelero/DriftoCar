@@ -12,7 +12,7 @@
     <div class="container mt-5">
         <h1>Informació del Retorn del Vehicle</h1>
 
-        <form th:action="@{/reserva/retornar/{idReserva}(idReserva=${reserva.idReserva})}" method="post"
+        <form  id="formulari" th:action="@{/reserva/retornar/{idReserva}(idReserva=${reserva.idReserva})}" method="post"
             onsubmit="return confirmarEnviament()">
             <!-- Data del lliurament -->
             <div class="mb-3">
@@ -46,9 +46,9 @@
                 th:formaction="@{/reserva/retornar/calculPreu/{idReserva}(idReserva=${reserva.idReserva})}"
                 formmethod="post">Actualitzar Preus</button>
 
-            <button type="submit" class="btn btn-primary">Enviar Informació</button>
-            <a class="btn btn-danger"
-                th:href="@{/incidencia/obrir/{matricula}(matricula=${reserva.vehicle.matricula})}">Obrir Incidència</a>
+            <button type="submit" name="action" value="informacio" class="btn btn-primary">Enviar Informació</button>
+            
+            <button type="submit" name="action" value="incidencia" class="btn btn-danger">Obrir Incidència</button>
 
             <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
         </form>

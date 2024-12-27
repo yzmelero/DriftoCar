@@ -83,9 +83,9 @@ public class ReservaService {
         return reservaRepository.findAll();
     }
 
-    public Reserva cercaPerId(Long idReserva) {
+    public Optional<Reserva> cercaPerId(Long idReserva) {
 
-        return reservaRepository.findById(idReserva).orElse(null);
+        return reservaRepository.findById(idReserva);
     }
 
     public List<Reserva> cercarReserva(String email, Long id_reserva, String matricula) {
@@ -95,8 +95,9 @@ public class ReservaService {
     }
 
     public void modificarReserva(Reserva reserva) {
+        log.info("Guardant reserva amb ID: " + reserva.getIdReserva());
         reservaRepository.save(reserva);
-    }
+        log.info("Reserva guardada correctament.");    }
 
     public List<Reserva> obtenirReservesPerMatricula(String matricula) {
         return reservaRepository.findByVehicleMatriculaEstat(matricula);
