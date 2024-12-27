@@ -55,7 +55,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div th:if="${reserva.horaInici == null or reserva.dataLliurar == null}">
                     <a class="btn btn-success" th:href="@{/reserva/lliurar/{id}(id=${reserva.idReserva})}">Lliurar Vehicle</a>
                 </div>
-                <div th:if="${reserva.horaInici != null and reserva.dataLliurar != null}">
+                <div th:if="${reserva.horaInici != null and reserva.dataLliurar != null and reserva.horaRetornar == null and reserva.dataRetornar == null }">
                     <a class="btn btn-warning" th:href="@{/reserva/retornar/{id}(id=${reserva.idReserva})}">Retornar Vehicle</a>
                 </div>
             
