@@ -184,7 +184,6 @@ public class ReservaController {
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
-    // TODO Nova url al controller!
     @GetMapping("/retornar/{idReserva}")
     public String mostrarFormulariRetornar(Model model, @PathVariable Long idReserva) {
 
@@ -201,7 +200,6 @@ public class ReservaController {
 
     }
 
-    // TODO Nova url al controller!
     @PostMapping("/retornar/{idReserva}")
     public String retornarVehicle(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") LocalDate dataRetorn,
@@ -238,7 +236,6 @@ public class ReservaController {
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
-    // TODO nova url
     @PostMapping("/retornar/calculPreu/{idReserva}")
     public String calcularPreuRetorn(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") String dataRetorn,
@@ -271,7 +268,6 @@ public class ReservaController {
         return "reserva-retornar";
     }
 
-    // TODO nova url
     @PostMapping("/alta/calculPreu")
     public String calcularPreu(Model model,
             @RequestParam("dataInici") String dataInici,

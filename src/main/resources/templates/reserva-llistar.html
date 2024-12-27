@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Listado de Reservas</title>
+    <title>Llistat de Reserves</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,7 +12,7 @@
 
 <body>
     <div class="container text-center mt-5">
-        <h1>Listado de Reservas</h1>
+        <h1>Llistat de Reserves</h1>
         <a href="/reserva/alta" class="btn btn-primary mb-3">Crear reserva</a>
         <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
@@ -33,21 +33,21 @@
                 <button type="submit" class="btn btn-primary">Cerca</button>
             </div>
         </form>
-        <p>Total de reservas: <span th:text="${#lists.size(reservas)}"></span></p>
+        <p>Total de reserves: <span th:text="${#lists.size(reservas)}"></span></p>
         <div class="row">
             <div class="col">
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">ID Reserva</th>
-                            <th scope="col">Cliente (DNI)</th>
-                            <th scope="col">Vehículo (Matrícula)</th>
-                            <th scope="col">Fecha Inicio</th>
-                            <th scope="col">Fecha Fin</th>
-                            <th scope="col">Costo Total</th>
-                            <th scope="col">Fianza</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">Client (DNI)</th>
+                            <th scope="col">Vehicle (Matrícula)</th>
+                            <th scope="col">Data Inici</th>
+                            <th scope="col">Data Fin</th>
+                            <th scope="col">Cost Total</th>
+                            <th scope="col">Fiança</th>
+                            <th scope="col">Estat</th>
+                            <th scope="col">Accions</th>
                         </tr>
                     </thead>
                     <tbody>
