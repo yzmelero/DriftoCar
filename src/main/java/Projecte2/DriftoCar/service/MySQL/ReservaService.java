@@ -103,11 +103,15 @@ public class ReservaService {
         return reservaRepository.findByVehicleMatriculaEstat(matricula);
     }
 
-    public void desactivarReserva(Long idReserva) {
+    public Reserva desactivarReserva(Long idReserva) {
         Reserva reserva = reservaRepository.findById(idReserva)
-                .orElseThrow(() -> new RuntimeException("Reserva no trobada: " + idReserva));
-        reserva.setEstat(false);
-        reservaRepository.save(reserva);
+                .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: " ));
+        if (reserva.isEstat()) {
+            reserva.setEstat(false); // Marca la reserva como inactiva
+            return reservaRepository.save(reserva);
+        } else {
+            throw new RuntimeException("La reserva ja està anul·lada");
+        }
     }
 
     public double calculFianca(Reserva reserva) {

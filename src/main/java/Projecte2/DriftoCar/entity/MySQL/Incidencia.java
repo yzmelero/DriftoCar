@@ -30,24 +30,27 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "incidencia")
 public class Incidencia {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     // 1 = actiu, 0 = inactiu
     private boolean estat;
-    
+
     private String motiu;
-    
-    @Column(name="data_inici_incidencia")
+
+    @Column(name = "data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
-    
+
     @Column(name = "data_fi_incidencia")
     private LocalDateTime dataFiIncidencia;
-    
+
+    @Column(name = "descripcio")
+    private String descripcio;
+
     @ManyToOne
-    @JoinColumn(name = "matricula", referencedColumnName = "matricula", nullable = false)       
+    @JoinColumn(name = "matricula", referencedColumnName = "matricula", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Vehicle matricula;

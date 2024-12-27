@@ -6,9 +6,11 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,9 @@ public class LocalitzacioService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
+    @Autowired
+    private AgentRepository agentRepository;
+
     public Localitzacio altaLocalitzacio(Localitzacio localitzacio) {
         log.info("S'ha entrat al mètode altaLocalitzacio.");
 
@@ -44,7 +49,16 @@ public class LocalitzacioService {
         log.info("S'ha entrat al mètode baixaLocalització.");
 
         if (!localitzacioRepository.existsById(codiPostal)) {
+            
+        }
+        Optional<Localitzacio> localitzacio = localitzacioRepository.findById(codiPostal);
+        if (localitzacio.isEmpty()) {
             throw new RuntimeException("No s'ha trobat cap localitzacio amb el codi postal: " + codiPostal);
+        }
+        Localitzacio existeix = localitzacio.get();
+        if (agentRepository.existsByLocalitzacio(existeix)) {
+            throw new RuntimeException("No es pot eliminar la localització perquè està assignada a un agent.");
+
         }
 
         List<Vehicle> vehicles = vehicleRepository.findByLocalitzacio_CodiPostal(codiPostal);

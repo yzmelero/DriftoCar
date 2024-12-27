@@ -1,10 +1,16 @@
 package Projecte2.DriftoCar.controller;
 
+import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
+import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,15 +19,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import Projecte2.DriftoCar.entity.MongoDB.DocumentacioClient;
 import Projecte2.DriftoCar.entity.MySQL.Agent;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
+import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.AgentService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/agent")
+@Scope("session")
 public class AgentController {
 
     Logger log = LoggerFactory.getLogger(AgentController.class);
@@ -29,10 +39,13 @@ public class AgentController {
     private AgentService agentService;
     @Autowired
     private LocalitzacioService localitzacioService;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private DocumentacioClientRepository documentacioClientRepository;
 
     /**
-     * Filtra els agents pel seu DNI.
+     * Mostra el llistat d'agents, amb la possibilitat de filtrar per DNI.
      *
      * @param dni   El DNI per filtrar. Si no s'especifica, es mostren tots els
      *              agents.
@@ -41,8 +54,7 @@ public class AgentController {
      */
     @GetMapping("/llistar")
     public String llistarAgents(@RequestParam(value = "dni", required = false) String dni, Model model) {
-        
-        
+
         List<Agent> agents;
 
         if (dni != null && !dni.isEmpty()) {
@@ -60,15 +72,28 @@ public class AgentController {
 
         if (!model.containsAttribute("agent")) {
             model.addAttribute("agent", new Agent());
-            List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+            List<Localitzacio> localitzacions = agentService.getLocalitzacionsDisponibles();
             model.addAttribute("localitzacions", localitzacions);
         }
         return "agent-alta";
     }
 
+    /**
+     * Guarda un nuevo agente en la base de datos.
+     * 
+     * @param agent           El agente a guardar.
+     * @param bindingResult   El resultado de la validación.
+     * @param model           El modelo para pasar los datos a la vista.
+     * @param imatgeDni       La imagen del DNI.
+     * @param imatgeLlicencia La imagen de la licencia.
+     * @return La vista de la lista de agentes si todo es correcto, o el formulario
+     *         de alta si hay errores.
+     */
     @PostMapping("/guardar")
-    public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model) {
-        
+    public String guardarAgente(@Valid Agent agent, BindingResult bindingResult, Model model,
+            @RequestParam(value = "imatgeDni", required = false) MultipartFile imatgeDni,
+            @RequestParam(value = "imatgeLlicencia", required = false) MultipartFile imatgeLlicencia) {
+
         if (bindingResult.hasErrors()) {
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
             model.addAttribute("localitzacions", localitzacions);
@@ -76,16 +101,37 @@ public class AgentController {
             return "agent-alta";
         }
 
+        String contrasenya = agent.getContrasenya();
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (agent.getDniCaducitat().isBefore(currentDate) || agent.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-alta"; // Nombre de tu vista HTML
+        }
+
+        if (agent.getLlicCaducitat().isBefore(currentDate) || agent.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-alta";
+        }
         try {
             agentService.altaAgent(agent);
-        } catch (RuntimeException e) {
-            String error = e.getMessage();
+            DocumentacioClient documentacio = new DocumentacioClient();
+            documentacio.setDni(agent.getDni());
 
-            if (error.contains("DNI")) {
-                agent.setDni(""); // Limpia el campo DNI si hay error de duplicidad
+            if (imatgeDni != null && !imatgeDni.isEmpty()) {
+                documentacio.setImatgeDni(new Binary[] { new Binary(imatgeDni.getBytes()) });
             }
-
-            model.addAttribute("error", error);
+            if (imatgeLlicencia != null && !imatgeLlicencia.isEmpty()) {
+                documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicencia.getBytes()) });
+            }
+            documentacioClientRepository.save(documentacio);
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            agent.setContrasenya(contrasenya);
             model.addAttribute("agent", agent); // Mantiene los demás datos en el formulario
 
             List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
@@ -104,22 +150,84 @@ public class AgentController {
      * @return La vista del formulario de edición.
      */
     @GetMapping("/modificar/{dni}")
-    public String modificarClients(@PathVariable("dni") String dni, Model model) {
+    public String modificarAgent(@PathVariable("dni") String dni, Model model) {
 
         Agent agent = agentService.obtenirAgentPerDni(dni);
         if (agent == null) {
             throw new RuntimeException("No existeix cap agent amb aquest DNI.");
 
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
         model.addAttribute("agent", agent);
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
+
         return "agent-modificar";
     }
 
     @PostMapping("/modificar")
-    public String guardarClientModificat(@Valid Agent agent, Model model) {
+    public String guardarAgentModificat(@Valid Agent agent,
+            @RequestParam("imatgeDni") MultipartFile imatgeDniFile,
+            @RequestParam("imatgeLlicencia") MultipartFile imatgeLlicenciaFile,
+            Model model) {
+        Agent existent = agentService.obtenirAgentPerDni(agent.getDni());
+        agent.setRol(existent.getRol());
+        if (agent.getNacionalitat() == null || agent.getNacionalitat().isEmpty()) {
+            agent.setNacionalitat(existent.getNacionalitat());
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (agent.getDniCaducitat().isBefore(currentDate) || agent.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
+
+        if (agent.getLlicCaducitat().isBefore(currentDate) || agent.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
+
+        if (agent.getContrasenya() == null || agent.getContrasenya().isEmpty()) {
+            agent.setContrasenya(existent.getContrasenya());
+        } else {
+            // Si se ha proporcionado una nueva contraseña, encriptarla
+            String contrasenyaEncriptada = passwordEncoder.encode(agent.getContrasenya());
+            agent.setContrasenya(contrasenyaEncriptada);
+        }
+
         try {
             agentService.modificarAgent(agent);
-        } catch (RuntimeException e) {
+
+            // Recuperar o crear documentación en MongoDB
+            DocumentacioClient documentacio = documentacioClientRepository.findById(agent.getDni())
+                    .orElse(new DocumentacioClient());
+            documentacio.setDni(agent.getDni());
+
+            if (!imatgeDniFile.isEmpty()) {
+                documentacio.setImatgeDni(new Binary[] { new Binary(imatgeDniFile.getBytes()) });
+            }
+            if (!imatgeLlicenciaFile.isEmpty()) {
+                documentacio.setImatgeLlicencia(new Binary[] { new Binary(imatgeLlicenciaFile.getBytes()) });
+            }
+            documentacioClientRepository.save(documentacio);
+        } catch (Exception e) {
             String error = e.getMessage();
             model.addAttribute("error", error);
             model.addAttribute("agent", agent);
@@ -155,6 +263,22 @@ public class AgentController {
         if (agent == null) {
             throw new RuntimeException("No s'ha trobat cap agent amb el DNI especificat.");
         }
+        Optional<DocumentacioClient> docOpt = documentacioClientRepository.findById(dni);
+        String imatgeDniBase64 = null;
+        String imatgeLlicenciaBase64 = null;
+
+        if (docOpt.isPresent()) {
+            DocumentacioClient doc = docOpt.get();
+            if (doc.getImatgeDni() != null && doc.getImatgeDni().length > 0) {
+                imatgeDniBase64 = Base64.getEncoder().encodeToString(doc.getImatgeDni()[0].getData());
+            }
+            if (doc.getImatgeLlicencia() != null && doc.getImatgeLlicencia().length > 0) {
+                imatgeLlicenciaBase64 = Base64.getEncoder().encodeToString(doc.getImatgeLlicencia()[0].getData());
+            }
+        }
+
+        model.addAttribute("imatgeDni", imatgeDniBase64);
+        model.addAttribute("imatgeLlicencia", imatgeLlicenciaBase64);
         model.addAttribute("agent", agent);
         return "agent-consulta"; // Nom de la plantilla
     }

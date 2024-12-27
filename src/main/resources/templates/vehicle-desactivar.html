@@ -57,10 +57,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                         </table>
                         <form th:action="@{/vehicle/desactivarReserves}" method="post" class="text-center mb-4">
-                            <input type="hidden" name="idReservas" th:each="reserva : ${reservas}" th:value="${reserva.idReserva}"/>
+                            <input type="hidden" name="matricula" th:value="${vehicle.matricula}"/>
+                            <div th:each="reserva : ${reservas}">
+                                <input type="hidden" name="idReservas" th:value="${reserva.idReserva}"/>
+                            </div>
                             <button type="submit" class="btn btn-success" 
-                                    onclick="return confirm('¿Estàs segur de que vols desactivar les reserves llistades?');">
-                                Confirmar
+                                    onclick="return confirm('¿Estàs segur de que vols desactivar aquest vehicle i/o les reserves llistades?');">
+                                Confirmar desactivar
                             </button>
                         </form>
                     </div>

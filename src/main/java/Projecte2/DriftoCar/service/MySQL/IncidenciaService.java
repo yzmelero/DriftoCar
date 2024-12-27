@@ -8,7 +8,9 @@ import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.IncidenciaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
-import java.util.ArrayList;
+import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,31 +28,40 @@ public class IncidenciaService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-    
-    public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
-        List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
 
-        List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
-        for (Incidencia incidencia : incidenciesActives) {
-            matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula());
-        }
+    @Autowired
+    private HistoricIncidenciesService historicIncidenciesService;
 
-        List<Vehicle> vehicles = vehicleRepository.findAll();
-        List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
-        for (Vehicle vehicle : vehicles) {
-            if (!matriculesAmbIncidenciesActives.contains(vehicle.getMatricula())) {
-                vehiclesSenseIncidencies.add(vehicle);
-            }
-        }
-
-        return vehiclesSenseIncidencies;
+    public List<Vehicle> llistarVehiclesSenseIncidenciesActives(String searchMatricula) {
+        List<Vehicle> vehicles = vehicleRepository.findVehiclesFiltreIncidencies(searchMatricula);
+        return vehicles;
+        /*
+         * List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
+         * 
+         * List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
+         * for (Incidencia incidencia : incidenciesActives) {
+         * matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula())
+         * ;
+         * }
+         * 
+         * List<Vehicle> vehicles = vehicleRepository.findAll();
+         * List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
+         * for (Vehicle vehicle : vehicles) {
+         * if (!matriculesAmbIncidenciesActives.contains(vehicle.getMatricula())) {
+         * vehiclesSenseIncidencies.add(vehicle);
+         * }
+         * }
+         * 
+         * return vehiclesSenseIncidencies;
+         */
     }
-  
+
     public void obrirIncidencia(Incidencia incidencia) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findByMatricula(incidencia.getMatricula().getMatricula());
 
         if (!optionalVehicle.isPresent()) {
-            throw new RuntimeException("Vehicle no trobat amb la matrícula proporcionada: " + incidencia.getMatricula().getMatricula());
+            throw new RuntimeException(
+                    "Vehicle no trobat amb la matrícula proporcionada: " + incidencia.getMatricula().getMatricula());
         }
 
         Vehicle vehicle = optionalVehicle.get();
@@ -63,22 +74,29 @@ public class IncidenciaService {
             vehicleRepository.save(vehicle);
         }
     }
-    
+
     public void tancarIncidencia(Long id) {
+        // Buscar la incidencia por ID
         Optional<Incidencia> incidenciaOpt = incidenciaRepository.findById(id);
-        
+
         if (!incidenciaOpt.isPresent()) {
             throw new RuntimeException("Incidència no trobada amb l'ID: " + id);
         }
 
+        // Obtener la incidencia
         Incidencia incidencia = incidenciaOpt.get();
         incidencia.setEstat(false);
+        incidencia.setDataFiIncidencia(LocalDateTime.now());
         incidenciaRepository.save(incidencia);
+
+        historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia);
     }
-    
+
     public List<Incidencia> llistarIncidencies() {
         return incidenciaRepository.findAll();
     }
+
+    public Incidencia obtenirIncidenciaPerId(Long id) {
+        return incidenciaRepository.findById(id).orElse(null);
+    }
 }
-
-

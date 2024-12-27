@@ -19,30 +19,50 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, String> {
 
-    // Guarda una instància de client.
-    // Client registreClient(Client client);
+        //Lista todos los clientes por validar
+        List<Client> findByActivoFalse();
 
-    // Retorna un client amb l'ID especificat.
-    List<Client> findAll();
-    Optional<Client> findByDni(String dni);
 
-    // Mètode necessàri per al filtre en la pantalla de llistar clients.
-    /* List<Client> findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
-            String nom, String dni, String email);*/
+        // Guarda una instància de client.
+        // Client registreClient(Client client);
 
-    @Query("SELECT c FROM Client c " +
-            "WHERE (:cognoms IS NULL OR LOWER(c.cognoms) LIKE LOWER(CONCAT('%', :cognoms, '%'))) " +
-            "AND (:nacionalitat IS NULL OR LOWER(c.nacionalitat) LIKE LOWER(CONCAT('%', :nacionalitat, '%'))) " +
-            "AND (:telefon IS NULL OR (c.telefon) LIKE (CONCAT('%', :telefon, '%')))" +
-            "AND (:email IS NULL OR LOWER(c.email) LIKE LOWER(CONCAT('%', :email, '%')))")
-    List<Client> cercarClients(@Param("cognoms") String cognoms,
-            @Param("nacionalitat") String nacionalitat,
-            @Param("telefon") String telefon,
-            @Param("email") String email);
+        // Retorna un client amb l'ID especificat.
+        List<Client> findAll();
 
-    // Modifica un client.
-    // Client modificarClient(Client client, String dni);
+        Optional<Client> findByDni(String dni);
 
-    // void esborrarClient(String id);
+        // Mètode necessàri per al filtre en la pantalla de llistar clients.
+        /*
+         * List<Client>
+         * findByNomContainingIgnoreCaseOrDniContainingIgnoreCaseOrEmailContainingIgnoreCase(
+         * String nom, String dni, String email);
+         */
+
+        @Query("SELECT c FROM Client c " +
+                        "WHERE (:cognoms IS NULL OR LOWER(c.cognoms) LIKE LOWER(CONCAT('%', :cognoms, '%'))) " +
+                        "AND (:nacionalitat IS NULL OR LOWER(c.nacionalitat) LIKE LOWER(CONCAT('%', :nacionalitat, '%'))) "
+                        +
+                        "AND (:telefon IS NULL OR (c.telefon) LIKE (CONCAT('%', :telefon, '%')))" +
+                        "AND (:email IS NULL OR LOWER(c.email) LIKE LOWER(CONCAT('%', :email, '%')))")
+        List<Client> cercarClients(@Param("cognoms") String cognoms,
+                        @Param("nacionalitat") String nacionalitat,
+                        @Param("telefon") String telefon,
+                        @Param("email") String email);
+
+        Optional<Client> findByUsuari(String username);
+
+
+        Optional<Client> findByTelefon(String telefon);
+
+
+        Optional<Client> findByEmail(String email);
+
+
+        Optional<Client> findByNumTarjetaCredit(String numTarjetaCredit);
+
+        // Modifica un client.
+        // Client modificarClient(Client client, String dni);
+
+        // void esborrarClient(String id);
 
 }

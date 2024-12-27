@@ -15,14 +15,24 @@
         <h1 class="text-center mb-4">Alta d'Agent</h1>
 
         <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
-        <form th:action="@{/agent/guardar}" method="post">
+        <form th:action="@{/agent/guardar}" method="post" class="needs-validation" enctype="multipart/form-data">
+
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" name="dni" class="form-control" th:value="${agent?.dni}" required>
+                <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
+                    title="El DNI ha de tenir 8 números i una lletra majúscula.">
+                <div id="dniError" class="text-danger" style="display: none;">
+                    El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="usuari" class="form-label">Usuari</label>
+                <label for="imatgeDni" class="form-label">Imatge DNI</label>
+                <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*">
+            </div>
+
+            <div class="mb-3">
+                <label for="usuari" class="form-label">Nom d'Usuari</label>
                 <input type="text" id="usuari" name="usuari" class="form-control" th:value="${agent?.usuari}" required>
             </div>
 
@@ -50,8 +60,11 @@
 
             <div class="mb-3">
                 <label for="telefon" class="form-label">Telèfon</label>
-                <input type="number" id="telefon" name="telefon" class="form-control" th:value="${agent?.telefon}"
-                    required>
+                <input type="number" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
+                    title="El telèfon ha de tenir 9 dígits.">
+                <div id="telefonError" class="text-danger" style="display: none;">
+                    El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
+                </div>
             </div>
 
             <div class="mb-3">
@@ -61,21 +74,33 @@
             </div>
 
             <div class="mb-3">
-                <label for="llicCaducitat" class="form-label">Caducitat de la llicència</label>
-                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control"
-                    th:value="${agent?.llicCaducitat}" required>
+                <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
+                <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*">
             </div>
 
             <div class="mb-3">
-                <label for="dniCaducitat" class="form-label">Caducitat del DNI</label>
-                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control"
-                    th:value="${agent?.dniCaducitat}" required>
+                <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
+                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required />
+                <div id="dniCaducitatError" class="text-danger mt-1" style="display: none;">
+                    La data d'expiració del DNI no és vàlida.
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="numTarjetaCredit" class="form-label">Número de targeta de crèdit</label>
-                <input type="text" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control"
-                    th:value="${agent?.numTarjetaCredit}" required>
+                <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
+                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required />
+                <div id="llicCaducitatError" class="text-danger mt-1" style="display: none;">
+                    La data d'expiració de la llicència no és vàlida.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
+                    placeholder="16 dígits numèrics" th:value="${agent?.numTarjetaCredit}">
+                <div id="cardError" class="text-danger mt-1" style="display: none;">
+                    La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
+                </div>
             </div>
 
             <div class="mb-3">
@@ -84,14 +109,21 @@
             </div>
 
             <div class="mb-3">
-                <label for="nacionalitat" class="form-label">Nacionalitat </label>
-                <input type="text" id="nacionalitat" name="nacionalitat" class="form-control" th:value="${agent?.nacionalitat}" required>
+                <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                <select id="nacionalitat" name="nacionalitat" class="form-control" required>
+                    <option value="" disabled selected>Seleccioneu una nacionalitat</option>
+                </select>
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input"
-                    th:checked="${agent?.reputacio}">
-                <label for="reputacio" class="form-check-label">Reputació</label>
+            <div class="mb-3">
+                <label for="reputacio" class="form-label">Reputació</label>
+                <select id="reputacio" th:field="*{reputacio}" class="form-control" required>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                <div class="invalid-feedback">
+                    Si us plau, introdueix una reputació.
+                </div>
             </div>
 
             <div class="mb-3">
@@ -121,6 +153,175 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dniCaducitatInput = document.getElementById("dniCaducitat");
+            const dniCaducitatError = document.getElementById("dniCaducitatError");
+
+            const llicCaducitatInput = document.getElementById("llicCaducitat");
+            const llicCaducitatError = document.getElementById("llicCaducitatError");
+
+            const form = document.getElementById("altaAgenteForm");
+
+            // Establece los límites del calendario
+            const currentDate = new Date();
+            const maxDate = new Date(currentDate.getFullYear() + 50, 11, 31); // Máximo 50 años en el futuro
+
+            // Formato de fecha para el atributo "min" y "max"
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            // Configurar límites en los campos de fecha
+            dniCaducitatInput.setAttribute("min", formatDate(currentDate));
+            dniCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            llicCaducitatInput.setAttribute("min", formatDate(currentDate));
+            llicCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            // Validación de fechas en tiempo real
+            dniCaducitatInput.addEventListener("input", function () {
+                validateDate(dniCaducitatInput, dniCaducitatError);
+            });
+
+            llicCaducitatInput.addEventListener("input", function () {
+                validateDate(llicCaducitatInput, llicCaducitatError);
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                if (!validateDate(dniCaducitatInput, dniCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!validateDate(llicCaducitatInput, llicCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Evita que se envíe el formulario
+                    alert("Revisa les dades abans de continuar. Algunes dates no són vàlides.");
+                }
+            });
+
+            // Función para validar una fecha
+            function validateDate(input, errorElement) {
+                const enteredDate = new Date(input.value);
+
+                // Verifica que la fecha esté dentro del rango
+                if (!input.value || enteredDate < currentDate || enteredDate > maxDate) {
+                    errorElement.style.display = "block";
+                    return false;
+                } else {
+                    errorElement.style.display = "none";
+                    return true;
+                }
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tarjetaInput = document.getElementById("numTarjetaCredit");
+            const tarjetaError = document.getElementById("cardError");
+
+            // Expresión regular para validar tarjeta de crédito (16 dígitos)
+            const tarjetaPattern = /^[0-9]{16}$/;
+
+            // Validación en tiempo real
+            tarjetaInput.addEventListener("input", function () {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                } else {
+                    tarjetaError.style.display = "none";
+                }
+            });
+
+            // Validación al enviar el formulario
+            const form = tarjetaInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                    event.preventDefault(); // Evita el envío del formulario
+                    alert("La tarjeta de crèdit no és vàlida. Comprova que tingui 16 dígits.");
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dniInput = document.getElementById("dni");
+            const dniError = document.getElementById("dniError");
+            const telefonInput = document.getElementById("telefon");
+            const telefonError = document.getElementById("telefonError");
+
+            const dniPattern = /^[0-9]{8}[A-Z]$/;
+            const telefonPattern = /^[0-9]{9}$/;
+
+            // Validar DNI en tiempo real
+            dniInput.addEventListener("input", function () {
+                if (!dniPattern.test(dniInput.value)) {
+                    dniError.style.display = "block";
+                } else {
+                    dniError.style.display = "none";
+                }
+            });
+
+            // Validar Teléfono en tiempo real
+            telefonInput.addEventListener("input", function () {
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                } else {
+                    telefonError.style.display = "none";
+                }
+            });
+
+            // Validar al enviar el formulario
+            const form = dniInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                if (!dniPattern.test(dniInput.value)) {
+                    dniError.style.display = "block";
+                    isValid = false;
+                }
+
+                if (!telefonPattern.test(telefonInput.value)) {
+                    telefonError.style.display = "block";
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Evita que se envíe el formulario
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const nacionalidades = [
+                "Espanya", "França", "Alemanya", "Itàlia", "Portugal",
+                "Regne Unit", "Estats Units", "Canadà", "Mèxic", "Argentina"
+            ];
+
+            const selectNacionalitat = document.getElementById("nacionalitat");
+
+            nacionalidades.forEach(nacionalidad => {
+                const option = document.createElement("option");
+                option.value = nacionalidad;
+                option.textContent = nacionalidad;
+                selectNacionalitat.appendChild(option);
+            });
+        });
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

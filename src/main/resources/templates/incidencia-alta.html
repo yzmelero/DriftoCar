@@ -14,16 +14,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="container mt-5">
             <h1>Crear nova incidència per al vehicle</h1>
 
-            <form th:action="@{/incidencia/obrir}" th:object="${incidencia}" method="post">
-
+            <form th:action="@{/incidencia/obrir}" th:object="${incidencia}" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="matricula" class="form-label">Matrícula del Vehicle</label>
                     <input type="text" id="matricula" class="form-control" th:field="*{matricula.matricula}" readonly />
                 </div>
 
                 <div class="mb-3">
-                    <label for="motiu" class="form-label">Motiu de la incidència</label>
-                    <textarea class="form-control" id="motiu" th:field="*{motiu}" required></textarea>
+                    <label for="motiu" class="form-label">Motiu de la incidència (Títol)</label>
+                    <input type="text" class="form-control" id="motiu" th:field="*{motiu}" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="text" class="form-label">Descripció de la incidència</label>
+                    <textarea class="form-control" id="text" name="text" required></textarea>
                 </div>
 
                 <div class="mb-3">
@@ -44,17 +48,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <input type="datetime-local" id="dataFiIncidencia" class="form-control" th:field="*{dataFiIncidencia}" />
                 </div>
 
+                <!-- Cargar fotos y documentos PDF -->
+                <div class="mb-3">
+                    <label for="fotos" class="form-label">Imatge</label>
+                    <input type="file" id="fotos" name="fotos" class="form-control" accept="image/*" multiple />
+                </div>
+
+                <div class="mb-3">
+                    <label for="pdf" class="form-label">Documentació PDF</label>
+                    <input type="file" id="pdf" name="pdf" class="form-control" multiple />
+                </div>
+
                 <button type="submit" class="btn btn-primary">Crear Incidència</button>
             </form>
         </div>
-        <div class="position-absolute top-0 end-0 m-3">
-            <a class="btn btn-secondary" href="javascript:history.back()">Cancel·lar</a>
-        </div>
     </body>
 </html>
-
-
-
-
-
-
