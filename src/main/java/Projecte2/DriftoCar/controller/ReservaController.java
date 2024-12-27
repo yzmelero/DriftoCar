@@ -87,7 +87,7 @@ public class ReservaController {
 
         // Aqui creem una reserva buida per a poder mostrar el formulari.
         List<Client> clients = clientRepository.findAll();
-        List<Vehicle> vehicles = vehicleRepository.findAll();
+        List<Vehicle> vehicles = vehicleRepository.findByDisponibilitat(true);
 
         // model.addAttribute("reserva", new Reserva());
 

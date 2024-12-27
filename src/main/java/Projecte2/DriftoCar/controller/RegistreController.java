@@ -9,6 +9,8 @@ import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 
+import java.time.LocalDate;
+
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -51,6 +53,20 @@ public class RegistreController {
             @RequestParam("confirmacioContrasenya") String confirmacioContrasenya,
             Model model) throws Exception {
 
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (client.getDniCaducitat().isBefore(currentDate) || client.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("client", client);
+            return "client-alta"; // Nombre de tu vista HTML
+        }
+
+        if (client.getLlicCaducitat().isBefore(currentDate) || client.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("client", client);
+            return "client-alta";
+        }
         if (!client.getContrasenya().equals(confirmacioContrasenya)) {
             throw new IllegalArgumentException("La contrasenya no coincideix");
         }

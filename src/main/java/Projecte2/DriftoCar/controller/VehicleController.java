@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -52,24 +51,20 @@ public class VehicleController {
     @Autowired
     private ReservaService reservaService;
 
-    // Llistar
+    // Llistar 
     @GetMapping("/llistar")
     public String llistarVehicles(
             @RequestParam(value = "matricula", required = false) String matricula,
             @RequestParam(value = "dataInici", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInici,
             @RequestParam(value = "dataFinal", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFinal,
             Model model) {
-        List<Vehicle> vehicles = vehicleService.llistarVehicles();
+
+        
+        List<Vehicle> vehicles = vehicleService.findVehiclesLista(dataInici, dataFinal, matricula);
+        model.addAttribute("matricula", matricula);
+        model.addAttribute("dataInici", dataInici);
+        model.addAttribute("dataFinal", dataFinal);
         model.addAttribute("vehicles", vehicles);
-
-        if (dataInici != null && dataFinal != null) {
-            List<Vehicle> vehiclesDisponibles = vehicleService.getVehiclesDisponibles(dataInici, dataFinal);
-            model.addAttribute("vehicles", vehiclesDisponibles);
-        } else if (matricula != null && !matricula.isEmpty()) {
-            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
-            model.addAttribute("vehicles", vehicle);
-        }
-
         return "vehicle-llistar";
     }
 
@@ -101,13 +96,8 @@ public class VehicleController {
 
     // Esborrar
     @GetMapping("/esborrar/{matricula}")
-    public String esborrarVehicle(@PathVariable("matricula") String matricula, RedirectAttributes redirectAttributes) {
-        try {
-            vehicleService.baixaVehicle(matricula);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/vehicle/llistar";
-        }
+    public String esborrarVehicle(@PathVariable("matricula") String matricula) {
+        vehicleService.baixaVehicle(matricula);
         log.info("S'ha esborrat un vehicle.");
 
         return "redirect:/vehicle/llistar";

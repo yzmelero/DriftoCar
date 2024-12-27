@@ -10,6 +10,7 @@ import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -132,6 +133,20 @@ public class ClientsController {
         Client existent = clientService.obtenirClientPerDni(client.getDni());
         if (client.getNacionalitat() == null || client.getNacionalitat().isEmpty()) {
             client.setNacionalitat(existent.getNacionalitat());
+        }
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (client.getDniCaducitat().isBefore(currentDate) || client.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("client", client);
+            return "client-modificar";
+        }
+
+        if (client.getLlicCaducitat().isBefore(currentDate) || client.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("client", client);
+            return "client-modificar";
         }
         if (client.getContrasenya() == null || client.getContrasenya().isEmpty()) {
             client.setContrasenya(existent.getContrasenya());

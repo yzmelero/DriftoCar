@@ -105,9 +105,9 @@ public class VehicleService {
         return vehicleRepository.findByMatricula(matricula).orElse(null);
     }
 
-    public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
+   /*public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
         return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
-    }
+    }*/
 
     public void desactivarVehicle(String matricula) {
         Vehicle vehicle = vehicleRepository.findById(matricula)
@@ -121,5 +121,9 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
         vehicle.setDisponibilitat(true);
         vehicleRepository.save(vehicle);
+    }
+    
+    public List<Vehicle> findVehiclesLista(LocalDate dataInici, LocalDate dataFinal, String matricula) {
+        return vehicleRepository.findVehiclesLista(dataInici, dataFinal, matricula);
     }
 }
