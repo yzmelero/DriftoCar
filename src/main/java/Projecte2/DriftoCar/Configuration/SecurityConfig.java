@@ -69,6 +69,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/reserva/lliurar/**").hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/reserva/anular/**")
                                                 .hasAnyRole("ADMIN", "AGENT", "CLIENT")
+                                                .requestMatchers("/reserva/retornar/**").hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/reserva/retornar/calculPreu/**").hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/reserva/alta/calculPreu/**")
+                                                .hasAnyRole("ADMIN", "AGENT")
 
                                                 // Matchers de vehicle sin post
                                                 .requestMatchers("/vehicle/llistar")
