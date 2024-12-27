@@ -27,10 +27,15 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     Optional<Reserva> findById(Long Id);
 
     //Aquesta linia és pel filtre.
-    @Query("SELECT r FROM Reserva r "
-            + "WHERE (:idReserva IS NULL OR r.idReserva = :idReserva) "
-            + "AND (:email IS NULL OR r.client.email = :email)" +
-            "AND (:matricula IS NULL OR r.vehicle.matricula = :matricula)")
+    @Query("""
+            SELECT r
+            FROM Reserva r
+            WHERE (:idReserva IS NULL OR CAST(r.idReserva AS string) LIKE CONCAT('%',
+            :idReserva, '%'))
+            AND (:email IS NULL OR LOWER(r.client.email) LIKE LOWER(CONCAT('%', :email, '%')))
+            AND (:matricula IS NULL OR LOWER(r.vehicle.matricula) LIKE LOWER(CONCAT('%',
+            :matricula, '%')))
+            """)
     List<Reserva> cercarReserves(@Param("idReserva") Long idReserva, @Param("email") String email, @Param("matricula") String matricula);
 
     @Query("SELECT r FROM Reserva r WHERE r.vehicle.matricula = :matricula AND r.estat = true")
@@ -45,3 +50,14 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
 
 }
+    /*
+     * @Query("""
+     * SELECT r
+     * FROM Reserva r
+     * WHERE (:idReserva IS NULL OR CAST(r.idReserva AS string) LIKE CONCAT('%',
+     * :idReserva, '%'))
+     * AND (:email IS NULL OR LOWER(r.email) LIKE LOWER(CONCAT('%', :email, '%')))
+     * AND (:matricula IS NULL OR LOWER(r.vehicle.matricula) LIKE LOWER(CONCAT('%',
+     * :matricula, '%')))
+     * """)
+     */
