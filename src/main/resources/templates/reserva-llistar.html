@@ -65,7 +65,7 @@
                                     th:href="@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}">Visualitzar</a>
                                 <form th:action="@{/reserva/anular/{idReserva}(idReserva=${reserva.idReserva})}" method="post"
                                     th:if="${reserva.estat}">
-                                    <button type="submit" class="btn btn-danger">Anul·lar</button>
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Estàs segur que vols anul·lar aquesta reserva?');">Anul·lar</button>
                                 </form>
                             </td>
                         </tr>
