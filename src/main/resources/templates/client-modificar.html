@@ -121,20 +121,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
 
             <div class="mb-3">
-                <label for="llicCaducitat" class="form-label">Caducitat de la llicència:</label>
-                <input type="date" id="llicCaducitat" th:field="*{llicCaducitat}" class="form-control"
-                    th:readonly="${modeVisualitzar}" required />
-                <div class="invalid-feedback">
-                    Si us plau, introdueix una data de caducitat de la llicència.
+                <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
+                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control"
+                    th:value="${client.llicCaducitat}" required>
+                <div id="llicCaducitatError" class="text-danger" style="display: none;">
+                    La data d'expiració de la llicència no és vàlida. Revisa-la.
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="dniCaducitat" class="form-label">Caducitat del DNI</label>
-                <input type="date" id="dniCaducitat" th:field="*{dniCaducitat}" class="form-control"
-                    th:readonly="${modeVisualitzar}" required />
-                <div class="invalid-feedback">
-                    Si us plau, introdueix una data de caducitat del DNI.
+                <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
+                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control"
+                    th:value="${client.dniCaducitat}" required>
+                <div id="dniCaducitatError" class="text-danger" style="display: none;">
+                    La data d'expiració del DNI no és vàlida. Revisa-la.
                 </div>
             </div>
 
@@ -173,6 +173,79 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <a th:href="@{/clients/llistar}" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dniCaducitatInput = document.getElementById("dniCaducitat");
+            const dniCaducitatError = document.getElementById("dniCaducitatError");
+
+            const llicCaducitatInput = document.getElementById("llicCaducitat");
+            const llicCaducitatError = document.getElementById("llicCaducitatError");
+
+            const form = document.getElementById("altaAgenteForm");
+
+            // Establece los límites del calendario
+            const currentDate = new Date();
+            const maxDate = new Date(currentDate.getFullYear() + 50, 11, 31); // Máximo 50 años en el futuro
+
+            // Formato de fecha para el atributo "min" y "max"
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            // Configurar límites en los campos de fecha
+            dniCaducitatInput.setAttribute("min", formatDate(currentDate));
+            dniCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            llicCaducitatInput.setAttribute("min", formatDate(currentDate));
+            llicCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            // Validación de fechas en tiempo real
+            dniCaducitatInput.addEventListener("input", function () {
+                validateDate(dniCaducitatInput, dniCaducitatError);
+            });
+
+            llicCaducitatInput.addEventListener("input", function () {
+                validateDate(llicCaducitatInput, llicCaducitatError);
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                if (!validateDate(dniCaducitatInput, dniCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!validateDate(llicCaducitatInput, llicCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Evita que se envíe el formulario
+                    alert("Revisa les dades abans de continuar. Algunes dates no són vàlides.");
+                }
+            });
+
+            // Función para validar una fecha
+            function validateDate(input, errorElement) {
+                const enteredDate = new Date(input.value);
+
+                // Verifica que la fecha esté dentro del rango
+                if (!input.value || enteredDate < currentDate || enteredDate > maxDate) {
+                    errorElement.style.display = "block";
+                    return false;
+                } else {
+                    errorElement.style.display = "none";
+                    return true;
+                }
+            }
+        });
+    </script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

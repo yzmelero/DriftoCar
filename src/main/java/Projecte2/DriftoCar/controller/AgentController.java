@@ -1,5 +1,6 @@
 package Projecte2.DriftoCar.controller;
 
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class AgentController {
     private DocumentacioClientRepository documentacioClientRepository;
 
     /**
-     *  Mostra el llistat d'agents, amb la possibilitat de filtrar per DNI.
+     * Mostra el llistat d'agents, amb la possibilitat de filtrar per DNI.
      *
      * @param dni   El DNI per filtrar. Si no s'especifica, es mostren tots els
      *              agents.
@@ -99,7 +100,23 @@ public class AgentController {
             model.addAttribute("agent", agent);
             return "agent-alta";
         }
+
         String contrasenya = agent.getContrasenya();
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (agent.getDniCaducitat().isBefore(currentDate) || agent.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-alta"; // Nombre de tu vista HTML
+        }
+
+        if (agent.getLlicCaducitat().isBefore(currentDate) || agent.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-alta";
+        }
         try {
             agentService.altaAgent(agent);
             DocumentacioClient documentacio = new DocumentacioClient();
@@ -171,6 +188,22 @@ public class AgentController {
         if (agent.getNacionalitat() == null || agent.getNacionalitat().isEmpty()) {
             agent.setNacionalitat(existent.getNacionalitat());
         }
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate maxDate = currentDate.plusYears(50);
+
+        if (agent.getDniCaducitat().isBefore(currentDate) || agent.getDniCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració del DNI no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
+
+        if (agent.getLlicCaducitat().isBefore(currentDate) || agent.getLlicCaducitat().isAfter(maxDate)) {
+            model.addAttribute("error", "La data d'expiració de la llicència no és vàlida.");
+            model.addAttribute("agent", agent);
+            return "agent-modificar";
+        }
+
         if (agent.getContrasenya() == null || agent.getContrasenya().isEmpty()) {
             agent.setContrasenya(existent.getContrasenya());
         } else {
