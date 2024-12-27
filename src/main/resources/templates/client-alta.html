@@ -115,9 +115,15 @@
                 <input type="text" id="adreca" name="adreca" class="form-control" th:value="*{adreca}" required>
                 <div class="text-danger" th:if="${#fields.hasErrors('adreca')}" th:errors="*{adreca}"></div>
             </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input" th:field="*{reputacio}">
-                <label for="reputacio" class="form-check-label">Reputació</label>
+            <div class="mb-3">
+                <label for="reputacio" class="form-label">Reputació</label>
+                <select id="reputacio" th:field="*{reputacio}" class="form-control" required>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                <div class="invalid-feedback">
+                    Si us plau, introdueix una reputació.
+                </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Crear Client</button>
         </form>

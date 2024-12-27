@@ -115,10 +115,15 @@
                 </select>
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input"
-                    th:checked="${agent?.reputacio}">
-                <label for="reputacio" class="form-check-label">Reputació</label>
+            <div class="mb-3">
+                <label for="reputacio" class="form-label">Reputació</label>
+                <select id="reputacio" th:field="*{reputacio}" class="form-control" required>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                <div class="invalid-feedback">
+                    Si us plau, introdueix una reputació.
+                </div>
             </div>
 
             <div class="mb-3">
