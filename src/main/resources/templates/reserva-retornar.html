@@ -46,9 +46,9 @@
                 th:formaction="@{/reserva/retornar/calculPreu/{idReserva}(idReserva=${reserva.idReserva})}"
                 formmethod="post">Actualitzar Preus</button>
 
-            <button type="submit" name="action" value="informacio" class="btn btn-primary">Enviar Informació</button>
+            <button type="submit" name="action" value="informacio" th:disabled="${costTotal <= 1}" class="btn btn-primary">Enviar Informació</button>
             
-            <button type="submit" name="action" value="incidencia" class="btn btn-danger">Obrir Incidència</button>
+            <button type="submit" name="action" value="incidencia" th:disabled="${costTotal <= 1}" class="btn btn-danger">Obrir Incidència</button>
 
             <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
         </form>
