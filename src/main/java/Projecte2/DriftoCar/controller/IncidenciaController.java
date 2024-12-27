@@ -58,12 +58,14 @@ public class IncidenciaController {
     }
 
     @GetMapping("/llistar")
-    public String llistarVehiclesSenseIncidencies(Model model) {
+    public String llistarVehiclesSenseIncidencies(Model model,
+            @RequestParam(value = "searchMatricula", required = false) String searchMatricula) {
         // Obtenim els vehicles sense incidències actives
-        List<Vehicle> vehiclesSenseIncidencies = incidenciaService.llistarVehiclesSenseIncidenciesActives();
+        List<Vehicle> vehiclesSenseIncidencies = incidenciaService.llistarVehiclesSenseIncidenciesActives(searchMatricula);
 
         // Afegim els vehicles al model
         model.addAttribute("vehicles", vehiclesSenseIncidencies);
+        model.addAttribute("searchMatricula", searchMatricula);
 
         return "incidencia-cerca-vehicle"; // La vista que mostrarà la llista
     }
