@@ -4,6 +4,8 @@
  */
 package Projecte2.DriftoCar.service.MySQL;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,9 @@ import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
+import ch.qos.logback.core.util.Duration;
+
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -78,9 +83,9 @@ public class ReservaService {
         return reservaRepository.findAll();
     }
 
-    public Reserva cercaPerId(Long idReserva){
+    public Optional<Reserva> cercaPerId(Long idReserva) {
 
-        return reservaRepository.findById(idReserva).orElse(null);
+        return reservaRepository.findById(idReserva);
     }
 
     public List<Reserva> cercarReserva(String email, Long id_reserva, String matricula) {
@@ -90,8 +95,9 @@ public class ReservaService {
     }
 
     public void modificarReserva(Reserva reserva) {
+        log.info("Guardant reserva amb ID: " + reserva.getIdReserva());
         reservaRepository.save(reserva);
-    }
+        log.info("Reserva guardada correctament.");    }
 
     public List<Reserva> obtenirReservesPerMatricula(String matricula) {
         return reservaRepository.findByVehicleMatriculaEstat(matricula);
@@ -106,5 +112,91 @@ public class ReservaService {
         } else {
             throw new RuntimeException("La reserva ja està anul·lada");
         }
+    }
+
+    public double calculFianca(Reserva reserva) {
+
+        Client client = reserva.getClient();
+
+        boolean esClientPremium = client != null && client.isReputacio();
+        double fiancaBase = reserva.getVehicle().getFianca();
+        log.info("La fiança inicial és: " + fiancaBase);
+        double fiancaAmbDescompte = esClientPremium ? fiancaBase * 0.75 : fiancaBase;
+        log.info("La fiança calculada és: " + fiancaAmbDescompte);
+        return fiancaAmbDescompte;
+    }
+
+    public double calculPreuTotal(Reserva reserva) {
+        if (reserva.getHoraInici() == null || reserva.getHoraLliurar() == null
+                || reserva.getHoraFi() == null || reserva.getHoraRetornar() == null
+                || reserva.getDataLliurar() == null || reserva.getDataRetornar() == null) {
+            throw new IllegalArgumentException("Les dates i hores no poden ser null");
+        }
+
+        log.info("Data Lliurar: " + reserva.getDataLliurar());
+        log.info("Hora Lliurar: " + reserva.getHoraLliurar());
+        log.info("Data Retornar: " + reserva.getDataRetornar());
+        log.info("Hora Retornar: " + reserva.getHoraRetornar());
+
+        // Combinar dates i hores
+        LocalDateTime iniciLliurament = LocalDateTime.of(reserva.getDataLliurar(), reserva.getHoraLliurar());
+        LocalDateTime fiRetorn = LocalDateTime.of(reserva.getDataRetornar(), reserva.getHoraRetornar());
+
+        // Diferència total en hores
+        long horesTotals = ChronoUnit.HOURS.between(iniciLliurament, fiRetorn);
+
+        // Penalització per retard
+        LocalDateTime fiPrevist = LocalDateTime.of(reserva.getDataFi(), reserva.getHoraFi());
+        long horesRetard = ChronoUnit.HOURS.between(fiPrevist, fiRetorn);
+        horesRetard = Math.max(0, horesRetard); // Assegurar que no sigui negatiu
+
+        log.info("Hores Totals: " + horesTotals);
+        log.info("Hores Retard: " + horesRetard);
+
+        // Cost per hora
+        double costHora = reserva.getVehicle().getCostHora();
+        log.info("Cost Hora Vehicle: " + costHora);
+
+        double fianca = calculFianca(reserva);
+        log.info("Fiança Calculada: " + fianca);
+
+        // Cost total sense penalització
+        double costTotalSensePenalitzacio = horesTotals * costHora;
+
+        // Penalització pel retard
+        double costPenalitzacio = horesRetard * costHora;
+
+        // Càlcul del preu total
+        double preuTotal = costTotalSensePenalitzacio + costPenalitzacio + fianca;
+
+        return Math.max(preuTotal, 0);
+    }
+
+    public double calculPreuReserva(Reserva reserva){
+
+        log.info("Data Inici: " + reserva.getDataInici());
+        log.info("Hora Inici: " + reserva.getHoraInici());
+        log.info("Data Fi: " + reserva.getDataFi());
+        log.info("Hora Fi: " + reserva.getHoraFi());
+        
+        // Combinar dates i hores
+        LocalDateTime inici = LocalDateTime.of(reserva.getDataInici(), reserva.getHoraInici());
+        LocalDateTime fi = LocalDateTime.of(reserva.getDataFi(), reserva.getHoraFi());
+
+        // Diferència total en hores
+        long horesTotals = ChronoUnit.HOURS.between(inici, fi);
+
+        // Cost per hora
+        double costHora = reserva.getVehicle().getCostHora();
+        log.info("Cost Hora Vehicle: " + costHora);
+
+        double fianca = calculFianca(reserva);
+        log.info("Fiança Calculada: " + fianca);
+
+        double costTotalSensePenalitzacio = horesTotals * costHora;
+
+        double preuTotal = costTotalSensePenalitzacio + fianca;
+
+        return Math.max(preuTotal, 0);
     }
 }

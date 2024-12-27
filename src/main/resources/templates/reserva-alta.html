@@ -54,18 +54,35 @@
             </div>
 
             <div class="mb-3">
-                <label for="costTotal" class="form-label">Cost Total</label>
-                <input type="number" id="costTotal" name="costTotal" class="form-control"
-                    th:value="${reserva?.costTotal}" required>
+                <label for="horaInici" class="form-label">Hora de lliurar: </label>
+                <input type="time" id="horaInici" name="horaInici" class="form-control" th:value="${reserva?.horaInici}" required>
+            </div>
+            <div class="mb-3">
+                <label for="horaFi" class="form-label">Hora de retorn: </label>
+                <input type="time" id="horaFi" name="horaFi" class="form-control" th:value="${reserva?.horaFi}" required>
             </div>
 
             <div class="mb-3">
-                <label for="fianca" class="form-label">Fiança</label>
-                <input type="number" id="fianca" name="fianca" class="form-control" th:value="${reserva?.fianca}"
-                    required>
+                <label for="fianca">Fiança:</label>
+                <input type="text" id="fianca" name="fianca" class="form-control" th:value="${fianca}" readonly>
+            </div>
+
+            <!-- Cost Total -->
+            <div class="mb-3">
+                <label for="costTotal">Preu total:</label>
+                <input type="text" id="costTotal" name="costTotal" class="form-control" th:value="${costTotal}"
+                    readonly>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" id="estat" name="estat" class="form-check-input" th:checked="${reserva?.estat}">
+                <label for="estat" class="form-check-label">Estat de la reserva</label>
             </div>
 
             <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning"
+                th:formaction="@{/reserva/alta/calculPreu}"
+                formmethod="post">Actualitzar Preus</button>
                 <button type="submit" class="btn btn-primary">Guardar</button>
                 <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
             </div>
