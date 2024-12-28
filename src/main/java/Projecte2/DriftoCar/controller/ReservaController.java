@@ -325,8 +325,8 @@ public class ReservaController {
             fianca = reservaService.calculFianca(reserva);
             costTotal = reservaService.calculPreuReserva(reserva);
 
-            model.addAttribute("clients", clientRepository.findAll()); // Manté la llista de clients
-            model.addAttribute("vehicles", vehicleRepository.findAll()); // Manté la llista de vehicles
+            model.addAttribute("clients", reserva.getClient()); // Manté la llista de clients
+            model.addAttribute("vehicles", reserva.getVehicle()); // Manté la llista de vehicles
             model.addAttribute("reserva", reserva);
             model.addAttribute("fianca", fianca);
             model.addAttribute("costTotal", costTotal);
