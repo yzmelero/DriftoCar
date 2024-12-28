@@ -107,17 +107,31 @@ public class ReservaController {
     }
 
     @GetMapping("/alta")
-    public String mostrarFormulari(Model model) {
+    public String mostrarFormulari(Model model, Authentication authentication) {
 
+        String username = authentication.getName();
+        String rol = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("UNKNOWN");
+
+        if (rol.equals("ROLE_ADMIN")) {
+            // Admin ve todas las reservas con filtros
+            List<Client> clients = clientRepository.findAll();
+            model.addAttribute("clients", clients);
+        } else if (rol.equals("ROLE_CLIENT")||rol.equals("ROLE_AGENT")) {
+            // Cliente solo ve sus reservas
+            Optional<Client> client = clientService.findByUsuari(username);
+            Client existent = client.get();
+            model.addAttribute("clients", existent);
+        }
         // Aqui creem una reserva buida per a poder mostrar el formulari.
-        List<Client> clients = clientRepository.findAll();
         List<Vehicle> vehicles = vehicleRepository.findByDisponibilitat(true);
 
         // model.addAttribute("reserva", new Reserva());
 
         Reserva reserva = new Reserva();
 
-        model.addAttribute("clients", clients);
         model.addAttribute("vehicles", vehicles);
         model.addAttribute("reserva", reserva);
         return "reserva-alta";
