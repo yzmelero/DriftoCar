@@ -41,6 +41,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <td th:text="${#temporals.format(incidencia.dataIniciIncidencia, 'yyyy-MM-dd HH:mm')}"></td>
                     <td th:text="${incidencia.dataFiIncidencia != null ? #temporals.format(incidencia.dataFiIncidencia, 'yyyy-MM-dd HH:mm') : '---'}"></td>
                     <td>
+                        <a class="btn btn-success" th:href="@{/incidencia/modificar/{id}(id=${incidencia.id})}">Editar</a>
                         <!-- Botó per tancar l'incidencia -->
                         <a class="btn btn-danger" th:if="${incidencia.estat}" th:href="@{/incidencia/tancar/{id}(id=${incidencia.id})}" 
                            onclick="return confirm('Estàs segur de tancar aquesta incidència?');">Tancar</a>

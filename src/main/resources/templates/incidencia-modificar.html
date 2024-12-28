@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Modificar Incidència</title>
+    </head>
+    <body>
+        <h1>Modificar Incidència</h1>
+
+        <!-- Missatges -->
+        <div th:if="${error}" class="error">
+            <p th:text="${error}"></p>
+        </div>
+        <div th:if="${success}" class="success">
+            <p th:text="${success}"></p>
+        </div>
+
+        <form th:action="@{'/incidencia/modificar/' + ${incidencia.id}}" method="post" enctype="multipart/form-data">
+            <div>
+                <label>ID:</label>
+                <input type="text" th:value="${incidencia.id}" readonly>
+            </div>
+
+            <div>
+                <label>Matrícula:</label>
+                <input type="text" th:value="${incidencia.matricula.matricula}" readonly>
+            </div>
+
+            <div>
+                <label>Motiu:</label>
+                <input type="text" name="motiu" th:value="${incidencia.motiu}" required>
+            </div>
+
+            <div>
+                <label>Descripció:</label>
+                <textarea name="descripcio" rows="3" th:text="${documentacio[0]?.text}"></textarea>
+            </div>
+
+            <div>
+                <label>Imatges:</label>
+                <input type="file" name="fotos" multiple>
+            </div>
+
+            <div>
+                <label>PDFs:</label>
+                <input type="file" name="pdf" multiple>
+            </div>
+
+            <div>
+                <button type="submit">Modificar</button>
+                <a href="/incidencia/llistar-incidencies">
+                    <button type="button">Tornar</button>
+                </a>
+            </div>
+        </form>
+    </body>
+</html>

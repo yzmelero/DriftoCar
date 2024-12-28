@@ -27,6 +27,7 @@ public class DocumentacioIncidenciaService {
     // Métode per guardar la documentació (ja existent)
     public DocumentacioIncidencia guardarDocumentacio(Long incidenciaId, String text, MultipartFile[] fotos, MultipartFile[] pdf) throws IOException {
         DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
+        documentacio.setId(incidenciaId.toString()); 
         documentacio.setIncidenciaId(incidenciaId); // Asignar incidenciaId al document
         documentacio.setText(text);
         documentacio.setFotos(convertirMultipartsABinary(fotos));

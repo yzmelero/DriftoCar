@@ -102,7 +102,7 @@ public class IncidenciaController {
 
             // Guardar el historial de la incidencia en MongoDB
             historicIncidenciesService.guardarHistoricIncidencia(incidencia); // Aquí es guarda a l'historial
-
+            
             // Desar la documentación associada en MongoDB
             documentacioIncidenciaService.guardarDocumentacio(incidenciaId, text, fotos, pdf);
 
@@ -112,6 +112,75 @@ public class IncidenciaController {
         } catch (RuntimeException | IOException e) {
             // Missatge d'error
             redirectAttributes.addFlashAttribute("error", "Error en obrir la incidència: " + e.getMessage());
+            return "redirect:/incidencia/llistar-incidencies";
+        }
+    }
+
+    // Mostrar el formulari per modificar una incidència
+    @GetMapping("/modificar/{id}")
+    public String modificarIncidenciaForm(@PathVariable Long id, Model model) {
+        // Obtenir la incidència existent
+        Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
+        if (incidencia == null) {
+            model.addAttribute("error", "La incidència amb ID " + id + " no existeix.");
+            return "redirect:/incidencia/llistar-incidencies";
+        }
+
+        // Afegir la incidència i la documentació existent al model
+        model.addAttribute("incidencia", incidencia);
+
+        List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(id);
+        model.addAttribute("documentacio", documentacioList);
+
+        return "incidencia-modificar"; // Vista del formulari
+    }
+
+    @PostMapping("/modificar/{id}")
+    public String modificarIncidencia(
+            @PathVariable Long id,
+            @RequestParam("motiu") String motiu,
+            @RequestParam("descripcio") String descripcio,
+            @RequestParam("fotos") MultipartFile[] fotos,
+            @RequestParam("pdf") MultipartFile[] pdf,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Obtenir la incidència existent a MySQL
+            Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
+            if (incidencia == null) {
+                redirectAttributes.addFlashAttribute("error", "La incidència amb ID " + id + " no existeix.");
+                return "redirect:/incidencia/llistar-incidencies";
+            }
+
+            // Actualitzar el motiu a MySQL
+            incidencia.setMotiu(motiu);
+            incidenciaService.obrirIncidencia(incidencia); // Guarda els canvis a MySQL
+
+            // Actualitzar la documentació a MongoDB
+            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioPerIncidenciaId(id);
+            if (documentacioList.isEmpty()) {
+                // Si no existeix documentació, crear-ne de nova
+                documentacioIncidenciaService.guardarDocumentacio(id, descripcio, fotos, pdf);
+            } else {
+                // Si existeix, actualitzar la documentació existent
+                DocumentacioIncidencia documentacio = documentacioList.get(0); // Assumim una única entrada
+                
+                // Guardar la documentació actualitzada passant els paràmetres requerits
+                documentacioIncidenciaService.guardarDocumentacio(
+                        documentacio.getIncidenciaId(), // ID de la incidència
+                        descripcio, // Nou text de descripció
+                        fotos, // Fotos actualitzades
+                        pdf // PDFs actualitzats
+                );
+            }
+
+            // Missatge d'èxit
+            redirectAttributes.addFlashAttribute("success", "La incidència s'ha modificat correctament.");
+            return "redirect:/incidencia/llistar-incidencies";
+
+        } catch (RuntimeException | IOException e) {
+            // Missatge d'error
+            redirectAttributes.addFlashAttribute("error", "Error en modificar la incidència: " + e.getMessage());
             return "redirect:/incidencia/llistar-incidencies";
         }
     }
