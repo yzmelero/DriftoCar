@@ -58,7 +58,7 @@ public class Vehicle {
     private double fianca;
 
     @ManyToOne
-    @JoinColumn(name = "localizacio", referencedColumnName = "codi_postal", nullable = false)
+    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal", nullable = false)
     private Localitzacio localitzacio;
 
     @Lob

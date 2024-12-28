@@ -6,9 +6,11 @@ package Projecte2.DriftoCar.controller;
 
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +45,9 @@ public class IncidenciaController {
     private IncidenciaService incidenciaService;
 
     @Autowired
+    private LocalitzacioService localitzacioService;
+
+    @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
     @GetMapping("/llistar-incidencies")
@@ -50,12 +55,17 @@ public class IncidenciaController {
             @RequestParam(value = "localitzacio.codiPostal", required = false) String codiPostal,
             @RequestParam(value = "estat", required = false) Boolean estat,
             Model model) {
-        List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
 
-         List<Incidencia> llistarIncidencies = incidenciaService.filtrarIncidencies(matricula, codiPostal, estat);
-        
-        model.addAttribute("listarIncidencies", llistarIncidencies);
-        model.addAttribute("incidencies", incidencies);
+        matricula = (matricula != null && matricula.isEmpty()) ? null : matricula;
+        codiPostal = (codiPostal != null && codiPostal.isEmpty()) ? null : codiPostal;
+
+        List<Incidencia> llistarIncidencies = incidenciaService.filtrarIncidencies(matricula, codiPostal, estat);
+
+        model.addAttribute("incidencies", llistarIncidencies);
+
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions)
+        ;
         return "incidencia-llistar";
     }
 
@@ -143,7 +153,8 @@ public class IncidenciaController {
             }
 
             // Obtener la documentación asociada con procesamiento Base64
-            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService.obtenirDocumentacioAmbBase64PerIncidencia(id);
+            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService
+                    .obtenirDocumentacioAmbBase64PerIncidencia(id);
 
             // Agregar atributos al modelo
             model.addAttribute("incidencia", incidencia);

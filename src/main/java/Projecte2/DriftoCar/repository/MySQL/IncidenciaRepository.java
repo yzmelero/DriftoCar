@@ -18,18 +18,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
 
-    List<Incidencia> findByEstat(boolean estat);
+        List<Incidencia> findByEstat(boolean estat);
 
-    @Query("SELECT i FROM Incidencia i "
-            + "LEFT JOIN i.matricula v "
-            + "LEFT JOIN v.localitzacio l "
-            + "WHERE (:matricula IS NULL OR v.matricula = :matricula) "
-            + "AND (:codiPostal IS NULL OR l.codiPostal = :codiPostal) "
-            + "AND (:estat IS NULL OR i.estat = :estat)")
-    List<Incidencia> findByFiltres(
-            @Param("matricula") String matricula,
-            @Param("codiPostal") String codiPostal,
-            @Param("estat") Boolean estat
-    );
+        @Query("SELECT i FROM Incidencia i "
+                        + "LEFT JOIN i.matricula v "
+                        + "LEFT JOIN v.localitzacio l "
+                        + "WHERE (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%',:matricula, '%'))) "
+                        + "AND (:codiPostal IS NULL OR l.codiPostal = :codiPostal) "
+                        + "AND (:estat IS NULL OR i.estat = :estat)")
+
+        List<Incidencia> findByFiltres(
+                        @Param("matricula") String matricula,
+                        @Param("codiPostal") String codiPostal,
+                        @Param("estat") Boolean estat);
 
 }
