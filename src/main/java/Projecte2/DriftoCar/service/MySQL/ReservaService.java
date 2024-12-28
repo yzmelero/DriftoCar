@@ -97,7 +97,8 @@ public class ReservaService {
     public void modificarReserva(Reserva reserva) {
         log.info("Guardant reserva amb ID: " + reserva.getIdReserva());
         reservaRepository.save(reserva);
-        log.info("Reserva guardada correctament.");    }
+        log.info("Reserva guardada correctament.");
+    }
 
     public List<Reserva> obtenirReservesPerMatricula(String matricula) {
         return reservaRepository.findByVehicleMatriculaEstat(matricula);
@@ -105,7 +106,7 @@ public class ReservaService {
 
     public Reserva desactivarReserva(Long idReserva) {
         Reserva reserva = reservaRepository.findById(idReserva)
-                .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: " ));
+                .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: "));
         if (reserva.isEstat()) {
             reserva.setEstat(false); // Marca la reserva como inactiva
             return reservaRepository.save(reserva);
@@ -172,13 +173,13 @@ public class ReservaService {
         return Math.max(preuTotal, 0);
     }
 
-    public double calculPreuReserva(Reserva reserva){
+    public double calculPreuReserva(Reserva reserva) {
 
         log.info("Data Inici: " + reserva.getDataInici());
         log.info("Hora Inici: " + reserva.getHoraInici());
         log.info("Data Fi: " + reserva.getDataFi());
         log.info("Hora Fi: " + reserva.getHoraFi());
-        
+
         // Combinar dates i hores
         LocalDateTime inici = LocalDateTime.of(reserva.getDataInici(), reserva.getHoraInici());
         LocalDateTime fi = LocalDateTime.of(reserva.getDataFi(), reserva.getHoraFi());
@@ -198,5 +199,17 @@ public class ReservaService {
         double preuTotal = costTotalSensePenalitzacio + fianca;
 
         return Math.max(preuTotal, 0);
+    }
+
+    public List<Reserva> cercarReservesPerClient(String username, String searchEmail, Long searchId_reserva,
+            String searchMatricula) {
+        return reservaRepository.findByClientUsuariAndFilters(username, searchEmail, searchId_reserva, searchMatricula);
+    }
+
+    public List<Reserva> cercarReservesPerAgent(String username, String searchEmail, Long searchId_reserva,
+            String searchMatricula) {
+        List<String> matriculesVehicles = vehicleRepository.findMatriculesByAgentUsuari(username);
+        return reservaRepository.findByAgentAndFilters(username, matriculesVehicles, searchEmail, searchId_reserva,
+                searchMatricula);
     }
 }

@@ -55,11 +55,13 @@
 
             <div class="mb-3">
                 <label for="horaInici" class="form-label">Hora de lliurar: </label>
-                <input type="time" id="horaInici" name="horaInici" class="form-control" th:value="${reserva?.horaInici}" required>
+                <input type="time" id="horaInici" name="horaInici" class="form-control" th:value="${reserva?.horaInici}"
+                    required>
             </div>
             <div class="mb-3">
                 <label for="horaFi" class="form-label">Hora de retorn: </label>
-                <input type="time" id="horaFi" name="horaFi" class="form-control" th:value="${reserva?.horaFi}" required>
+                <input type="time" id="horaFi" name="horaFi" class="form-control" th:value="${reserva?.horaFi}"
+                    required>
             </div>
 
             <div class="mb-3">
@@ -80,14 +82,37 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-warning"
-                th:formaction="@{/reserva/alta/calculPreu}"
-                formmethod="post">Actualitzar Preus</button>
+                <button type="submit" class="btn btn-warning" th:formaction="@{/reserva/alta/calculPreu}"
+                    formmethod="post">Actualitzar Preus</button>
                 <button type="submit" class="btn btn-primary">Guardar</button>
                 <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fiancaInput = document.getElementById("fianca");
+            const costTotalInput = document.getElementById("costTotal");
+            const guardarButton = document.querySelector(".btn-primary");
+
+            // Función para verificar los valores de Fiança y Preu total
+            function validateInputs() {
+                if (fiancaInput.value.trim() === "" || costTotalInput.value.trim() === "") {
+                    guardarButton.disabled = true; // Deshabilitar botón
+                } else {
+                    guardarButton.disabled = false; // Habilitar botón
+                }
+            }
+
+            // Comprobar validación inicial
+            validateInputs();
+
+            // Escuchar cambios en los campos de Fiança y Preu total
+            fiancaInput.addEventListener("input", validateInputs);
+            costTotalInput.addEventListener("input", validateInputs);
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
