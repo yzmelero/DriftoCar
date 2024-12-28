@@ -76,11 +76,6 @@
                     readonly>
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" id="estat" name="estat" class="form-check-input" th:checked="${reserva?.estat}">
-                <label for="estat" class="form-check-label">Estat de la reserva</label>
-            </div>
-
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-warning" th:formaction="@{/reserva/alta/calculPreu}"
                     formmethod="post">Actualitzar Preus</button>
@@ -92,27 +87,93 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const fiancaInput = document.getElementById("fianca");
-            const costTotalInput = document.getElementById("costTotal");
-            const guardarButton = document.querySelector(".btn-primary");
+            const dataIniciInput = document.getElementById("dataInici");
+            const dataFinalInput = document.getElementById("dataFi");
 
-            // Función para verificar los valores de Fiança y Preu total
-            function validateInputs() {
-                if (fiancaInput.value.trim() === "" || costTotalInput.value.trim() === "") {
-                    guardarButton.disabled = true; // Deshabilitar botón
+            const dataIniciError = document.getElementById("dataIniciError");
+            const dataFinalError = document.getElementById("dataFinalError");
+
+            const updatePricesButton = document.querySelector("button[formmethod='post']");
+            const saveButton = document.querySelector("button.btn-primary");
+
+            const form = document.getElementById("reservaForm");
+
+            const currentDate = new Date();
+
+            // Recuperar estado del almacenamiento local
+            let pricesUpdated = localStorage.getItem("pricesUpdated") === "true";
+
+            // Configurar atributos min para las fechas
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const currentDateString = formatDate(currentDate);
+
+            dataIniciInput.setAttribute("min", currentDateString);
+            dataFinalInput.setAttribute("min", currentDateString);
+
+            // Desactivar el botón de guardar inicialmente si los precios no están actualizados
+            saveButton.disabled = !pricesUpdated;
+
+            // Validar fechas en tiempo real
+            dataIniciInput.addEventListener("input", handleDateChange);
+            dataFinalInput.addEventListener("input", handleDateChange);
+
+            updatePricesButton.addEventListener("click", function () {
+                pricesUpdated = true;
+                localStorage.setItem("pricesUpdated", "true"); // Guardar estado en localStorage
+                saveButton.disabled = false; // Habilitar botón de guardar después de actualizar precios
+            });
+
+            form.addEventListener("submit", function (event) {
+                if (!validateDates()) {
+                    event.preventDefault();
+                    alert("Revisa les dates abans d'enviar. Algunes no són vàlides.");
                 } else {
-                    guardarButton.disabled = false; // Habilitar botón
+                    // Si se va a guardar, limpiar el estado de precios del localStorage
+                    localStorage.removeItem("pricesUpdated");
                 }
+            });
+
+            function handleDateChange() {
+                pricesUpdated = false; // Marcar que los precios ya no están actualizados
+                localStorage.setItem("pricesUpdated", "false"); // Guardar estado en localStorage
+                saveButton.disabled = true; // Desactivar botón de guardar
+                validateDates(); // Validar las fechas después del cambio
             }
 
-            // Comprobar validación inicial
-            validateInputs();
+            function validateDates() {
+                let isValid = true;
 
-            // Escuchar cambios en los campos de Fiança y Preu total
-            fiancaInput.addEventListener("input", validateInputs);
-            costTotalInput.addEventListener("input", validateInputs);
+                const dataInici = new Date(dataIniciInput.value);
+                const dataFinal = new Date(dataFinalInput.value);
+
+                // Validar dataInici
+                if (!dataIniciInput.value || dataInici < currentDate) {
+                    dataIniciError.style.display = "block";
+                    isValid = false;
+                } else {
+                    dataIniciError.style.display = "none";
+                }
+
+                // Validar dataFinal
+                if (!dataFinalInput.value || dataFinal <= dataInici) {
+                    dataFinalError.style.display = "block";
+                    isValid = false;
+                } else {
+                    dataFinalError.style.display = "none";
+                }
+
+                return isValid;
+            }
         });
     </script>
+
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -181,8 +242,8 @@
             function validateDates() {
                 let isValid = true;
 
-                const dataInici = new Date(dataIniciInput.value)+1;
-                const dataFinal = new Date(dataFinalInput.value)+1;
+                const dataInici = new Date(dataIniciInput.value) + 1;
+                const dataFinal = new Date(dataFinalInput.value) + 1;
 
                 // Validar dataInici
                 if (!dataIniciInput.value || dataInici < currentDate) {

@@ -262,7 +262,6 @@ public class ReservaController {
 
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
-        // TODO En el cas de que l'ID introduit no existeixi.
 
         try {
             DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
