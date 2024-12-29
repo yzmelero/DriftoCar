@@ -7,10 +7,12 @@ package Projecte2.DriftoCar.controller;
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
 import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
 import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,15 +47,30 @@ public class IncidenciaController {
     private IncidenciaService incidenciaService;
 
     @Autowired
+    private LocalitzacioService localitzacioService;
+
+    @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
     @Autowired
     private HistoricIncidenciesService historicIncidenciesService;
 
     @GetMapping("/llistar-incidencies")
-    public String llistarIncidencies(Model model) {
-        List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
-        model.addAttribute("incidencies", incidencies);
+    public String llistarIncidencies(@RequestParam(value = "matricula", required = false) String matricula,
+            @RequestParam(value = "localitzacio.codiPostal", required = false) String codiPostal,
+            @RequestParam(value = "estat", required = false) Boolean estat,
+            Model model) {
+
+        matricula = (matricula != null && matricula.isEmpty()) ? null : matricula;
+        codiPostal = (codiPostal != null && codiPostal.isEmpty()) ? null : codiPostal;
+
+        List<Incidencia> llistarIncidencies = incidenciaService.filtrarIncidencies(matricula, codiPostal, estat);
+
+        model.addAttribute("incidencies", llistarIncidencies);
+
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions)
+        ;
         return "incidencia-llistar";
     }
 
