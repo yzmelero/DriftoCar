@@ -48,16 +48,29 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     boolean existsByVehicleMatricula(String matricula);
 
+    @Query("""
+                SELECT r FROM Reserva r
+                WHERE r.client.usuari = :username
+                  AND (:searchEmail IS NULL OR LOWER(r.client.email) LIKE LOWER(CONCAT('%', :searchEmail, '%')))
+                  AND (:searchId_reserva IS NULL OR CAST(r.idReserva AS string) LIKE CONCAT('%', :searchId_reserva, '%'))
+                  AND (:searchMatricula IS NULL OR LOWER(r.vehicle.matricula) LIKE LOWER(CONCAT('%', :searchMatricula, '%')))
+            """)
+    List<Reserva> findByClientUsuariAndFilters(@Param("username") String username,
+            @Param("searchEmail") String searchEmail,
+            @Param("searchId_reserva") Long searchId_reserva,
+            @Param("searchMatricula") String searchMatricula);
+
+    @Query("""
+                SELECT r FROM Reserva r
+                WHERE (r.client.usuari = :username OR r.vehicle.matricula IN :matricules)
+                  AND (:searchEmail IS NULL OR LOWER(r.client.email) LIKE LOWER(CONCAT('%', :searchEmail, '%')))
+                  AND (:searchId_reserva IS NULL OR CAST(r.idReserva AS string) LIKE CONCAT('%', :searchId_reserva, '%'))
+                  AND (:searchMatricula IS NULL OR LOWER(r.vehicle.matricula) LIKE LOWER(CONCAT('%', :searchMatricula, '%')))
+            """)
+    List<Reserva> findByAgentAndFilters(@Param("username") String username,
+            @Param("matricules") List<String> matricules,
+            @Param("searchEmail") String searchEmail,
+            @Param("searchId_reserva") Long searchId_reserva,
+            @Param("searchMatricula") String searchMatricula);
 
 }
-    /*
-     * @Query("""
-     * SELECT r
-     * FROM Reserva r
-     * WHERE (:idReserva IS NULL OR CAST(r.idReserva AS string) LIKE CONCAT('%',
-     * :idReserva, '%'))
-     * AND (:email IS NULL OR LOWER(r.email) LIKE LOWER(CONCAT('%', :email, '%')))
-     * AND (:matricula IS NULL OR LOWER(r.vehicle.matricula) LIKE LOWER(CONCAT('%',
-     * :matricula, '%')))
-     * """)
-     */

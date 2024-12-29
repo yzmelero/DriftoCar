@@ -76,4 +76,17 @@ public interface VehicleRepository extends JpaRepository<Vehicle, String> {
       """)
   List<Vehicle> findVehiclesFiltreIncidencies(@Param("matricula") String matricula);
 
+
+
+  @Query("""
+          SELECT v.matricula
+          FROM Vehicle v
+          WHERE v.localitzacio.id = (
+              SELECT a.localitzacio.id
+              FROM Agent a
+              WHERE a.usuari = :usuari
+          )
+      """)
+List<String> findMatriculesByAgentUsuari(String usuari);
+
 }

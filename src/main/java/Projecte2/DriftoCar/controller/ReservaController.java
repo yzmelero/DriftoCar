@@ -4,12 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,7 +59,8 @@ public class ReservaController {
     public String llistarReservas(Model model,
             @RequestParam(value = "searchEmail", required = false) String searchEmail,
             @RequestParam(value = "searchId_reserva", required = false) Long searchId_reserva,
-            @RequestParam(value = "searchMatricula", required = false) String searchMatricula) {
+            @RequestParam(value = "searchMatricula", required = false) String searchMatricula,
+            Authentication authentication) {
 
         if (searchEmail != null && searchEmail.isEmpty()) {
             searchEmail = null;
@@ -70,13 +74,28 @@ public class ReservaController {
         log.debug("searchId_reserva: " + searchId_reserva);
         log.debug("searchMatricula: " + searchMatricula);
 
+        String username = authentication.getName();
+        String rol = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("UNKNOWN");
+
         List<Reserva> reserves;
-        if ((searchId_reserva != null)
-                || (searchEmail != null && !searchEmail.isEmpty())
-                || (searchMatricula != null && !searchMatricula.isEmpty())) {
-            reserves = reservaService.cercarReserva(searchEmail, searchId_reserva, searchMatricula);
+        if (rol.equals("ROLE_ADMIN")) {
+            // Admin ve todas las reservas con filtros
+            if (searchId_reserva != null || searchEmail != null || searchMatricula != null) {
+                reserves = reservaService.cercarReserva(searchEmail, searchId_reserva, searchMatricula);
+            } else {
+                reserves = reservaService.llistarReservas();
+            }
+        } else if (rol.equals("ROLE_CLIENT")) {
+            // Cliente solo ve sus reservas
+            reserves = reservaService.cercarReservesPerClient(username, searchEmail, searchId_reserva, searchMatricula);
+        } else if (rol.equals("ROLE_AGENT")) {
+            // Agente ve sus reservas y las de vehículos a su cargo
+            reserves = reservaService.cercarReservesPerAgent(username, searchEmail, searchId_reserva, searchMatricula);
         } else {
-            reserves = reservaService.llistarReservas();
+            reserves = new ArrayList<>();
         }
 
         model.addAttribute("reservas", reserves);
@@ -88,17 +107,31 @@ public class ReservaController {
     }
 
     @GetMapping("/alta")
-    public String mostrarFormulari(Model model) {
+    public String mostrarFormulari(Model model, Authentication authentication) {
 
+        String username = authentication.getName();
+        String rol = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("UNKNOWN");
+
+        if (rol.equals("ROLE_ADMIN")) {
+            // Admin ve todas las reservas con filtros
+            List<Client> clients = clientRepository.findAll();
+            model.addAttribute("clients", clients);
+        } else if (rol.equals("ROLE_CLIENT")||rol.equals("ROLE_AGENT")) {
+            // Cliente solo ve sus reservas
+            Optional<Client> client = clientService.findByUsuari(username);
+            Client existent = client.get();
+            model.addAttribute("clients", existent);
+        }
         // Aqui creem una reserva buida per a poder mostrar el formulari.
-        List<Client> clients = clientRepository.findAll();
         List<Vehicle> vehicles = vehicleRepository.findByDisponibilitat(true);
 
         // model.addAttribute("reserva", new Reserva());
 
         Reserva reserva = new Reserva();
 
-        model.addAttribute("clients", clients);
         model.addAttribute("vehicles", vehicles);
         model.addAttribute("reserva", reserva);
         return "reserva-alta";
@@ -243,7 +276,6 @@ public class ReservaController {
 
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
-        // TODO En el cas de que l'ID introduit no existeixi.
 
         try {
             DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -306,8 +338,8 @@ public class ReservaController {
             fianca = reservaService.calculFianca(reserva);
             costTotal = reservaService.calculPreuReserva(reserva);
 
-            model.addAttribute("clients", clientRepository.findAll()); // Manté la llista de clients
-            model.addAttribute("vehicles", vehicleRepository.findAll()); // Manté la llista de vehicles
+            model.addAttribute("clients", reserva.getClient()); // Manté la llista de clients
+            model.addAttribute("vehicles", reserva.getVehicle()); // Manté la llista de vehicles
             model.addAttribute("reserva", reserva);
             model.addAttribute("fianca", fianca);
             model.addAttribute("costTotal", costTotal);
@@ -317,7 +349,6 @@ public class ReservaController {
         }
         return "reserva-alta";
     }
-
 
     @PostMapping("/anular/{id}")
     public String anularReserva(@PathVariable Long id, Model model) {
