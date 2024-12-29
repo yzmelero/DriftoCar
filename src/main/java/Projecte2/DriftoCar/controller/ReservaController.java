@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
@@ -97,6 +100,8 @@ public class ReservaController {
         } else {
             reserves = new ArrayList<>();
         }
+
+        reserves.sort((r1, r2) -> Long.compare(r2.getIdReserva(), r1.getIdReserva()));
 
         model.addAttribute("reservas", reserves);
         model.addAttribute("searchId_reserva", searchId_reserva);
@@ -364,5 +369,11 @@ public class ReservaController {
             model.addAttribute("error", e.getMessage());
         }
         return "redirect:/reserva/llistar";
+    }
+
+    @GetMapping("/no-disponibles/{matricula}")
+    public ResponseEntity<List<String>> obtenerFechasNoDisponibles(@PathVariable String matricula) {
+        List<String> fechasNoDisponibles = reservaService.obtenerFechasNoDisponibles(matricula);
+        return ResponseEntity.ok(fechasNoDisponibles);
     }
 }

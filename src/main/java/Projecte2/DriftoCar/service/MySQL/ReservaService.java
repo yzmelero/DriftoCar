@@ -6,6 +6,7 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -211,5 +212,22 @@ public class ReservaService {
         List<String> matriculesVehicles = vehicleRepository.findMatriculesByAgentUsuari(username);
         return reservaRepository.findByAgentAndFilters(username, matriculesVehicles, searchEmail, searchId_reserva,
                 searchMatricula);
+    }
+
+    public List<String> obtenerFechasNoDisponibles(String matricula) {
+        List<Reserva> reservas = reservaRepository.findByVehicleMatriculaEstat(matricula);
+        List<String> fechasNoDisponibles = new ArrayList<>();
+
+        for (Reserva reserva : reservas) {
+            LocalDate fechaInicio = reserva.getDataInici();
+            LocalDate fechaFin = reserva.getDataFi();
+
+            while (!fechaInicio.isAfter(fechaFin)) {
+                fechasNoDisponibles.add(fechaInicio.toString());
+                fechaInicio = fechaInicio.plusDays(1);
+            }
+        }
+
+        return fechasNoDisponibles;
     }
 }
