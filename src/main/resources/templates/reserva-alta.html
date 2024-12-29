@@ -49,7 +49,7 @@
                 <input type="date" id="dataFi" name="dataFi" class="form-control" th:value="${reserva?.dataFi}"
                     required>
                 <div id="dataFinalError" class="text-danger" style="display: none;">
-                    La data de finalització ha de ser posterior a la data d'inici.
+                    La data de finalització no pot ser anterior a la data d'inici.
                 </div>
             </div>
 
@@ -173,8 +173,6 @@
         });
     </script>
 
-
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const dataIniciInput = document.getElementById("dataInici");
@@ -201,7 +199,7 @@
             dataFinalInput.setAttribute("min", currentDateString);
 
             // Validar fechas en tiempo real
-            dataIniciInput.addEventListener("input", updateMinDateForFinal);
+            dataIniciInput.addEventListener("input", validateDates);
             dataFinalInput.addEventListener("input", validateDates);
 
             form.addEventListener("submit", function (event) {
@@ -210,34 +208,6 @@
                     alert("Revisa les dates abans d'enviar. Algunes no són vàlides.");
                 }
             });
-
-            function updateMinDateForFinal() {
-                const dataInici = new Date(dataIniciInput.value);
-
-                if (dataIniciInput.value) {
-                    const nextDay = new Date(dataInici);
-                    nextDay.setDate(nextDay.getDate() + 1); // Sumar un día
-                    const nextDayString = formatDate(nextDay);
-
-                    // Actualizar el mínimo y deshabilitar fechas menores o iguales
-                    dataFinalInput.setAttribute("min", nextDayString);
-
-                    // Deshabilitar todas las fechas menores o iguales a la fecha de inicio
-                    disablePastDates(dataInici);
-                }
-                validateDates(); // Validar después de actualizar
-            }
-
-            function disablePastDates(startDate) {
-                const allDates = document.querySelectorAll('input[type="date"]');
-                allDates.forEach((input) => {
-                    if (input === dataFinalInput) {
-                        const startDay = new Date(startDate);
-                        startDay.setDate(startDay.getDate() + 1); // Sumar un día para deshabilitar <= fecha inicio
-                        input.setAttribute("min", formatDate(startDay));
-                    }
-                });
-            }
 
             function validateDates() {
                 let isValid = true;
@@ -254,7 +224,7 @@
                 }
 
                 // Validar dataFinal
-                if (!dataFinalInput.value || dataFinal <= dataInici) {
+                if (!dataFinalInput.value || dataFinal < dataInici) {
                     dataFinalError.style.display = "block";
                     isValid = false;
                 } else {
@@ -265,7 +235,6 @@
             }
         });
     </script>
-
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
