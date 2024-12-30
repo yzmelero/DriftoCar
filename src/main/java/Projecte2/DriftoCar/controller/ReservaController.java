@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MongoDB.HistoricReservesRepository;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
@@ -57,6 +59,9 @@ public class ReservaController {
 
     @Autowired
     private VehicleService vehicleService;
+
+    @Autowired
+    private HistoricReservesRepository historicReservesRepository;
 
     @GetMapping("/llistar")
     public String llistarReservas(Model model,
@@ -109,6 +114,13 @@ public class ReservaController {
         model.addAttribute("searchMatricula", searchMatricula);
 
         return "reserva-llistar";
+    }
+
+    @GetMapping("/historic")
+    public String llistarHistoricReservas(Model model) {
+        List<HistoricReserves> reserves = historicReservesRepository.findAll();
+        model.addAttribute("reservas", reserves);
+        return "reserva-historic";
     }
 
     @GetMapping("/alta")

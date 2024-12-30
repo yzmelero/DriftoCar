@@ -80,21 +80,24 @@ public class ReservaService {
         reserva.setClient(client.get());
         reserva.setVehicle(vehicle.get());
 
+        Reserva savedReserva = reservaRepository.save(reserva);
+
+        // Crear el histórico después de guardar la reserva
         HistoricReserves historic = new HistoricReserves();
-        historic.setIdReserva(reserva.getIdReserva().toString());
-        historic.setNomClient(reserva.getClient().getNom());
-        historic.setCognomClient(reserva.getClient().getCognoms());
-        historic.setDNI(reserva.getClient().getDni());
-        historic.setMatricula(reserva.getVehicle().getMatricula());
-        historic.setDataInici(reserva.getDataInici());
-        historic.setDataFi(reserva.getDataFi());
-        historic.setTotalCost(calculPreuReserva(reserva));
-        historic.setFianca(calculFianca(reserva));
-        historic.setEstat(reserva.isEstat());
+        historic.setIdReserva(savedReserva.getIdReserva().toString()); // Ahora el ID está disponible
+        historic.setNomClient(savedReserva.getClient().getNom());
+        historic.setCognomClient(savedReserva.getClient().getCognoms());
+        historic.setDNI(savedReserva.getClient().getDni());
+        historic.setMatricula(savedReserva.getVehicle().getMatricula());
+        historic.setDataInici(savedReserva.getDataInici());
+        historic.setDataFi(savedReserva.getDataFi());
+        historic.setTotalCost(calculPreuReserva(savedReserva));
+        historic.setFianca(calculFianca(savedReserva));
+        historic.setEstat(savedReserva.isEstat());
 
         historicReservesRepository.save(historic);
-        // Guardar la reserva en la base de datos
-        return reservaRepository.save(reserva);
+
+        return savedReserva;
     }
 
     public List<Reserva> llistarReservas() {
