@@ -23,20 +23,24 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class HistoricReserves {
 
     @Id
-    private Long idReserva;
+    private String idReserva;
 
-    private String nomClient;
-    
     private String DNI;
+    
+    private String nomClient;
     
     private String cognomClient;
     
     private String matricula;
     
     private LocalDate dataInici;
+    
     private LocalDate dataFi;
+    
     private double totalCost;
+    
     private double fianca;
+    
     private boolean estat;
 
   
