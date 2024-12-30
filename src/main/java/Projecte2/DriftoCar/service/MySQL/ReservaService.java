@@ -15,13 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MongoDB.HistoricReservesRepository;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
-import ch.qos.logback.core.util.Duration;
 
 import java.time.temporal.ChronoUnit;
 
@@ -42,6 +43,9 @@ public class ReservaService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private HistoricReservesRepository historicReservesRepository;
 
     /**
      * Aquest metode guarda una nova reserva a a BBDD si el client i la
@@ -76,6 +80,19 @@ public class ReservaService {
         reserva.setClient(client.get());
         reserva.setVehicle(vehicle.get());
 
+        HistoricReserves historic = new HistoricReserves();
+        historic.setIdReserva(reserva.getIdReserva().toString());
+        historic.setNomClient(reserva.getClient().getNom());
+        historic.setCognomClient(reserva.getClient().getCognoms());
+        historic.setDNI(reserva.getClient().getDni());
+        historic.setMatricula(reserva.getVehicle().getMatricula());
+        historic.setDataInici(reserva.getDataInici());
+        historic.setDataFi(reserva.getDataFi());
+        historic.setTotalCost(calculPreuReserva(reserva));
+        historic.setFianca(calculFianca(reserva));
+        historic.setEstat(reserva.isEstat());
+
+        historicReservesRepository.save(historic);
         // Guardar la reserva en la base de datos
         return reservaRepository.save(reserva);
     }
@@ -110,6 +127,11 @@ public class ReservaService {
                 .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: "));
         if (reserva.isEstat()) {
             reserva.setEstat(false); // Marca la reserva como inactiva
+            HistoricReserves historic = historicReservesRepository.findById(reserva.getIdReserva().toString())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Reserva " + idReserva + " no trobada en el historic de reserves: "));
+            historic.setEstat(false);
+            historicReservesRepository.save(historic);
             return reservaRepository.save(reserva);
         } else {
             throw new RuntimeException("La reserva ja està anul·lada");
