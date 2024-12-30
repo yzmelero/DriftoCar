@@ -17,7 +17,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <h1>Modificar Vehicle</h1>
 
             <form th:action="@{/vehicle/modificar}" th:object="${vehicle}" method="post" enctype="multipart/form-data">
-                <!-- Título general -->
                 <div class="form-group mt-3">
                     <label class="form-label"><strong>Imatge</strong></label>
                     <div class="row justify-content-center mt-2">
@@ -33,137 +32,88 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <p th:if="${imatgeBase64 == null}" class="text-danger">No hi ha cap imatge disponible.</p>
                             </div>
                         </div>
-
-                        <!-- Campo para cambiar la imagen -->
                         <div class="col-md-5 mx-2 p-3 border rounded" style="background-color: #f8f9fa;">
                             <label><strong>Canviar Imatge</strong></label>
                             <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
-                                <input type="file" id="imatgeFile" name="imatgeFile" class="form-control"
+                                <input type="file" id="imatgeFile" name="imatgeFile" class="form-control" accept="image/*"
                                        style="max-width: 400px; text-align: center;">
                             </div>
                         </div>
                     </div>
                 </div>
-            <div class="form-group mt-3">
-                <label for="places">Nombre de places</label>
-                <input type="number" id="places" th:field="*{places}" class="form-control" required />
-            </div>
 
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mt-3 text-start">
+                            <label for="matricula" class="form-label">Matrícula</label>
+                            <input type="text" id="matricula" th:field="*{matricula}" class="form-control" readonly />
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="marca" class="form-label">Marca</label>
+                            <input type="text" id="marca" th:field="*{marca}" class="form-control" required />
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="model" class="form-label">Model</label>
+                            <input type="text" id="model" th:field="*{model}" class="form-control" required />
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="any" class="form-label">Any</label>
+                            <input type="number" id="any" th:field="*{any}" class="form-control" required min="1900" max="2099"/>
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="localitzacio" class="form-label">Codi postal localització</label>
+                            <select id="localitzacio" th:field="*{localitzacio.codiPostal}" class="form-select" required>
+                                <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
+                                        th:text="${localitzacio.codiPostal}" 
+                                        th:selected="${localitzacio.codiPostal == vehicle?.localitzacio?.codiPostal}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="costHora" class="form-label">Cost per hora</label>
+                            <input type="number" id="costHora" th:field="*{costHora}" class="form-control" required step="0.01" min="0">
+                        </div>
+                    </div>
 
-                <div class="form-group mt-3">
-                    <label for="matricula">Matrícula</label>
-                    <input type="text" id="matricula" th:field="*{matricula}" class="form-control" readonly />
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="marca">Marca</label>
-                    <input type="text" id="marca" th:field="*{marca}" class="form-control" required />
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="model">Model</label>
-                    <input type="text" id="model" th:field="*{model}" class="form-control" required />
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="any">Any</label>
-                    <input type="number" id="any" th:field="*{any}" class="form-control" required />
-                </div>
-            <div class="form-group mt-3">
-                <label for="localitzacio">Codi postal localització</label>
-                <select id="localitzacio" th:field="*{localitzacio.codiPostal}" class="form-select" required
-                        th:if="${not #lists.isEmpty(localitzacions)}">
-                    <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
-                            th:text="${localitzacio.codiPostal}" 
-                            th:selected="${localitzacio.codiPostal == vehicle?.localitzacio?.codiPostal}">
-                    </option>
-                </select>
-                <p class="text-danger" th:if="${#lists.isEmpty(localitzacions)}">No existeix cap localització</p>
-            </div>
-            <div class="form-group mt-3">
-                <label for="costHora">Cost per hora</label>
-                <input type="number" id="costHora" th:field="*{costHora}" class="form-control" required step="0.01">
-            </div>
-            <div class="form-group mt-3">
-                <label for="kmMax">Kilòmetres Màxims</label>
-                <input type="number" id="kmMax" th:field="*{kmMax}" class="form-control" required step="0.01">
-            </div>
-             <div class="form-group mt-3">
-                <label for="fianca">Fiança</label>
-                <input type="number" id="fianca" th:field="*{fianca}" class="form-control" required step="0.01">
-            </div>
-
-                <div class="form-group mt-3">
-                    <label for="places">Nombre de places</label>
-                    <input type="number" id="places" th:field="*{places}" class="form-control" required />
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="transmisio">Tipus de transmissió</label>
-                    <select id="transmisio" th:field="*{transmisio}" class="form-select">
-                        <option value="MANUAL" th:selected="*{transmisio == 'MANUAL'}">Manual</option>
-                        <option value="AUTOMATICA" th:selected="*{transmisio == 'AUTOMATICA'}">Automàtica</option>
-                    </select>
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="combustible">Tipus de combustible</label>
-                    <select id="combustible" th:field="*{combustible}" class="form-select">
-                        <option value="ELECTRIC" th:selected="*{combustible == 'ELECTRIC'}">Electric</option>
-                        <option value="BENZINA" th:selected="*{combustible == 'BENZINA'}">Benzina</option>
-                        <option value="DIESEL" th:selected="*{combustible == 'DIESEL'}">Diesel</option>
-                        <option value="HIBRIT" th:selected="*{combustible == 'HIBRIT'}">Hibrit</option>
-                    </select>
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="tipus">Tipus de vehicle</label>
-                    <select id="tipus" th:field="*{tipus}" class="form-select">
-                        <option value="COTXE" th:selected="*{tipus == 'COTXE'}">Cotxe</option>
-                        <option value="MOTO" th:selected="*{tipus == 'MOTO'}">Moto</option>
-                        <option value="FURGONETA" th:selected="*{tipus == 'FURGONETA'}">Furgoneta</option>
-                        <option value="CAMIO" th:selected="*{tipus == 'CAMIO'}">Camió</option>
-                    </select>
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="disponibilitat">Disponibilitat</label>
-                    <select id="disponibilitat" th:field="*{disponibilitat}" class="form-select">
-                        <option value="true" th:selected="*{disponibilitat == true}">Disponible</option>
-                        <option value="false" th:selected="*{disponibilitat == false}">No Disponible</option>
-                    </select>
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="localitzacio">Codi postal localització</label>
-                    <select id="localitzacio" th:field="*{localitzacio.codiPostal}" class="form-select" required
-                            th:if="${not #lists.isEmpty(localitzacions)}">
-                        <option th:each="localitzacio : ${localitzacions}" th:value="${localitzacio.codiPostal}"
-                                th:text="${localitzacio.codiPostal}" 
-                                th:selected="${localitzacio.codiPostal == vehicle?.localitzacio?.codiPostal}">
-                        </option>
-                    </select>
-                    <p class="text-danger" th:if="${#lists.isEmpty(localitzacions)}">No existeix cap localització</p>
-                </div>
-                <div class="form-group mt-3">
-                    <label for="costHora">Cost per hora</label>
-                    <input type="number" id="costHora" th:field="*{costHora}" class="form-control" required step="0.01">
-                </div>
-                <div class="form-group mt-3">
-                    <label for="kmMax">Kilòmetres Màxims</label>
-                    <input type="number" id="kmMax" th:field="*{kmMax}" class="form-control" required step="0.01">
-                </div>
-                <div class="form-group mt-3">
-                    <label for="fianca">Fiança</label>
-                    <input type="number" id="fianca" th:field="*{fianca}" class="form-control" required step="0.01">
-                </div>
-                <div class="form-group mt-3" hidden>
-                    <label for="motiu">Motiu</label>
-                    <input type="text" id="motiu" th:field="*{motiu}" class="form-control"/>
-                </div>
-                <div class="form-group mt-3" hidden>
-                    <label for="importe">Import</label>
-                    <input type="number" id="importe" th:field="*{importe}" class="form-control" step="0.01">
+                    <div class="col-md-6">
+                        <div class="form-group mt-3 text-start">
+                            <label for="kmMax" class="form-label">Kilòmetres Màxims</label>
+                            <input type="number" id="kmMax" th:field="*{kmMax}" class="form-control" required step="0.01" min="0">
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="fianca" class="form-label">Fiança</label>
+                            <input type="number" id="fianca" th:field="*{fianca}" class="form-control" required step="0.01" min="0">
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="places" class="form-label">Nombre de places</label>
+                            <input type="number" id="places" th:field="*{places}" class="form-control" required min="0"/>
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="transmisio" class="form-label">Tipus de transmissió</label>
+                            <select id="transmisio" th:field="*{transmisio}" class="form-select">
+                                <option value="MANUAL" th:selected="*{transmisio == 'MANUAL'}">Manual</option>
+                                <option value="AUTOMATIC" th:selected="*{transmisio == 'AUTOMATIC'}">Automàtica</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="combustible" class="form-label">Tipus de combustible</label>
+                            <select id="combustible" th:field="*{combustible}" class="form-select">
+                                <option value="ELECTRIC" th:selected="*{combustible == 'ELECTRIC'}">Elèctric</option>
+                                <option value="BENZINA" th:selected="*{combustible == 'BENZINA'}">Benzina</option>
+                                <option value="DIESEL" th:selected="*{combustible == 'DIESEL'}">Diesel</option>
+                                <option value="HIBRIT" th:selected="*{combustible == 'HIBRIT'}">Híbrid</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-3 text-start">
+                            <label for="tipus" class="form-label">Tipus de vehicle</label>
+                            <select id="tipus" th:field="*{tipus}" class="form-select">
+                                <option value="COTXE" th:selected="*{tipus == 'COTXE'}">Cotxe</option>
+                                <option value="MOTO" th:selected="*{tipus == 'MOTO'}">Moto</option>
+                                <option value="FURGONETA" th:selected="*{tipus == 'FURGONETA'}">Furgoneta</option>
+                                <option value="CAMIO" th:selected="*{tipus == 'CAMIO'}">Camió</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Guardar Canvis</button>

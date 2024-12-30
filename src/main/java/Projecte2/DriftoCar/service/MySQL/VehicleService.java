@@ -7,6 +7,7 @@ package Projecte2.DriftoCar.service.MySQL;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MySQL.LocalitzacioRepository;
+import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +33,9 @@ public class VehicleService {
     @Autowired
     private LocalitzacioRepository localitzacioRepository;
 
+    @Autowired
+    private ReservaRepository reservaRepository;
+
     public Vehicle altaVehicle(Vehicle vehicle) {
         log.info("S'ha entrat al metode d'altaVehicle.");
 
@@ -45,6 +49,11 @@ public class VehicleService {
         log.info("S'ha entrat al metode de baixaReserva.");
         if (!vehicleRepository.existsById(matricula)) {
             throw new RuntimeException("No existeix cap vehicle amb la matrícula: " + matricula);
+        }
+        boolean tieneReservas = reservaRepository.existsByVehicleMatricula(matricula);
+
+        if (tieneReservas) {
+            throw new RuntimeException("No es pot esborrar un vehicle amb reserves actives.");
         }
         vehicleRepository.deleteById(matricula);
     }
@@ -96,9 +105,9 @@ public class VehicleService {
         return vehicleRepository.findByMatricula(matricula).orElse(null);
     }
 
-    public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
+   /*public List<Vehicle> getVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal) {
         return vehicleRepository.findVehiclesDisponibles(dataInici, dataFinal);
-    }
+    }*/
 
     public void desactivarVehicle(String matricula) {
         Vehicle vehicle = vehicleRepository.findById(matricula)
@@ -112,5 +121,9 @@ public class VehicleService {
                 .orElseThrow(() -> new RuntimeException("Vehicle no trobat amb matrícula: " + matricula));
         vehicle.setDisponibilitat(true);
         vehicleRepository.save(vehicle);
+    }
+    
+    public List<Vehicle> findVehiclesLista(LocalDate dataInici, LocalDate dataFinal, String matricula) {
+        return vehicleRepository.findVehiclesLista(dataInici, dataFinal, matricula);
     }
 }

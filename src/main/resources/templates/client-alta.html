@@ -10,14 +10,16 @@
 
 <body>
     <div class="container mt-5">
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-                <div class="alert alert-info text-center" role="alert">
-                   Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
-                </div>
+        <div class="alert alert-info text-center" role="alert">
+            Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
+        </div>
 
 
         <h1 class="text-center mb-4">Registrar Client</h1>
-        <form th:action="@{/registre/client-alta}" method="POST" class="needs-validation" novalidate>
+        <form th:action="@{/registre/client-alta}" th:object="${client}" method="POST" enctype="multipart/form-data"
+            class="needs-validation" novalidate>
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
                 <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
@@ -26,21 +28,32 @@
                     El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
                 </div>
             </div>
+
+            <div class="mb-3">
+                <label for="imatgeDni" class="form-label">Imatge DNI</label>
+                <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*" required>
+            </div>
             <div class="mb-3">
                 <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
-                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required>
+                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required />
+                <div id="dniCaducitatError" class="text-danger mt-1" style="display: none;">
+                    La data d'expiració del DNI no és vàlida.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="usuari" class="form-label">Nom d'usuari</label>
-                <input type="text" id="usuari" name="usuari" class="form-control" required>
+                <input type="text" id="usuari" name="usuari" class="form-control" th:value="*{usuari}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('usuari')}" th:errors="*{usuari}"></div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" name="email" class="form-control" required>
+                <input type="email" id="email" name="email" class="form-control" th:value="*{email}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
             <div class="mb-3">
                 <label for="contrasenya" class="form-label">Contrasenya</label>
                 <input type="password" id="contrasenya" name="contrasenya" class="form-control" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('contrasenya')}" th:errors="*{contrasenya}"></div>
             </div>
             <div class="mb-3">
                 <label for="confirmacioContrasenya" class="form-label">Confirmar contrasenya</label>
@@ -49,14 +62,16 @@
             </div>
             <div class="mb-3">
                 <label for="nom" class="form-label">Nom</label>
-                <input type="text" id="nom" name="nom" class="form-control" required>
+                <input type="text" id="nom" name="nom" class="form-control" th:value="*{nom}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
             </div>
             <div class="mb-3">
                 <label for="cognoms" class="form-label">Cognoms</label>
-                <input type="text" id="cognoms" name="cognoms" class="form-control" required>
+                <input type="text" id="cognoms" name="cognoms" class="form-control" th:value="*{cognoms}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('cognoms')}" th:errors="*{cognoms}"></div>
             </div>
             <div class="mb-3">
-                <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                <label for="nacionalitat" class="form-label" th:value="*{nacionalitat}">Nacionalitat</label>
                 <select id="nacionalitat" name="nacionalitat" class="form-control" required>
                     <option value="" disabled selected>Seleccioneu una nacionalitat</option>
                 </select>
@@ -71,27 +86,149 @@
             </div>
             <div class="mb-3">
                 <label for="llicencia" class="form-label">Llicència de conduïr</label>
-                <input type="text" id="llicencia" name="llicencia" class="form-control" required>
+                <input type="text" id="llicencia" name="llicencia" class="form-control" th:value="*{llicencia}"
+                    required>
+                <div class="text-danger" th:if="${#fields.hasErrors('llicencia')}" th:errors="*{llicencia}"></div>
+            </div>
+            <div class="mb-3">
+                <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
+                <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*"
+                    required>
             </div>
             <div class="mb-3">
                 <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
-                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required>
+                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required />
+                <div id="llicCaducitatError" class="text-danger mt-1" style="display: none;">
+                    La data d'expiració de la llicència no és vàlida.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
-                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required>
+                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
+                    placeholder="16 dígits numèrics" th:value="${client?.numTarjetaCredit}">
+                <div id="cardError" class="text-danger mt-1" style="display: none;">
+                    La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
+                </div>
             </div>
             <div class="mb-3">
                 <label for="adreca" class="form-label">Adreça</label>
-                <input type="text" id="adreca" name="adreca" class="form-control" required>
+                <input type="text" id="adreca" name="adreca" class="form-control" th:value="*{adreca}" required>
+                <div class="text-danger" th:if="${#fields.hasErrors('adreca')}" th:errors="*{adreca}"></div>
             </div>
-            <div class="form-check mb-3">
-                <input type="checkbox" id="reputacio" name="reputacio" class="form-check-input" required>
-                <label for="reputacio" class="form-check-label">Reputació</label>
+            <div class="mb-3">
+                <label for="reputacio" class="form-label">Reputació</label>
+                <select id="reputacio" th:field="*{reputacio}" class="form-control" required>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                <div class="invalid-feedback">
+                    Si us plau, introdueix una reputació.
+                </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Crear Client</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dniCaducitatInput = document.getElementById("dniCaducitat");
+            const dniCaducitatError = document.getElementById("dniCaducitatError");
+
+            const llicCaducitatInput = document.getElementById("llicCaducitat");
+            const llicCaducitatError = document.getElementById("llicCaducitatError");
+
+            const form = document.getElementById("altaClientForm");
+
+            // Establece los límites del calendario
+            const currentDate = new Date();
+            const maxDate = new Date(currentDate.getFullYear() + 50, 11, 31); // Máximo 50 años en el futuro
+
+            // Formato de fecha para el atributo "min" y "max"
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            // Configurar límites en los campos de fecha
+            dniCaducitatInput.setAttribute("min", formatDate(currentDate));
+            dniCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            llicCaducitatInput.setAttribute("min", formatDate(currentDate));
+            llicCaducitatInput.setAttribute("max", formatDate(maxDate));
+
+            // Validación de fechas en tiempo real
+            dniCaducitatInput.addEventListener("input", function () {
+                validateDate(dniCaducitatInput, dniCaducitatError);
+            });
+
+            llicCaducitatInput.addEventListener("input", function () {
+                validateDate(llicCaducitatInput, llicCaducitatError);
+            });
+
+            // Validación al enviar el formulario
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+
+                if (!validateDate(dniCaducitatInput, dniCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!validateDate(llicCaducitatInput, llicCaducitatError)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    event.preventDefault(); // Evita que se envíe el formulario
+                    alert("Revisa les dades abans de continuar. Algunes dates no són vàlides.");
+                }
+            });
+
+            // Función para validar una fecha
+            function validateDate(input, errorElement) {
+                const enteredDate = new Date(input.value);
+
+                // Verifica que la fecha esté dentro del rango
+                if (!input.value || enteredDate < currentDate || enteredDate > maxDate) {
+                    errorElement.style.display = "block";
+                    return false;
+                } else {
+                    errorElement.style.display = "none";
+                    return true;
+                }
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tarjetaInput = document.getElementById("numTarjetaCredit");
+            const tarjetaError = document.getElementById("cardError");
+
+            // Expresión regular para validar tarjeta de crédito (16 dígitos)
+            const tarjetaPattern = /^[0-9]{16}$/;
+
+            // Validación en tiempo real
+            tarjetaInput.addEventListener("input", function () {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                } else {
+                    tarjetaError.style.display = "none";
+                }
+            });
+
+            // Validación al enviar el formulario
+            const form = tarjetaInput.closest("form");
+            form.addEventListener("submit", function (event) {
+                if (!tarjetaPattern.test(tarjetaInput.value)) {
+                    tarjetaError.style.display = "block";
+                    event.preventDefault(); // Evita el envío del formulario
+                    alert("La tarjeta de crèdit no és vàlida. Comprova que tingui 16 dígits.");
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -142,6 +279,7 @@
             });
         });
     </script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

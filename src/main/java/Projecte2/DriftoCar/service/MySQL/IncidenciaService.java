@@ -34,33 +34,40 @@ public class IncidenciaService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
+
     @Autowired
     private HistoricIncidenciesService historicIncidenciesService;
 
-    public List<Vehicle> llistarVehiclesSenseIncidenciesActives() {
-        List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
-
-        List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
-        for (Incidencia incidencia : incidenciesActives) {
-            matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula());
-        }
-
-        List<Vehicle> vehicles = vehicleRepository.findAll();
-        List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
-        for (Vehicle vehicle : vehicles) {
-            if (!matriculesAmbIncidenciesActives.contains(vehicle.getMatricula())) {
-                vehiclesSenseIncidencies.add(vehicle);
-            }
-        }
-
-        return vehiclesSenseIncidencies;
+    public List<Vehicle> llistarVehiclesSenseIncidenciesActives(String searchMatricula) {
+        List<Vehicle> vehicles = vehicleRepository.findVehiclesFiltreIncidencies(searchMatricula);
+        return vehicles;
+        /*
+         * List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
+         * 
+         * List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
+         * for (Incidencia incidencia : incidenciesActives) {
+         * matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula())
+         * ;
+         * }
+         * 
+         * List<Vehicle> vehicles = vehicleRepository.findAll();
+         * List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
+         * for (Vehicle vehicle : vehicles) {
+         * if (!matriculesAmbIncidenciesActives.contains(vehicle.getMatricula())) {
+         * vehiclesSenseIncidencies.add(vehicle);
+         * }
+         * }
+         * 
+         * return vehiclesSenseIncidencies;
+         */
     }
 
     public void obrirIncidencia(Incidencia incidencia) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findByMatricula(incidencia.getMatricula().getMatricula());
 
         if (!optionalVehicle.isPresent()) {
-            throw new RuntimeException("Vehicle no trobat amb la matrícula proporcionada: " + incidencia.getMatricula().getMatricula());
+            throw new RuntimeException(
+                    "Vehicle no trobat amb la matrícula proporcionada: " + incidencia.getMatricula().getMatricula());
         }
 
         Vehicle vehicle = optionalVehicle.get();
@@ -87,6 +94,7 @@ public class IncidenciaService {
         incidencia.setEstat(false);
         incidencia.setDataFiIncidencia(LocalDateTime.now());
         incidenciaRepository.save(incidencia);
+
 
         historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia);
     }

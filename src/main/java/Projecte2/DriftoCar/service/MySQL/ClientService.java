@@ -89,7 +89,32 @@ public class ClientService {
         if (clientExistent.isPresent()) {
             throw new Exception("Ja existeix un client amb aquest DNI.");
         }
-        log.info("S'ha entrat donat d'alta a un client.");
+
+        Optional<Client> usuariExistent = clientRepository.findByUsuari(client.getUsuari());
+        
+        if (usuariExistent.isPresent()) {
+            throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
+        }
+
+        Optional<Client> emailExistent = clientRepository.findByEmail(client.getEmail());
+
+        if (emailExistent.isPresent()) {
+            throw new RuntimeException("Aquest email ja esta en us.");
+        }
+
+        Optional<Client> numTarjetaCreditExistent = clientRepository.findByNumTarjetaCredit(client.getNumTarjetaCredit());
+
+        if (numTarjetaCreditExistent.isPresent()) {
+            throw new RuntimeException("Aquesta tarjeta de credit ja esta en us.");
+        }
+
+        Optional<Client> telefonExistent = clientRepository.findByTelefon(client.getTelefon());
+
+        if (telefonExistent.isPresent()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre client");
+        }
+
+        log.info("S'ha donat d'alta a un client.");
 
         String contrasenyaEncriptada = passwordEncoder.encode(client.getContrasenya());
         client.setContrasenya(contrasenyaEncriptada);
@@ -133,7 +158,30 @@ public class ClientService {
         clientNou.setUsuari(client.getUsuari());
         clientNou.setReputacio(client.isReputacio());
         clientNou.setContrasenya(client.getContrasenya());
+        Optional<Client> telefonExistent = clientRepository.findByTelefon(client.getTelefon());
 
+        if (telefonExistent.isPresent() && telefonExistent.get().getDni()!=client.getDni()) {
+            throw new RuntimeException("Aquest telefon ya esta asignat a un altre client");
+        }
+        
+        Optional<Client> usuariExistent = clientRepository.findByUsuari(client.getUsuari());
+
+        if (usuariExistent.isPresent() && !usuariExistent.get().getDni().equals(client.getDni())) {
+            throw new RuntimeException("Aquest nom d'usuari ja esta en us.");
+        }
+
+        Optional<Client> emailExistent = clientRepository.findByEmail(client.getEmail());
+
+        if (emailExistent.isPresent() && !emailExistent.get().getDni().equals(client.getDni())) {
+            throw new RuntimeException("Aquest email ja esta en us.");
+        }
+
+        Optional<Client> numTarjetaCreditExistent = clientRepository.findByNumTarjetaCredit(client.getNumTarjetaCredit());
+
+        if (numTarjetaCreditExistent.isPresent() && !numTarjetaCreditExistent.get().getDni().equals(client.getDni())) {
+            throw new RuntimeException("Aquesta tarjeta de credit ja esta en us.");
+        }
+        
         log.info("S'ha modificat el client.");
 
 

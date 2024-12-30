@@ -16,7 +16,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -55,11 +54,12 @@ public class Reserva {
     @Column(name = "data_fi", nullable = false)
     private LocalDate dataFi;
 
+    //TODO Calcular precio total i fiança al crear una reserva teniendo en cuenta el tipo de cliente
     @Column(name = "cost_total", nullable = false)
-    private double costTotal; 
+    private Double costTotal; 
 
     @Column(name = "fianca", nullable = false)
-    private double fianca;
+    private Double fianca;
     
     @Column(name = "estat", nullable = false)
     private boolean estat;
@@ -68,15 +68,23 @@ public class Reserva {
     @Column(name = "data_lliurar")
     private LocalDate dataLliurar;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "hora_lliurar")
-    private LocalTime horaLliurar;
-
     @Column(name = "descripcio_estat_lliurar")
     private String descripcioEstatLliurar;
 
-    @Column(name = "data_hora_retornar")
-    private LocalDateTime dataHoraRetornar;
+    @Column(name = "data_retornar")
+    private LocalDate dataRetornar;
 
+    @Column(name =  "hora_inici")
+    private LocalTime horaInici;
 
+    @Column(name =  "hora_lliurar")
+    private LocalTime horaLliurar;
+
+    @Column(name =  "hora_fi")
+    private LocalTime horaFi;
+
+    @Column(name =  "hora_retornar")
+    private LocalTime horaRetornar;
+
+    //TODO Cambiar el idioma de llistar-reserva
 }

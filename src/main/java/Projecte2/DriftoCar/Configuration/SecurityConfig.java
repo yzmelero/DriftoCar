@@ -41,11 +41,15 @@ public class SecurityConfig {
 
                                                 // Matchers de incidencia sin post
                                                 .requestMatchers("/incidencia/obrir/**").hasAnyRole("ADMIN", "AGENT")
-                                                .requestMatchers("/incidencia/llistar-incidencies").hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/incidencia/llistar-incidencies")
+                                                .hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/incidencia/llistar").hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/incidencia/tancar/**").hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/incidencia/detall/**").hasAnyRole("ADMIN", "AGENT")
-                                                .requestMatchers("/incidencia/descargar-pdf/**").hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/incidencia/descargar-pdf/**")
+                                                .hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/incidencia/historial")
+                                                .hasAnyRole("ADMIN", "AGENT")
 
                                                 // Matchers de localitzacio sin post
                                                 .requestMatchers("/localitzacio/llistar").hasRole("ADMIN")
@@ -65,6 +69,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/reserva/lliurar/**").hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/reserva/anular/**")
                                                 .hasAnyRole("ADMIN", "AGENT", "CLIENT")
+                                                .requestMatchers("/reserva/retornar/**").hasAnyRole("ADMIN", "AGENT")
+                                                .requestMatchers("/reserva/retornar/calculPreu/**").hasAnyRole("ADMIN", "AGENT")
 
                                                 // Matchers de vehicle sin post
                                                 .requestMatchers("/vehicle/llistar")
@@ -103,7 +109,7 @@ public class SecurityConfig {
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
-                //return NoOpPasswordEncoder.getInstance(); // Codificación de contraseñas
+                // return NoOpPasswordEncoder.getInstance(); // Codificación de contraseñas
         }
 
         @SuppressWarnings("removal")

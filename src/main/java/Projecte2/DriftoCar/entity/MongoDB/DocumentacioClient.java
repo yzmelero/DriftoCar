@@ -4,8 +4,6 @@
  */
 package Projecte2.DriftoCar.entity.MongoDB;
 
-import java.time.LocalDate;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,27 +24,9 @@ public class DocumentacioClient {
     
     @Id
     private String dni;
-        
-    private String nom;
-    
-    private String cognoms;
-    
-    private String contrasenya;
-    
-    private String email;
-
-    private String llicencia;
-        
-    private LocalDate llicCaducitat;
-    
-    private LocalDate dniCaducitat;
     
     private Binary[] imatgeDni;
     
     private Binary[] imatgeLlicencia;
-    
-    private String numTarjetaCredit;
-    
-    private String adreca;
 
 }

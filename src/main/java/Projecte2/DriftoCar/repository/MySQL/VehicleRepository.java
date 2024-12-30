@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,37 +24,69 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, String> {
 
-    Optional<Vehicle> findByMatricula(String matricula);
+  Optional<Vehicle> findByMatricula(String matricula);
 
-    List<Vehicle> findByMarca(String marca);
+  List<Vehicle> findByMatriculaContaining(String matricula);
 
-    List<Vehicle> findByModel(String model);
+  List<Vehicle> findByMarca(String marca);
 
-    List<Vehicle> findByDisponibilitat(boolean disponibilitat);
+  List<Vehicle> findByModel(String model);
 
-    List<Vehicle> findByLocalitzacio(Localitzacio localitzacio);
+  List<Vehicle> findByDisponibilitat(boolean disponibilitat);
 
-    List<Vehicle> findByTipus(TipusVehicle tipus);
+  List<Vehicle> findByLocalitzacio(Localitzacio localitzacio);
 
-    List<Vehicle> findByCombustible(TipusCombustible combustible);
+  List<Vehicle> findByTipus(TipusVehicle tipus);
 
-    List<Vehicle> findByPlaces(int places);
+  List<Vehicle> findByCombustible(TipusCombustible combustible);
 
-    List<Vehicle> findByTransmisio(TipusTransmisio transmisio);
+  List<Vehicle> findByPlaces(int places);
 
-    List<Vehicle> findByAny(int any);
+  List<Vehicle> findByTransmisio(TipusTransmisio transmisio);
 
-    List<Vehicle> findByLocalitzacio_CodiPostal(String codiPostal);
+  List<Vehicle> findByAny(int any);
 
-    @Query("""
-        SELECT v FROM Vehicle v
-        WHERE v.disponibilitat = true
-        AND v.matricula NOT IN (
-            SELECT r.vehicle.matricula
+  List<Vehicle> findByLocalitzacio_CodiPostal(String codiPostal);
+
+  @Query("""
+      SELECT v FROM Vehicle v
+      WHERE (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%', :matricula, '%')))
+        AND NOT EXISTS (
+            SELECT 1
             FROM Reserva r
-            WHERE (r.dataInici <= :dataFinal AND r.dataFi >= :dataInici)
+            WHERE r.vehicle.matricula = v.matricula
+              AND r.estat = true
+              AND ((:dataInici IS NOT NULL AND :dataFinal IS NOT NULL AND r.dataInici <= :dataFinal AND r.dataFi >= :dataInici)
+                   OR (:dataInici IS NOT NULL AND :dataFinal IS NULL AND r.dataFi >= :dataInici)
+                   OR (:dataInici IS NULL AND :dataFinal IS NOT NULL AND r.dataInici <= :dataFinal))
         )
-    """)
-    List<Vehicle> findVehiclesDisponibles(LocalDate dataInici, LocalDate dataFinal);
+      """)
+  List<Vehicle> findVehiclesLista(@Param("dataInici") LocalDate dataInici,
+      @Param("dataFinal") LocalDate dataFinal,
+      @Param("matricula") String matricula);
+
+  @Query("""
+      SELECT v FROM Vehicle v
+      WHERE (LOWER(v.matricula) LIKE LOWER(CONCAT('%', :matricula, '%')) OR :matricula IS NULL)
+        AND v.matricula NOT IN (
+          SELECT i.matricula.matricula
+          FROM Incidencia i
+          WHERE i.estat = true
+        )
+      """)
+  List<Vehicle> findVehiclesFiltreIncidencies(@Param("matricula") String matricula);
+
+
+
+  @Query("""
+          SELECT v.matricula
+          FROM Vehicle v
+          WHERE v.localitzacio.id = (
+              SELECT a.localitzacio.id
+              FROM Agent a
+              WHERE a.usuari = :usuari
+          )
+      """)
+List<String> findMatriculesByAgentUsuari(String usuari);
 
 }

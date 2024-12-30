@@ -81,4 +81,11 @@ public class HistoricIncidenciesService {
     public HistoricIncidencies obtenirHistoricoPerId(String id) {
         return historicIncidenciesRepository.findById(id).orElse(null);
     }
+
+    public List<HistoricIncidencies> findByMatricula(String matricula) {
+        if (matricula == null || matricula.isBlank()) {
+            return historicIncidenciesRepository.findAll(); // Devuelve todo el listado si no se filtra
+        }
+        return historicIncidenciesRepository.findByMatriculaContaining(matricula);
+    }
 }

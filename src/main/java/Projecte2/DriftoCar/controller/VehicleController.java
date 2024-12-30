@@ -58,17 +58,13 @@ public class VehicleController {
             @RequestParam(value = "dataInici", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInici,
             @RequestParam(value = "dataFinal", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFinal,
             Model model) {
-        List<Vehicle> vehicles = vehicleService.llistarVehicles();
+
+        
+        List<Vehicle> vehicles = vehicleService.findVehiclesLista(dataInici, dataFinal, matricula);
+        model.addAttribute("matricula", matricula);
+        model.addAttribute("dataInici", dataInici);
+        model.addAttribute("dataFinal", dataFinal);
         model.addAttribute("vehicles", vehicles);
-
-        if (dataInici != null && dataFinal != null) {
-            List<Vehicle> vehiclesDisponibles = vehicleService.getVehiclesDisponibles(dataInici, dataFinal);
-            model.addAttribute("vehicles", vehiclesDisponibles);
-        } else if (matricula != null && !matricula.isEmpty()) {
-            Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
-            model.addAttribute("vehicles", vehicle);
-        }
-
         return "vehicle-llistar";
     }
 

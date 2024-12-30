@@ -7,11 +7,13 @@ package Projecte2.DriftoCar.controller;
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioIncidencia;
 import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
+import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
 import Projecte2.DriftoCar.repository.MongoDB.DocumentacioIncidenciaRepository;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
 import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
+import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -49,6 +51,9 @@ public class IncidenciaController {
     private IncidenciaService incidenciaService;
 
     @Autowired
+    private LocalitzacioService localitzacioService;
+
+    @Autowired
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
     @Autowired
@@ -60,19 +65,33 @@ public class IncidenciaController {
     Logger log = LoggerFactory.getLogger(IncidenciaController.class);
 
     @GetMapping("/llistar-incidencies")
-    public String llistarIncidencies(Model model) {
-        List<Incidencia> incidencies = incidenciaService.llistarIncidencies();
-        model.addAttribute("incidencies", incidencies);
+    public String llistarIncidencies(@RequestParam(value = "matricula", required = false) String matricula,
+            @RequestParam(value = "localitzacio.codiPostal", required = false) String codiPostal,
+            @RequestParam(value = "estat", required = false) Boolean estat,
+            Model model) {
+
+        matricula = (matricula != null && matricula.isEmpty()) ? null : matricula;
+        codiPostal = (codiPostal != null && codiPostal.isEmpty()) ? null : codiPostal;
+
+        List<Incidencia> llistarIncidencies = incidenciaService.filtrarIncidencies(matricula, codiPostal, estat);
+
+        model.addAttribute("incidencies", llistarIncidencies);
+
+        List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
+        model.addAttribute("localitzacions", localitzacions)
+        ;
         return "incidencia-llistar";
     }
 
     @GetMapping("/llistar")
-    public String llistarVehiclesSenseIncidencies(Model model) {
+    public String llistarVehiclesSenseIncidencies(Model model,
+            @RequestParam(value = "searchMatricula", required = false) String searchMatricula) {
         // Obtenim els vehicles sense incidències actives
-        List<Vehicle> vehiclesSenseIncidencies = incidenciaService.llistarVehiclesSenseIncidenciesActives();
+        List<Vehicle> vehiclesSenseIncidencies = incidenciaService.llistarVehiclesSenseIncidenciesActives(searchMatricula);
 
         // Afegim els vehicles al model
         model.addAttribute("vehicles", vehiclesSenseIncidencies);
+        model.addAttribute("searchMatricula", searchMatricula);
 
         return "incidencia-cerca-vehicle"; // La vista que mostrarà la llista
     }
@@ -264,13 +283,13 @@ public class IncidenciaController {
     }
 
     @GetMapping("/historial")
-    public String verHistorial(Model model) {
+    public String verHistorial(@RequestParam(value = "matricula", required = false) String matricula, Model model) {
         try {
-            // Obtener todas las incidencias históricas
-            List<HistoricIncidencies> historial = historicIncidenciesService.obtenirHistoric();
+            List<HistoricIncidencies> historial = historicIncidenciesService.findByMatricula(matricula);
 
             // Pasar el historial al modelo para que sea accesible en la vista
             model.addAttribute("historial", historial);
+            model.addAttribute("matricula", matricula); // Para mantener el filtro en la vista
             return "historial-incidencia"; // Nombre de la vista
         } catch (Exception e) {
             // Manejar error si no se encuentra el historial
