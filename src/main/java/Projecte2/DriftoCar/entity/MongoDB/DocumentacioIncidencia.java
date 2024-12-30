@@ -23,8 +23,6 @@ import lombok.NoArgsConstructor;
 public class DocumentacioIncidencia {
     @Id
     private String id;
-    
-    private Long incidenciaId;
 
     private Binary[] fotos;
 

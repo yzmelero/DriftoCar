@@ -14,7 +14,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div class="container mt-5">
             <h1 class="mb-4">Detalls de la Incidència</h1>
 
-            <!-- Mostrar errors o advertencies si existeixen -->
+            <!-- Mostrar errores o advertencias si existen -->
             <div th:if="${error}" class="alert alert-danger">
                 <p th:text="${error}"></p>
             </div>
@@ -22,7 +22,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <p th:text="${warning}"></p>
             </div>
 
-            <!-- Mostrar detalls de la incidència -->
+            <!-- Mostrar detalles de la incidencia -->
             <section class="mb-4">
                 <h2>Especificacions de la Incidència</h2>
                 <p><strong>ID Incidència:</strong> <span th:text="${incidencia.id}"></span></p>
@@ -34,34 +34,32 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <p><strong>Estat:</strong> <span th:text="${incidencia.estat ? 'Actiu' : 'Inactiu'}"></span></p>
             </section>
 
-            <!-- Mostrar documentació asociada -->
-            <section th:if="${documentacioList != null && !documentacioList.isEmpty()}">
+            <!-- Mostrar documentació associada -->
+            <section th:if="${documentacio != null}">
                 <h2>Documentació Associada</h2>
 
-                <div th:each="document : ${documentacioList}" class="mb-3">
-                    <p><strong>Descripció:</strong> <span th:text="${document.text}"></span></p>
+                <p><strong>Descripció:</strong> <span th:text="${documentacio.text}"></span></p>
 
-                    <!-- Mostrar imatges -->
-                    <div th:if="${document.fotosBase64 != null}">
-                        <h3>Imatge:</h3>
-                        <div class="row">
-                            <div th:each="foto : ${document.fotosBase64}" class="col-4 mb-3">
-                                <img th:src="'data:image/jpeg;base64,' + ${foto}" class="img-fluid" alt="Foto">
-                            </div>
+                <!-- Mostrar imágenes -->
+                <div th:if="${documentacio.fotosBase64 != null}">
+                    <h3>Imatge:</h3>
+                    <div class="row">
+                        <div th:each="foto : ${documentacio.fotosBase64}" class="col-4 mb-3">
+                            <img th:src="'data:image/jpeg;base64,' + ${foto}" class="img-fluid" alt="Foto">
                         </div>
                     </div>
+                </div>
 
-                    <!-- Mostrar PDFs -->
-                    <div th:if="${document.pdfBase64 != null}">
-                        <h4>Descarregar PDF:</h4>
-                        <a th:href="@{/incidencia/descargar-pdf/{documentId}(documentId=${document.id})}" 
-                           class="btn btn-primary">Descarregar PDF</a>
-                    </div>
+                <!-- Mostrar PDFs -->
+                <div th:if="${documentacio.pdfBase64 != null}">
+                    <h4>Descarregar PDF:</h4>
+                    <a th:href="@{/incidencia/descargar-pdf/{documentId}(documentId=${documentacio.id})}" 
+                       class="btn btn-primary">Descarregar PDF</a>
                 </div>
             </section>
 
-            <!-- Missatge si no hi ha documentació -->
-            <div th:if="${documentacioList == null || documentacioList.isEmpty()}">
+            <!-- Mensaje si no hay documentación -->
+            <div th:if="${documentacio == null}">
                 <p class="alert alert-info">No hi ha documentació associada per aquesta incidència.</p>
             </div>
 

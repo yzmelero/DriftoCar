@@ -3,60 +3,88 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
 -->
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Modificar Incidència</title>
-    </head>
-    <body>
-        <h1>Modificar Incidència</h1>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Modificar Incidència</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Modificar Incidència</h2>
 
-        <!-- Missatges -->
-        <div th:if="${error}" class="error">
-            <p th:text="${error}"></p>
+    <!-- Missatges -->
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+    <div th:if="${success}" class="alert alert-success">
+        <p th:text="${success}"></p>
+    </div>
+
+    <form th:action="@{'/incidencia/modificar'}" method="post" enctype="multipart/form-data"
+          class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="id" class="form-label">ID</label>
+            <input type="text" id="id" name="id" class="form-control" th:value="${incidencia.id}" readonly>
         </div>
-        <div th:if="${success}" class="success">
-            <p th:text="${success}"></p>
+
+        <div class="mb-3">
+            <label for="matricula" class="form-label">Matrícula</label>
+            <input type="text" id="matricula" name="matricula" class="form-control" th:value="${incidencia.matricula.matricula}" readonly>
         </div>
 
-        <form th:action="@{'/incidencia/modificar/' + ${incidencia.id}}" method="post" enctype="multipart/form-data">
-            <div>
-                <label>ID:</label>
-                <input type="text" th:value="${incidencia.id}" readonly>
+        <div class="mb-3">
+            <label for="motiu" class="form-label">Motiu</label>
+            <input type="text" id="motiu" name="motiu" class="form-control" th:value="${incidencia.motiu}" required>
+            <div class="invalid-feedback">
+                Si us plau, introdueix un motiu per a la incidència.
             </div>
+        </div>
 
-            <div>
-                <label>Matrícula:</label>
-                <input type="text" th:value="${incidencia.matricula.matricula}" readonly>
-            </div>
+        <div class="mb-3">
+            <label for="descripcio" class="form-label">Descripció</label>
+            <textarea id="descripcio" name="descripcio" class="form-control" rows="3"
+                      th:text="${documentacio.text}"></textarea>
+        </div>
 
+        <div class="mb-3">
+            <label for="fotosActuals" class="form-label">Imatges Actuals</label>
             <div>
-                <label>Motiu:</label>
-                <input type="text" name="motiu" th:value="${incidencia.motiu}" required>
+                <div th:each="foto : ${documentacio.fotosBase64}" class="col-4 mb-3">
+                    <img th:src="'data:image/jpeg;base64,' + ${foto}" class="img-fluid" alt="Foto">
+                </div>
+                <p th:if="${documentacio.fotos == null}">
+                    No hi ha imatges associades a aquesta incidència.
+                </p>
             </div>
+            <label for="fotos" class="form-label mt-2">Afegir noves imatges:</label>
+            <input type="file" id="fotos" name="fotos" class="form-control" multiple accept="image/*">
+        </div>
 
+        <div class="mb-3">
+            <label for="pdfActuals" class="form-label">PDFs Actuals</label>
             <div>
-                <label>Descripció:</label>
-                <textarea name="descripcio" rows="3" th:text="${documentacio[0]?.text}"></textarea>
+                <a th:each="pdf : ${documentacio.pdf}" th:href="'/pdf/' + ${pdf}" target="_blank"
+                   class="d-block mb-2">Visualitzar PDF</a>
+                <p th:if="${documentacio.pdf == null}">
+                    No hi ha PDFs associats a aquesta incidència.
+                </p>
             </div>
+            <label for="pdf" class="form-label mt-2">Afegir nous PDFs:</label>
+            <input type="file" id="pdf" name="pdf" class="form-control" multiple accept="application/pdf">
+        </div>
 
-            <div>
-                <label>Imatges:</label>
-                <input type="file" name="fotos" multiple>
-            </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Modificar</button>
+            <a th:href="@{/incidencia/llistar-incidencies}" class="btn btn-secondary">Tornar</a>
+        </div>
+    </form>
+</div>
 
-            <div>
-                <label>PDFs:</label>
-                <input type="file" name="pdf" multiple>
-            </div>
-
-            <div>
-                <button type="submit">Modificar</button>
-                <a href="/incidencia/llistar-incidencies">
-                    <button type="button">Tornar</button>
-                </a>
-            </div>
-        </form>
-    </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
 </html>
