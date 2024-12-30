@@ -117,9 +117,15 @@ public class ReservaController {
     }
 
     @GetMapping("/historic")
-    public String llistarHistoricReservas(Model model) {
-        List<HistoricReserves> reserves = historicReservesRepository.findAll();
-        model.addAttribute("reservas", reserves);
+    public String llistarHistoricReservas(Model model, @RequestParam(value = "dni", required = false) String dni) {
+        List<HistoricReserves> historicReserves;
+        if (dni != null && !dni.isEmpty()) {
+            historicReserves = historicReservesRepository.findByDNIContaining(dni);
+        } else {
+            historicReserves = historicReservesRepository.findAll();
+        }
+        model.addAttribute("reservas", historicReserves);
+        model.addAttribute("dni", dni);
         return "reserva-historic";
     }
 
