@@ -9,6 +9,7 @@ import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MongoDB.DocumentacioIncidenciaRepository;
 import Projecte2.DriftoCar.service.MongoDB.DocumentacioIncidenciaService;
 import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 import Projecte2.DriftoCar.service.MySQL.IncidenciaService;
@@ -17,6 +18,9 @@ import Projecte2.DriftoCar.service.MySQL.VehicleService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.ui.Model;
@@ -53,7 +57,12 @@ public class IncidenciaController {
     private DocumentacioIncidenciaService documentacioIncidenciaService;
 
     @Autowired
+    private DocumentacioIncidenciaRepository documentacioIncidenciaRepository;
+
+    @Autowired
     private HistoricIncidenciesService historicIncidenciesService;
+
+    Logger log = LoggerFactory.getLogger(IncidenciaController.class);
 
     @GetMapping("/llistar-incidencies")
     public String llistarIncidencies(@RequestParam(value = "matricula", required = false) String matricula,
@@ -135,6 +144,81 @@ public class IncidenciaController {
         }
     }
 
+    // Mostrar el formulari per modificar una incidència
+    @GetMapping("/modificar/{id}")
+    public String modificarIncidenciaForm(@PathVariable Long id, Model model) {
+        // Obtenir la incidència existent
+        Incidencia incidencia = incidenciaService.obtenirIncidenciaPerId(id);
+        if (incidencia == null) {
+            model.addAttribute("error", "La incidència amb ID " + id + " no existeix.");
+            return "redirect:/incidencia/llistar-incidencies";
+        }
+
+        // Afegir la incidència i la documentació existent al model
+        incidencia.getMatricula();
+        log.info(incidencia.getMatricula().getMatricula());
+        model.addAttribute("incidencia", incidencia);
+
+        DocumentacioIncidencia documentacio = documentacioIncidenciaService.obtenirDocumentacioPerId(id.toString());
+        DocumentacioIncidencia documentacioExistent = documentacioIncidenciaService
+                .obtenirDocumentacioAmbBase64PerIncidencia(id.toString());
+        model.addAttribute("documentacio", documentacioExistent);
+
+        return "incidencia-modificar"; // Vista del formulari
+    }
+
+    @PostMapping("/modificar")
+    public String modificarIncidencia(
+            @ModelAttribute("incidencia") Incidencia incidencia,
+            @RequestParam("descripcio") String descripcio,
+            @RequestParam(value = "fotos", required = false) MultipartFile[] fotos,
+            @RequestParam(value = "pdf", required = false) MultipartFile[] pdf,
+            Model model) {
+            log.info(incidencia.getMatricula().getMatricula());
+        try {
+            // Obtenir la incidència existent a MySQL
+            Incidencia existent = incidenciaService.obtenirIncidenciaPerId(incidencia.getId());
+            if (existent == null) {
+                model.addAttribute("error", "La incidència amb ID " + incidencia.getId() + " no existeix.");
+                return "incidencia-modificar";
+            }
+
+            // Actualitzar només el motiu de la incidència
+            existent.setMotiu(incidencia.getMotiu());
+            incidenciaService.modificarIncidencia(existent);
+
+            // Obtenir o crear la documentació associada a MongoDB
+            DocumentacioIncidencia documentacio = documentacioIncidenciaService.obtenirDocumentacioPerId(incidencia.getId().toString());
+            documentacio.setId(incidencia.getId().toString());
+
+            // Actualitzar els camps de documentació
+            try {
+                if (fotos != null && fotos.length > 0 && !fotos[0].isEmpty()) {
+                    documentacio.setFotos(documentacioIncidenciaService.convertirMultipartsABinary(fotos));
+                }
+                if (pdf != null && pdf.length > 0 && !pdf[0].isEmpty()) {
+                    documentacio.setPdf(documentacioIncidenciaService.convertirMultipartsABinary(pdf));
+                }
+                documentacio.setText(descripcio);                
+            } catch (IOException e) {
+                model.addAttribute("error", "Error al carregar els fitxers.");
+                return "incidencia-modificar";
+            }
+
+            // Guardar la documentació a MongoDB
+            documentacioIncidenciaRepository.save(documentacio);
+
+            model.addAttribute("success", "La incidència s'ha modificat correctament.");
+            log.info("Incidència modificada correctament: {}", incidencia.getId());
+        } catch (Exception e) {
+            model.addAttribute("error", "Error en modificar la incidència: " + e.getMessage());
+            log.error("Error en modificar la incidència: {}", e.getMessage());
+            return "incidencia-modificar";
+        }
+
+        return "redirect:/incidencia/llistar-incidencies";
+    }
+
     @GetMapping("/tancar/{id}")
     public String tancarIncidencia(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -156,7 +240,7 @@ public class IncidenciaController {
 
             if (incidencia == null) {
                 model.addAttribute("error", "Incidència no trobada.");
-                return "redirect:/incidencia/llistar-incidencies";
+                return "redirect:/incidencia/incidencia-llistar";
             }
 
             // Validar si la descripción es null
@@ -165,17 +249,17 @@ public class IncidenciaController {
             }
 
             // Obtener la documentación asociada con procesamiento Base64
-            List<DocumentacioIncidencia> documentacioList = documentacioIncidenciaService
-                    .obtenirDocumentacioAmbBase64PerIncidencia(id);
+            DocumentacioIncidencia documentacio = documentacioIncidenciaService
+                    .obtenirDocumentacioAmbBase64PerIncidencia(id.toString());
 
             // Agregar atributos al modelo
             model.addAttribute("incidencia", incidencia);
-            model.addAttribute("documentacioList", documentacioList);
+            model.addAttribute("documentacio", documentacio);
 
             return "documentacio-mostrar";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
-            return "redirect:/incidencia/llistar-incidencies";
+            return "redirect:/incidencia/incidencia-llistar";
         }
     }
 

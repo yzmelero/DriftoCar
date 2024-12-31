@@ -74,6 +74,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <a class="btn btn-danger" th:if="${incidencia.estat}" th:href="@{/incidencia/tancar/{id}(id=${incidencia.id})}" 
                                onclick="return confirm('Estàs segur de tancar aquesta incidència?');">Tancar</a>
                             <a class="btn btn-info" th:href="@{/incidencia/detall/{id}(id=${incidencia.id})}">Visualitzar</a>
+                            <a class="btn btn-warning" th:if="${incidencia.estat}" th:href="@{/incidencia/modificar/{id}(id=${incidencia.id})}">Modificar</a>
                         </td>
                     </tr>
                 </tbody>

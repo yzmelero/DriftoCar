@@ -27,7 +27,7 @@ public class DocumentacioIncidenciaService {
     // Métode per guardar la documentació (ja existent)
     public DocumentacioIncidencia guardarDocumentacio(Long incidenciaId, String text, MultipartFile[] fotos, MultipartFile[] pdf) throws IOException {
         DocumentacioIncidencia documentacio = new DocumentacioIncidencia();
-        documentacio.setIncidenciaId(incidenciaId); // Asignar incidenciaId al document
+        documentacio.setId(incidenciaId.toString());
         documentacio.setText(text);
         documentacio.setFotos(convertirMultipartsABinary(fotos));
         documentacio.setPdf(convertirMultipartsABinary(pdf));
@@ -35,23 +35,24 @@ public class DocumentacioIncidenciaService {
         return documentacioIncidenciaRepository.save(documentacio);
     }
 
-    // Nou métode per obtenir i processar la documentació
-    public List<DocumentacioIncidencia> obtenirDocumentacioAmbBase64PerIncidencia(Long incidenciaId) {
-        // Reutilizar el método existent per obtenir la documentació
-        List<DocumentacioIncidencia> documentacioList = obtenirDocumentacioPerIncidenciaId(incidenciaId);
+    // Nou mètode per obtenir i processar la documentació
+    public DocumentacioIncidencia obtenirDocumentacioAmbBase64PerIncidencia(String id) {
+        // Reutilitzar el mètode existent per obtenir la documentació per id
+        DocumentacioIncidencia documentacio = obtenirDocumentacioPerId(id);
 
-        // Convertir fotos y PDFs a Base64
-        for (DocumentacioIncidencia doc : documentacioList) {
-            if (doc.getFotos() != null) {
-                doc.setFotosBase64(convertirBinaryABase64(doc.getFotos())); // Convertir fotos a Base64
+        // Convertir fotos i PDFs a Base64
+        if (documentacio != null) {
+            if (documentacio.getFotos() != null) {
+                documentacio.setFotosBase64(convertirBinaryABase64(documentacio.getFotos())); // Convertir fotos a Base64
             }
-            if (doc.getPdf() != null) {
-                doc.setPdfBase64(convertirBinaryABase64(doc.getPdf())); // Convertir PDFs a Base64
+            if (documentacio.getPdf() != null) {
+                documentacio.setPdfBase64(convertirBinaryABase64(documentacio.getPdf())); // Convertir PDFs a Base64
             }
         }
-        return documentacioList;
+
+        return documentacio;
     }
-        
+
     // Conversió d'archius Binary[] a Base64
     public String[] convertirBinaryABase64(Binary[] binaries) {
         if (binaries == null) {
@@ -93,10 +94,6 @@ public class DocumentacioIncidenciaService {
 
     public List<DocumentacioIncidencia> obtenirTotaDocumentacio() {
         return documentacioIncidenciaRepository.findAll();
-    }
-
-    public List<DocumentacioIncidencia> obtenirDocumentacioPerIncidenciaId(Long incidenciaId) {
-        return documentacioIncidenciaRepository.findByIncidenciaId(incidenciaId);
     }
 
     public DocumentacioIncidencia obtenirDocumentacioPerId(String documentacioId) {
