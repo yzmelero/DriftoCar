@@ -201,6 +201,10 @@ public class ReservaController {
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
+        if (!reserva.isEstat()) {
+            model.addAttribute("error", "No es pot lliurar un vehicle per a una reserva anul·lada.");
+            return "reserva-llistar";
+        }
 
         if (reserva.getDataLliurar() == null) {
             reserva.setDataLliurar(LocalDate.now());
