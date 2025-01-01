@@ -1,5 +1,6 @@
 package Projecte2.DriftoCar.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
@@ -20,11 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import Projecte2.DriftoCar.entity.MongoDB.DocumentacioClient;
 import Projecte2.DriftoCar.entity.MySQL.Agent;
 import Projecte2.DriftoCar.entity.MySQL.Localitzacio;
 import Projecte2.DriftoCar.repository.MongoDB.DocumentacioClientRepository;
+import Projecte2.DriftoCar.repository.MySQL.AgentRepository;
 import Projecte2.DriftoCar.service.MySQL.AgentService;
 import Projecte2.DriftoCar.service.MySQL.LocalitzacioService;
 import jakarta.validation.Valid;
@@ -43,6 +46,8 @@ public class AgentController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private DocumentacioClientRepository documentacioClientRepository;
+    @Autowired
+    private AgentRepository agentRepository;
 
     /**
      * Mostra el llistat d'agents, amb la possibilitat de filtrar per DNI.
@@ -238,13 +243,24 @@ public class AgentController {
     }
 
     @GetMapping("/esborrar/{dni}")
-    public String eliminarAgent(@PathVariable("dni") String dni, Model model, Agent agent) {
+    public String eliminarAgent(@PathVariable("dni") String dni, Principal principal,
+            RedirectAttributes redirectAttributes, Agent agent) {
         log.info("S'ha entrat al mètode esborrarController.");
+        String usuariActual = principal.getName();
+        Optional<Agent> opt = agentRepository.findById(dni);
+
+        if (opt.isPresent()) {
+            if (opt.get().getUsuari().equals(usuariActual)) {
+                redirectAttributes.addFlashAttribute("error", "No pots eliminar el teu propi usuari.");
+                return "redirect:/agent/llistar";
+            }
+        }
         try {
             agentService.eliminarAgent(agent); // Llama al servicio para eliminar
+            redirectAttributes.addFlashAttribute("success", "Agent eliminat correctament.");
         } catch (RuntimeException e) {
-            model.addAttribute("error", "No s'ha pogut eliminar l'agent.");
-            return "agent-llistar"; // Vuelve a la lista con un mensaje de error
+            redirectAttributes.addFlashAttribute("error", "No s'ha pogut eliminar l'agent.");
+            return "redirect:/agent/llistar";// Vuelve a la lista con un mensaje de error
         }
 
         return "redirect:/agent/llistar"; // Redirige al listado después de eliminar

@@ -47,7 +47,7 @@ public class DriftoCarApplication {
 		Localitzacio localitzacio = new Localitzacio(
 				"80812", "Madrid",
 				"LaCasaDeLaCasa",
-				"20:00-22:30", "Carrer",
+				"13:00 - 20:29", "Carrer",
 				null, null);
 		if (localitzacioRepository.findById(localitzacio.getCodiPostal()).isEmpty()) {
 			localitzacioService.altaLocalitzacio(localitzacio);
@@ -56,7 +56,7 @@ public class DriftoCarApplication {
 		Localitzacio localitzacio2 = new Localitzacio(
 				"90929", "Barcelona",
 				"En Una Mansion",
-				"00:00-23:59", "Entrada de la mansion",
+				"00:00 - 23:59", "Entrada de la mansion",
 				null, null);
 		if (localitzacioRepository.findById(localitzacio2.getCodiPostal()).isEmpty()) {
 			localitzacioService.altaLocalitzacio(localitzacio2);

@@ -40,8 +40,10 @@
                 </div>
                 <p><strong>Caducitat de la llicència:</strong> <span th:text="${agent.llicCaducitat}"></span></p>
                 <p><strong>Caducitat del DNI:</strong> <span th:text="${agent.dniCaducitat}"></span></p>
+                <p><strong>Número de targeta de crèdit: </strong><span th:text="${agent.numTarjetaCredit}"></span></p>
                 <p><strong>Adreça:</strong> <span th:text="${agent.adreca}"></span></p>
                 <p><strong>Reputació:</strong> <span th:text="${agent.reputacio ? 'Premium' : 'Normal'}"></span></p>
+                <p><strong>Rol: </strong> <span th:text="${agent.rol}"></span></p>
                 <p><strong>Localització:</strong>
                     <span th:if="${agent.localitzacio != null}" th:text="${agent.localitzacio.codiPostal}"></span>
                     <span th:if="${agent.localitzacio == null}">Sense localització</span>
