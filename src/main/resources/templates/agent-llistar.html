@@ -17,7 +17,10 @@
 
         <a href="/" class="btn btn-primary mb-3">Tornar al menú</a>
         <a href="/agent/alta" class="btn btn-primary mb-3">Afegir nou agent</a>
-
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success">
+            <span th:text="${success}"></span>
+        </div>
         <!-- Formulari de filtre -->
         <form th:action="@{/agent/llistar}" method="get" class="mb-4">
             <div class="row g-2 align-items-center">
