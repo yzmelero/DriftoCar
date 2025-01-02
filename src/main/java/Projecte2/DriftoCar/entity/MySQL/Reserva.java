@@ -86,5 +86,4 @@ public class Reserva {
     @Column(name =  "hora_retornar")
     private LocalTime horaRetornar;
 
-    //TODO Cambiar el idioma de llistar-reserva
 }

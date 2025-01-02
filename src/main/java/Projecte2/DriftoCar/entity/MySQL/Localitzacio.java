@@ -20,8 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- *
- * @author Anna
+ * Classe que representa la localització d'un punt de recollida.
  */
 @Entity
 @Table(name = "localitzacio")
@@ -30,24 +29,45 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Localitzacio {
     
+    /**
+     * Codi postal que identifica únicament una localització.
+     */
     @Id
     @Column(name = "codi_postal")
     private String codiPostal;
     
+    /**
+     * Ciutat on es troba la localització.
+     */
     private String ciutat;
     
+    /**
+     * Adreça física de la localització.
+     */
     @Column(name = "adreca_localitzacio")
     private String adrecaLocalitzacio;
     
+    /**
+     * Horari d'obertura i tancament de la localització.
+     */
     private String horari;
-    
+
+    /**
+     * Condicions o normes associades a la localització.
+     */
     private String condicions;
     
+    /**
+     * Llista de vehicles associats a la localització.
+     */
     @OneToMany(mappedBy = "localitzacio")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Vehicle> vehicles = new ArrayList<>();
 
+    /**
+     * Agent responsable d'aquesta localització.
+     */
     @OneToOne(mappedBy = "localitzacio")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
