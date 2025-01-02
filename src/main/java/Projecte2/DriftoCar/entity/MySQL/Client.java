@@ -31,7 +31,8 @@ import lombok.ToString;
 
 /**
  * Classe que representa un client dins del sistema.
- * Aquesta classe utilitza herència per suportar altres tipus d'usuaris, com ara agents.
+ * Aquesta classe utilitza herència per suportar altres tipus d'usuaris, com ara
+ * agents.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -39,8 +40,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "client")
-public class Client implements UserDetails{
-    
+public class Client implements UserDetails {
+
     /**
      * DNI del client. Actua com a identificador únic.
      * Ha de tenir un format de 8 números i una lletra majúscula.
@@ -59,22 +60,22 @@ public class Client implements UserDetails{
      */
     @Column(unique = true)
     private String usuari;
-    
+
     /**
      * Contrasenya del client.
      */
     private String contrasenya;
-        
+
     /**
      * Nom del client.
      */
     private String nom;
-    
+
     /**
      * Cognoms del client.
      */
     private String cognoms;
-    
+
     /**
      * Correu electrònic únic.
      */
@@ -93,42 +94,42 @@ public class Client implements UserDetails{
      */
     @Column
     private String nacionalitat;
-    
+
     /**
      * Llicència del client.
      */
     private String llicencia;
-     
+
     /**
      * Data de caducitat de la llicència.
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "llic_caducitat")
     private LocalDate llicCaducitat;
-    
+
     /**
      * Data de caducitat del DNI.
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "dni_caducitat")
     private LocalDate dniCaducitat;
-    
+
     /**
      * Número de targeta de crèdit únic.
      */
     @Column(name = "num_tarjeta_credit", unique = true)
     private String numTarjetaCredit;
-    
+
     /**
      * Adreça del client.
      */
     private String adreca;
-    
+
     /**
      * Reputació del client (1 = premium, 0 = normal).
      */
     private boolean reputacio;
-    
+
     /**
      * Llista de reserves associades al client.
      */
@@ -139,9 +140,11 @@ public class Client implements UserDetails{
 
     /**
      * Retorna els permisos associats al client.
-     * Els permisos varien depenent de si el client és un agent o un usuari estàndard.
+     * Els permisos varien depenent de si el client és un agent o un usuari
+     * estàndard.
      *
-     * @return una col·lecció d'objectes {@link GrantedAuthority} que representen els permisos del client.
+     * @return una col·lecció d'objectes {@link GrantedAuthority} que representen
+     *         els permisos del client.
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -149,11 +152,11 @@ public class Client implements UserDetails{
 
         if (this instanceof Agent) {
             Agent agent = (Agent) this;
-            ret.add(new Permis( agent.getRol().toString()));
-        }else{
+            ret.add(new Permis(agent.getRol().toString()));
+        } else {
             ret.add(new Permis("ROLES_CLIENT"));
         }
-        
+
         return ret;
     }
 
@@ -178,6 +181,5 @@ public class Client implements UserDetails{
     public String getUsername() {
         return getUsuari();
     }
-    
-    
+
 }
