@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 
 
 /**
- *
- * @author Anna
+ * Repositori per gestionar les operacions CRUD de la col·lecció `DocumentacioClient` a MongoDB.
+ * Extén {@link MongoRepository} per proporcionar funcionalitats predefinides.
  */
 @Repository
 public interface DocumentacioClientRepository extends MongoRepository <DocumentacioClient, String> {
