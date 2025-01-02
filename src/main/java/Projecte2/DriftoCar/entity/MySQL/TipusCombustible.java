@@ -5,8 +5,7 @@
 package Projecte2.DriftoCar.entity.MySQL;
 
 /**
- *
- * @author Yaiza
+ * Enum que defineix els tipus de combustible disponibles.
  */
 public enum TipusCombustible {
     ELECTRIC, BENZINA, DIESEL, HIBRIT
