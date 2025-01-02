@@ -4,7 +4,6 @@
  */
 package Projecte2.DriftoCar.entity.MySQL;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,8 +24,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *
- * @author Anna
+ * Classe que representa una reserva d'un vehicle feta per un client.
  */
 @Entity
 @Table(name = "reserva")
@@ -34,56 +32,100 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reserva {
-    
+
+    /**
+     * Identificador únic de la reserva.
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reserva")
     private Long idReserva;
 
+    /**
+     * Client que realitza la reserva.
+     */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "client", referencedColumnName = "dni", nullable = false) 
+    @JoinColumn(name = "client", referencedColumnName = "dni", nullable = false)
     private Client client;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false) 
-    @JoinColumn(name = "vehicle", referencedColumnName = "matricula", nullable = false) 
+    /**
+     * Vehicle associat a la reserva.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vehicle", referencedColumnName = "matricula", nullable = false)
     private Vehicle vehicle;
 
+    /**
+     * Data d'inici de la reserva.
+     */
     @Column(name = "data_inici", nullable = false)
     private LocalDate dataInici;
 
+    /**
+     * Data de finalització de la reserva.
+     */
     @Column(name = "data_fi", nullable = false)
     private LocalDate dataFi;
 
-    //TODO Calcular precio total i fiança al crear una reserva teniendo en cuenta el tipo de cliente
+    /**
+     * Cost total de la reserva.
+     */
     @Column(name = "cost_total", nullable = false)
-    private Double costTotal; 
+    private Double costTotal;
 
+    /**
+     * Fiança requerida per a la reserva.
+     */
     @Column(name = "fianca", nullable = false)
     private Double fianca;
-    
+
+    /**
+     * Estat de la reserva (activa o inactiva).
+     */
     @Column(name = "estat", nullable = false)
     private boolean estat;
 
+    /**
+     * Data prevista per lliurar el vehicle.
+     */
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data_lliurar")
     private LocalDate dataLliurar;
 
+    /**
+     * Descripció de l'estat del vehicle en el moment del lliurament.
+     */
     @Column(name = "descripcio_estat_lliurar")
     private String descripcioEstatLliurar;
 
+    /**
+     * Data prevista per retornar el vehicle.
+     */
     @Column(name = "data_retornar")
     private LocalDate dataRetornar;
 
-    @Column(name =  "hora_inici")
+    /**
+     * Hora d'inici del lloguer.
+     */
+    @Column(name = "hora_inici")
     private LocalTime horaInici;
 
-    @Column(name =  "hora_lliurar")
+    /**
+     * Hora prevista per lliurar el vehicle.
+     */
+    @Column(name = "hora_lliurar")
     private LocalTime horaLliurar;
 
-    @Column(name =  "hora_fi")
+    /**
+     * Hora de finalització del lloguer.
+     */
+    @Column(name = "hora_fi")
     private LocalTime horaFi;
 
-    @Column(name =  "hora_retornar")
+    /**
+     * Hora prevista per retornar el vehicle.
+     */
+    @Column(name = "hora_retornar")
     private LocalTime horaRetornar;
 
 }
