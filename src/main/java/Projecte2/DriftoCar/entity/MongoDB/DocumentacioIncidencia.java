@@ -13,28 +13,49 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *
- * @author Anna
+ * Classe que representa la documentació associada a una incidència.
  */
 @Document(collection = "documentacio_incidencia")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DocumentacioIncidencia {
+
+    /**
+     * Identificador únic de la documentació de la incidència.
+     */
     @Id
     private String id;
     
+    /**
+     * Identificador de la incidència a la qual està associada aquesta documentació.
+     */
     private Long incidenciaId;
 
+    /**
+     * Fotos relacionades amb la incidència, emmagatzemades com a array de bytes.
+     */
     private Binary[] fotos;
 
+    /**
+     * Text descriptiu de la incidència.
+     */
     private String text;
 
+    /**
+     * Fitxers PDF relacionats amb la incidència, emmagatzemats com a array de bytes.
+     */
     private Binary[] pdf;
     
+    /**
+     * Fotos en format Base64 per ser utilitzades en representacions no persistents.
+     */
     @Transient
     private String[] fotosBase64; // Atribut per les imatges convertides
 
+    /**
+     * PDFs en format Base64 per ser utilitzats en representacions no persistents.
+     */
     @Transient
     private String[] pdfBase64; // Atribut per els PDFs convertides
     
