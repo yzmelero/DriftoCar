@@ -32,8 +32,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * Controlador per gestionar les operacions relacionades amb els vehicles.
+ * Inclou funcions per llistar, afegir, modificar, esborrar, desactivar i
+ * activar vehicles.
+ * També permet la consulta detallada d'un vehicle.
  *
- * @author Anna
+ * Gestiona les sol·licituds HTTP relacionades amb els vehicles.
+ * 
  */
 @Controller
 @RequestMapping("/vehicle")
@@ -51,7 +56,15 @@ public class VehicleController {
     @Autowired
     private ReservaService reservaService;
 
-    // Llistar 
+    /**
+     * Llista els vehicles disponibles segons els criteris proporcionats.
+     * 
+     * @param matricula Matrícula del vehicle per filtrar (opcional).
+     * @param dataInici Data d'inici del període de disponibilitat (opcional).
+     * @param dataFinal Data final del període de disponibilitat (opcional).
+     * @param model     Model per passar dades a la vista.
+     * @return Vista amb la llista de vehicles.
+     */
     @GetMapping("/llistar")
     public String llistarVehicles(
             @RequestParam(value = "matricula", required = false) String matricula,
@@ -59,8 +72,11 @@ public class VehicleController {
             @RequestParam(value = "dataFinal", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFinal,
             Model model) {
 
-        
+        log.info("Iniciant llistat de vehicles amb matrícula: {}, data d'inici: {}, data final: {}.",
+                matricula, dataInici, dataFinal);
         List<Vehicle> vehicles = vehicleService.findVehiclesLista(dataInici, dataFinal, matricula);
+        log.info("S'han trobat {} vehicles que compleixen els criteris.", vehicles.size());
+
         model.addAttribute("matricula", matricula);
         model.addAttribute("dataInici", dataInici);
         model.addAttribute("dataFinal", dataFinal);
@@ -68,47 +84,80 @@ public class VehicleController {
         return "vehicle-llistar";
     }
 
-    // Alta
+    /**
+     * Mostra el formulari per afegir un nou vehicle.
+     *
+     * @param model Model per passar dades a la vista.
+     * @return Vista del formulari d'alta de vehicles.
+     */
     @GetMapping("/afegir")
     public String afegirVehicles(Model model) {
+        log.info("Carregant formulari d'alta de vehicles.");
+
         model.addAttribute("vehicles", new Vehicle());
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
         return "vehicle-alta";
     }
 
+    /**
+     * Guarda un nou vehicle a la base de dades.
+     *
+     * @param vehicle    Vehicle a afegir.
+     * @param imatgeFile Fitxer d'imatge del vehicle (opcional).
+     * @return Redirecció a la vista de llistat de vehicles.
+     */
     @PostMapping("/afegir")
     public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle,
             @RequestParam("imatgeFile") MultipartFile imatgeFile) {
+
+        log.info("Iniciant procés per guardar un nou vehicle amb matrícula: {}", vehicle.getMatricula());
 
         try {
             if (!imatgeFile.isEmpty()) {
                 // Convierte la imagen a un array de bytes
                 vehicle.setImatge(imatgeFile.getBytes());
+                log.info("S'ha associat una imatge al vehicle.");
             }
             vehicleService.altaVehicle(vehicle);
-            log.info("S'ha afegit un vehicle amb imatge en SQL.");
+            log.info("S'ha afegit correctament el vehicle amb matrícula: {}", vehicle.getMatricula());
         } catch (IOException e) {
             log.error("Error al convertir la imatge: " + e.getMessage());
         }
         return "redirect:/vehicle/llistar";
     }
 
-    // Esborrar
+    /**
+     * Esborra un vehicle segons la seva matrícula.
+     *
+     * @param matricula Matrícula del vehicle a esborrar.
+     * @return Redirecció a la vista de llistat de vehicles.
+     */
     @GetMapping("/esborrar/{matricula}")
     public String esborrarVehicle(@PathVariable("matricula") String matricula) {
+        log.info("Iniciant procés d'esborrat per al vehicle amb matrícula: {}", matricula);
+
         vehicleService.baixaVehicle(matricula);
-        log.info("S'ha esborrat un vehicle.");
+        log.info("Vehicle amb matrícula {} esborrat correctament.", matricula);
 
         return "redirect:/vehicle/llistar";
     }
 
-    // Modifica
+    /**
+     * Mostra el formulari per modificar un vehicle.
+     *
+     * @param matricula Matrícula del vehicle a modificar.
+     * @param model     Model per passar dades a la vista.
+     * @return Vista del formulari de modificació.
+     */
     @GetMapping("/modificar/{matricula}")
     public String modificarVehicle(@PathVariable("matricula") String matricula, Model model) {
+        log.info("Carregant formulari de modificació per al vehicle amb matrícula: {}", matricula);
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
 
         if (vehicle == null) {
+            log.warn("No s'ha trobat cap vehicle amb matrícula: {}", matricula);
             model.addAttribute("error", "No s'ha trobat el vehicle amb matrícula: " + matricula);
             return "redirect:/vehicle/llistar";
         }
@@ -121,18 +170,32 @@ public class VehicleController {
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
 
+        log.info("Formulari carregat correctament per al vehicle amb matrícula: {}", matricula);
         return "vehicle-modificar";
     }
 
+    /**
+     * Guarda les modificacions realitzades a un vehicle existent.
+     *
+     * @param vehicle    Vehicle amb les dades modificades.
+     * @param imatgeFile Fitxer d'imatge del vehicle (opcional).
+     * @return Redirecció a la vista de llistat de vehicles.
+     */
     @PostMapping("/modificar")
     public String guardarVehicleModificat(@ModelAttribute("vehicle") Vehicle vehicle,
             @RequestParam("imatgeFile") MultipartFile imatgeFile) {
+
+        log.info("Iniciant procés per modificar el vehicle amb matrícula: {}", vehicle.getMatricula());
+
         try {
             if (!imatgeFile.isEmpty()) {
                 vehicle.setImatge(imatgeFile.getBytes());
+                log.info("S'ha actualitzat la imatge del vehicle.");
             } else {
                 Vehicle vehicleAnterior = vehicleService.obtenirVehicleMatricula(vehicle.getMatricula());
                 vehicle.setImatge(vehicleAnterior.getImatge());
+                log.info("El vehicle conserva la imatge anterior.");
+
             }
             vehicleService.modificaVehicle(vehicle);
             log.info("S'ha modificat el vehicle amb matrícula: " + vehicle.getMatricula());
@@ -143,32 +206,57 @@ public class VehicleController {
 
     }
 
+    /**
+     * Mostra els detalls d'un vehicle especificat per la seva matrícula.
+     *
+     * @param matricula Matrícula del vehicle a consultar.
+     * @param model     Model per passar dades a la vista.
+     * @return Vista amb els detalls del vehicle.
+     */
     @GetMapping("/consulta/{matricula}")
     public String mostrarVehicle(@PathVariable String matricula, Model model) {
+        log.info("Iniciant consulta per al vehicle amb matrícula: {}", matricula);
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         if (vehicle == null) {
+            log.warn("No s'ha trobat cap vehicle amb matrícula: {}", matricula);
             model.addAttribute("error", "No s'ha trobat vehicle amb matrícula: " + matricula);
             return "redirect:/vehicle/llistar";
         }
         if (vehicle.getImatge() != null) {
             String imatgeBase64 = Base64.getEncoder().encodeToString(vehicle.getImatge());
             model.addAttribute("imatgeBase64", imatgeBase64);
+            log.info("S'ha carregat la imatge del vehicle.");
         } else {
             model.addAttribute("imatgeBase64", null);
+            log.info("El vehicle no té cap imatge associada.");
         }
         model.addAttribute("vehicle", vehicle);
         List<Localitzacio> localitzacions = localitzacioService.llistarLocalitzacions();
         model.addAttribute("localitzacions", localitzacions);
+        log.info("Consulta finalitzada correctament per al vehicle amb matrícula: {}", matricula);
+
         return "vehicle-consulta";
     }
 
+    /**
+     * Mostra una vista per desactivar un vehicle i les seves reserves associades.
+     *
+     * @param matricula Matrícula del vehicle a desactivar.
+     * @param dataFinal Data màxima de reserves a considerar (opcional).
+     * @param model     Model per passar dades a la vista.
+     * @return Vista de desactivació de vehicle i reserves.
+     */
     @GetMapping("/desactivar/{matricula}")
     public String desactivarVehicle(@PathVariable("matricula") String matricula,
             @RequestParam(value = "dataFinal", required = false) LocalDate dataFinal,
             Model model) {
 
+        log.info("Iniciant procés per desactivar el vehicle amb matrícula: {}", matricula);
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         if (vehicle == null) {
+            log.warn("No hi ha cap vehicle amb matrícula: {}", matricula);
             model.addAttribute("error", "No hi ha cap vehicle amb matrícula: " + matricula);
             return "redirect:/vehicle/llistar";
         }
@@ -176,6 +264,7 @@ public class VehicleController {
         List<Reserva> reserves = reservaService.obtenirReservesPerMatricula(matricula);
 
         if (dataFinal != null) {
+            log.info("Filtrant reserves fins a la data: {}", dataFinal);
             List<Reserva> reservasFiltrades = new ArrayList<>();
             for (Reserva reserva : reserves) {
                 if (reserva.getDataInici().isBefore(dataFinal) || reserva.getDataInici().isEqual(dataFinal)) {
@@ -187,34 +276,66 @@ public class VehicleController {
         model.addAttribute("vehicle", vehicle);
         model.addAttribute("reservas", reserves);
 
+        log.info("S'han carregat {} reserves per al vehicle amb matrícula: {}", reserves.size(), matricula);
         return "vehicle-desactivar";
     }
 
+    /**
+     * Desactiva les reserves seleccionades per un vehicle.
+     *
+     * @param idReservas Llista d'identificadors de reserves a desactivar.
+     * @param matricula  Matrícula del vehicle associat.
+     * @return Redirecció a la vista de llistat de vehicles.
+     */
     @PostMapping("/desactivarReserves")
     public String desactivarReserves(@RequestParam(value = "idReservas", required = false) List<Long> idReservas,
             @RequestParam("matricula") String matricula) {
 
+        log.info("Iniciant desactivació de reserves per al vehicle amb matrícula: {}", matricula);
+
         if (idReservas != null && !idReservas.isEmpty()) {
             for (Long id : idReservas) {
                 reservaService.desactivarReserva(id);
+                log.info("Reserva amb ID {} desactivada correctament.", id);
+
             }
         }
         vehicleService.desactivarVehicle(matricula);
+        log.info("Vehicle amb matrícula {} desactivat correctament.", matricula);
 
         return "redirect:/vehicle/llistar";
     }
 
+    /**
+     * Mostra la vista per activar un vehicle desactivat.
+     *
+     * @param matricula Matrícula del vehicle a activar.
+     * @param model     Model per passar dades a la vista.
+     * @return Vista d'activació del vehicle.
+     */
     @GetMapping("/activar/{matricula}")
     public String activarVehicles(@PathVariable("matricula") String matricula, Model model) {
+        log.info("Carregant vista per activar el vehicle amb matrícula: {}", matricula);
+
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
         model.addAttribute("vehicle", vehicle);
         return "vehicle-activar";
     }
 
+    /**
+     * Activa un vehicle i actualitza les dades opcionals com motiu i import.
+     *
+     * @param matricula Matrícula del vehicle a activar.
+     * @param motiu     Motiu de l'activació (opcional).
+     * @param importe   Import associat a l'activació (opcional).
+     * @return Redirecció a la vista de llistat de vehicles.
+     */
     @PostMapping("/activar/{matricula}")
     public String confirmarActivarVehicles(@PathVariable("matricula") String matricula,
             @RequestParam(value = "motiu", required = false) String motiu,
             @RequestParam(value = "importe", required = false) Double importe) {
+
+        log.info("Iniciant activació del vehicle amb matrícula: {}", matricula);
 
         Vehicle vehicle = vehicleService.obtenirVehicleMatricula(matricula);
 
@@ -231,6 +352,7 @@ public class VehicleController {
         }
 
         vehicleService.modificaVehicle(vehicle);
+        log.info("Vehicle amb matrícula {} activat correctament.", matricula);
         return "redirect:/vehicle/llistar";
     }
 }
