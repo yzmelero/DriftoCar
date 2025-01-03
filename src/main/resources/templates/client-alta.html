@@ -6,6 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffe6e6;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,125 +25,133 @@
         <h1 class="text-center mb-4">Registrar Client</h1>
         <form th:action="@{/registre/client-alta}" th:object="${client}" method="POST" enctype="multipart/form-data"
             class="needs-validation">
-            <div class="mb-3">
-                <label for="dni" class="form-label">DNI</label>
-                <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
-                    title="El DNI ha de tenir 8 números i una lletra majúscula.">
-                <div id="dniError" class="text-danger" style="display: none;">
-                    El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dni" class="form-label">DNI</label>
+                        <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
+                            title="El DNI ha de tenir 8 números i una lletra majúscula.">
+                        <div id="dniError" class="text-danger" style="display: none;">
+                            El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imatgeDni" class="form-label">Imatge DNI</label>
+                        <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="usuari" class="form-label">Nom d'Usuari</label>
+                        <input type="text" id="usuari" name="usuari" class="form-control" th:value="${client?.usuari}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contrasenya" class="form-label">Contrasenya</label>
+                        <input type="password" id="contrasenya" name="contrasenya" class="form-control"
+                            th:value="${client?.contrasenya}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirmacioContrasenya" class="form-label">Confirmar contrasenya</label>
+                        <input type="password" id="confirmacioContrasenya" name="confirmacioContrasenya"
+                            class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" id="nom" name="nom" class="form-control" th:value="${client?.nom}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="cognoms" class="form-label">Cognoms</label>
+                        <input type="text" id="cognoms" name="cognoms" class="form-control"
+                            th:value="${client?.cognoms}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correu electrònic</label>
+                        <input type="email" id="email" name="email" class="form-control" th:value="${client?.email}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefon" class="form-label">Telèfon</label>
+                        <input type="number" id="telefon" name="telefon" class="form-control" required
+                            pattern="^[0-9]{9}$" title="El telèfon ha de tenir 9 dígits.">
+                        <div id="telefonError" class="text-danger" style="display: none;">
+                            El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="llicencia" class="form-label">Llicència</label>
+                        <input type="text" id="llicencia" name="llicencia" class="form-control"
+                            th:value="${client?.llicencia}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
+                        <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control"
+                            accept="image/*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
+                        <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required />
+                        <div id="dniCaducitatError" class="text-danger mt-1" style="display: none;">
+                            La data d'expiració del DNI no és vàlida.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
+                        <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required />
+                        <div id="llicCaducitatError" class="text-danger mt-1" style="display: none;">
+                            La data d'expiració de la llicència no és vàlida.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
+                        <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
+                            placeholder="16 dígits numèrics" th:value="${client?.numTarjetaCredit}">
+                        <div id="cardError" class="text-danger mt-1" style="display: none;">
+                            La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adreca" class="form-label">Adreça</label>
+                        <input type="text" id="adreca" name="adreca" class="form-control" th:value="${client?.adreca}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nacionalitat" class="form-label">Nacionalitat</label>
+                        <select id="nacionalitat" name="nacionalitat" class="form-control" required>
+                            <option value="" disabled selected>Seleccioneu una nacionalitat</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reputacio" class="form-label">Reputació</label>
+                        <select id="reputacio" name="reputacio" class="form-control" required>
+                            <option value="true">Premium</option>
+                            <option value="false">Normal</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Si us plau, introdueix una reputació.
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="mb-3">
-                <label for="imatgeDni" class="form-label">Imatge DNI</label>
-                <input type="file" id="imatgeDni" name="imatgeDni" class="form-control" accept="image/*" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="usuari" class="form-label">Nom d'Usuari</label>
-                <input type="text" id="usuari" name="usuari" class="form-control" th:value="${client?.usuari}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="contrasenya" class="form-label">Contrasenya</label>
-                <input type="password" id="contrasenya" name="contrasenya" class="form-control"
-                    th:value="${client?.contrasenya}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="confirmacioContrasenya" class="form-label">Confirmar contrasenya</label>
-                <input type="password" id="confirmacioContrasenya" name="confirmacioContrasenya" class="form-control"
-                    required>
-            </div>
-
-            <div class="mb-3">
-                <label for="nom" class="form-label">Nom</label>
-                <input type="text" id="nom" name="nom" class="form-control" th:value="${client?.nom}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="cognoms" class="form-label">Cognoms</label>
-                <input type="text" id="cognoms" name="cognoms" class="form-control" th:value="${client?.cognoms}"
-                    required>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Correu electrònic</label>
-                <input type="email" id="email" name="email" class="form-control" th:value="${client?.email}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="telefon" class="form-label">Telèfon</label>
-                <input type="number" id="telefon" name="telefon" class="form-control" required pattern="^[0-9]{9}$"
-                    title="El telèfon ha de tenir 9 dígits.">
-                <div id="telefonError" class="text-danger" style="display: none;">
-                    El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="llicencia" class="form-label">Llicència</label>
-                <input type="text" id="llicencia" name="llicencia" class="form-control" th:value="${client?.llicencia}"
-                    required>
-            </div>
-
-            <div class="mb-3">
-                <label for="imatgeLlicencia" class="form-label">Imatge Llicència</label>
-                <input type="file" id="imatgeLlicencia" name="imatgeLlicencia" class="form-control" accept="image/*"
-                    required>
-            </div>
-
-            <div class="mb-3">
-                <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
-                <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required />
-                <div id="dniCaducitatError" class="text-danger mt-1" style="display: none;">
-                    La data d'expiració del DNI no és vàlida.
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
-                <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required />
-                <div id="llicCaducitatError" class="text-danger mt-1" style="display: none;">
-                    La data d'expiració de la llicència no és vàlida.
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="numTarjetaCredit" class="form-label">Núm. tarjeta de crèdit</label>
-                <input type="number" id="numTarjetaCredit" name="numTarjetaCredit" class="form-control" required
-                    placeholder="16 dígits numèrics" th:value="${client?.numTarjetaCredit}">
-                <div id="cardError" class="text-danger mt-1" style="display: none;">
-                    La tarjeta de crèdit no és vàlida. Ha de tenir exactament 16 dígits numèrics.
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="adreca" class="form-label">Adreça</label>
-                <input type="text" id="adreca" name="adreca" class="form-control" th:value="${client?.adreca}" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="nacionalitat" class="form-label">Nacionalitat</label>
-                <select id="nacionalitat" name="nacionalitat" class="form-control" required>
-                    <option value="" disabled selected>Seleccioneu una nacionalitat</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="reputacio" class="form-label">Reputació</label>
-                <select id="reputacio" name="reputacio" class="form-control" required>
-                    <option value="true">Premium</option>
-                    <option value="false">Normal</option>
-                </select>
-                <div class="invalid-feedback">
-                    Si us plau, introdueix una reputació.
-                </div>
-            </div>
-
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">Guardar</button>
-                <a href="/client/llistar" class="btn btn-secondary">Cancel·lar</a>
+                <a href="/clients/llistar" class="btn btn-secondary">Cancel·lar</a>
             </div>
         </form>
     </div>
