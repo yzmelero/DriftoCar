@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -21,9 +22,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MongoDB.HistoricReservesRepository;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
@@ -60,6 +65,9 @@ public class ReservaController {
 
     @Autowired
     private VehicleService vehicleService;
+
+    @Autowired
+    private HistoricReservesRepository historicReservesRepository;
 
     /**
      * Llista les reserves segons els filtres proporcionats i el rol de l'usuari
@@ -118,6 +126,8 @@ public class ReservaController {
             reserves = new ArrayList<>();
         }
 
+        reserves.sort((r1, r2) -> Long.compare(r2.getIdReserva(), r1.getIdReserva()));
+
         log.info("Nombre de reserves trobades: {}", reserves.size());
         model.addAttribute("reservas", reserves);
         model.addAttribute("searchId_reserva", searchId_reserva);
@@ -127,6 +137,20 @@ public class ReservaController {
         return "reserva-llistar";
     }
 
+    @GetMapping("/historic")
+    public String llistarHistoricReservas(Model model, @RequestParam(value = "dni", required = false) String dni) {
+        List<HistoricReserves> historicReserves;
+        if (dni != null && !dni.isEmpty()) {
+            historicReserves = historicReservesRepository.findByDNIContaining(dni);
+        } else {
+            historicReserves = historicReservesRepository.findAll();
+        }
+        model.addAttribute("reservas", historicReserves);
+        model.addAttribute("dni", dni);
+        return "reserva-historic";
+    }
+
+
     /**
      * Mostra el formulari per donar d'alta una nova reserva.
      *
@@ -135,7 +159,8 @@ public class ReservaController {
      * @return Nom de la vista per mostrar el formulari d'alta.
      */
     @GetMapping("/alta")
-    public String mostrarFormulari(Model model, Authentication authentication) {
+    public String mostrarFormulari(Model model, Authentication authentication,
+            @RequestParam(value = "vehicle", required = false) String matriculaVehicle) {
 
         log.info("Mostrant el formulari per crear una nova reserva.");
 
@@ -155,14 +180,19 @@ public class ReservaController {
             Client existent = client.get();
             model.addAttribute("clients", existent);
         }
-        // Aqui creem una reserva buida per a poder mostrar el formulari.
-        List<Vehicle> vehicles = vehicleRepository.findByDisponibilitat(true);
 
-        // model.addAttribute("reserva", new Reserva());
+        if (matriculaVehicle != null) {
+            Vehicle vehicle = vehicleRepository.findByMatricula(matriculaVehicle).get();
+            model.addAttribute("vehicles", vehicle);
+
+        } else {
+            List<Vehicle> vehicles = vehicleRepository.findByDisponibilitat(true);
+            model.addAttribute("vehicles", vehicles);
+
+        }
 
         Reserva reserva = new Reserva();
 
-        model.addAttribute("vehicles", vehicles);
         model.addAttribute("reserva", reserva);
         return "reserva-alta";
     }
@@ -234,6 +264,10 @@ public class ReservaController {
             log.warn("No s'ha trobat cap reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
+        }
+        if (!reserva.isEstat()) {
+            model.addAttribute("error", "No es pot lliurar un vehicle per a una reserva anul·lada.");
+            return "reserva-llistar";
         }
 
         if (reserva.getDataLliurar() == null) {
@@ -518,5 +552,11 @@ public class ReservaController {
             model.addAttribute("error", e.getMessage());
         }
         return "redirect:/reserva/llistar";
+    }
+
+    @GetMapping("/no-disponibles/{matricula}")
+    public ResponseEntity<List<String>> obtenerFechasNoDisponibles(@PathVariable String matricula) {
+        List<String> fechasNoDisponibles = reservaService.obtenerFechasNoDisponibles(matricula);
+        return ResponseEntity.ok(fechasNoDisponibles);
     }
 }

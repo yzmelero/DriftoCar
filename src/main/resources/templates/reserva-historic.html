@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Històric de Reserves</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffe6e6; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Històric de Reserves</h1>
+        <form th:action="@{/reserva/historic}" method="get" class="mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" name="dni" class="form-control" placeholder="Filtrar per DNI"
+                        th:value="${dni}" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+                <div class="col-md-2">
+                    <a th:href="@{/reserva/historic}" class="btn btn-secondary">Esborrar Filtres</a>
+                </div>
+            </div>
+        </form>
+        <div th:if="${reservas.isEmpty()}" class="alert alert-warning text-center">
+            No hi ha reserves al històric.
+        </div>
+
+        <div th:if="${!reservas.isEmpty()}" class="mb-3">
+            <h5>Total de Reserves: <span th:text="${#lists.size(reservas)}"></span></h5>
+        </div>
+
+        <table class="table table-bordered table-striped table-hover" th:if="${!reservas.isEmpty()}">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID Reserva</th>
+                    <th>DNI</th>
+                    <th>Nom</th>
+                    <th>Cognoms</th>
+                    <th>Matrícula</th>
+                    <th>Data Inici</th>
+                    <th>Data Fi</th>
+                    <th>Cost Total</th>
+                    <th>Fiança</th>
+                    <th>Estat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reserva : ${reservas}">
+                    <td th:text="${reserva.idReserva}"></td>
+                    <td th:text="${reserva.DNI}"></td>
+                    <td th:text="${reserva.nomClient}"></td>
+                    <td th:text="${reserva.cognomClient}"></td>
+                    <td th:text="${reserva.matricula}"></td>
+                    <td th:text="${reserva.dataInici}"></td>
+                    <td th:text="${reserva.dataFi}"></td>
+                    <td th:text="${reserva.totalCost}"></td>
+                    <td th:text="${reserva.fianca}"></td>
+                    <td th:text="${reserva.estat ? 'Activa' : 'Finalitzada'}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+            <a href="/reserva/llistar" class="btn btn-primary">Tornar</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

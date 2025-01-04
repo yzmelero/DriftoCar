@@ -95,7 +95,7 @@ public class Vehicle {
      * Localització associada al vehicle.
      */
     @ManyToOne
-    @JoinColumn(name = "localizacio", referencedColumnName = "codi_postal", nullable = false)
+    @JoinColumn(name = "localitzacio", referencedColumnName = "codi_postal", nullable = false)
     private Localitzacio localitzacio;
 
     /**

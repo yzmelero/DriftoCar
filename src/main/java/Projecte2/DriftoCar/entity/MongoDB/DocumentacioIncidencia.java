@@ -28,11 +28,6 @@ public class DocumentacioIncidencia {
     private String id;
     
     /**
-     * Identificador de la incidència a la qual està associada aquesta documentació.
-     */
-    private Long incidenciaId;
-
-    /**
      * Fotos relacionades amb la incidència, emmagatzemades com a array de bytes.
      */
     private Binary[] fotos;

@@ -11,8 +11,11 @@ import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +25,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IncidenciaService {
-
+    
+    Logger log = LoggerFactory.getLogger(IncidenciaService.class);
+    
     @Autowired
     private IncidenciaRepository incidenciaRepository;
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
 
     @Autowired
     private HistoricIncidenciesService historicIncidenciesService;
@@ -89,8 +95,30 @@ public class IncidenciaService {
         incidencia.setDataFiIncidencia(LocalDateTime.now());
         incidenciaRepository.save(incidencia);
 
+
         historicIncidenciesService.guardarHistoricIncidenciaTancada(incidencia);
     }
+
+    public Incidencia modificarIncidencia(Incidencia incidencia) {
+        log.info("S'ha entrat al mètode modificarIncidencia");
+    
+        // Obtenir la incidència existent
+        Optional<Incidencia> incidenciaExistent = incidenciaRepository.findById(incidencia.getId());
+    
+        if (incidenciaExistent.isEmpty()) {
+            throw new RuntimeException("No existeix cap incidència amb aquest ID.");
+        }
+    
+        Incidencia incidenciaActualitzada = incidenciaExistent.get();
+    
+        // Actualitzar només el camp 'motiu'
+        incidenciaActualitzada.setMotiu(incidencia.getMotiu());
+    
+        log.info("S'ha modificat el motiu de la incidència amb ID: {}", incidencia.getId());
+    
+        return incidenciaRepository.save(incidenciaActualitzada);
+    }
+    
 
     public List<Incidencia> llistarIncidencies() {
         return incidenciaRepository.findAll();
@@ -98,5 +126,15 @@ public class IncidenciaService {
 
     public Incidencia obtenirIncidenciaPerId(Long id) {
         return incidenciaRepository.findById(id).orElse(null);
+    }
+
+    public List<Incidencia> filtrarIncidencies(String matricula, String codiPostal, Boolean estat) {
+        if ((matricula == null || matricula.isEmpty())
+                && (codiPostal == null || codiPostal.isEmpty())
+                && estat == null) {
+            return incidenciaRepository.findAll();
+        }
+
+        return incidenciaRepository.findByFiltres(matricula, codiPostal, estat);
     }
 }

@@ -8,12 +8,14 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
+import java.util.List;
+
 
 /**
  * Repositori per gestionar les operacions CRUD de la col·lecció `HistoricReserves` a MongoDB.
  * Extén {@link MongoRepository} per proporcionar funcionalitats predefinides.
  */
 @Repository
-public interface HistoricReservesRepository extends MongoRepository <HistoricReserves, String>{
-    
+public interface HistoricReservesRepository extends MongoRepository<HistoricReserves, String> {
+    List<HistoricReserves> findByDNIContaining(String dni);
 }

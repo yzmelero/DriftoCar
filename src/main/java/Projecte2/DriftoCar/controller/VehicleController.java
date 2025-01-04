@@ -197,6 +197,8 @@ public class VehicleController {
                 log.info("El vehicle conserva la imatge anterior.");
 
             }
+            Vehicle vehicleDisp = vehicleService.obtenirVehicleMatricula(vehicle.getMatricula());
+            vehicle.setDisponibilitat(vehicleDisp.isDisponibilitat());
             vehicleService.modificaVehicle(vehicle);
             log.info("S'ha modificat el vehicle amb matrícula: " + vehicle.getMatricula());
         } catch (IOException e) {

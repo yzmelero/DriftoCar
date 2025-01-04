@@ -6,6 +6,7 @@ package Projecte2.DriftoCar.service.MySQL;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
 import Projecte2.DriftoCar.entity.MySQL.Client;
 import Projecte2.DriftoCar.entity.MySQL.Reserva;
 import Projecte2.DriftoCar.entity.MySQL.Vehicle;
+import Projecte2.DriftoCar.repository.MongoDB.HistoricReservesRepository;
 import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.ReservaRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
-import ch.qos.logback.core.util.Duration;
 
 import java.time.temporal.ChronoUnit;
 
@@ -41,6 +43,9 @@ public class ReservaService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private HistoricReservesRepository historicReservesRepository;
 
     /**
      * Aquest metode guarda una nova reserva a a BBDD si el client i la
@@ -75,8 +80,24 @@ public class ReservaService {
         reserva.setClient(client.get());
         reserva.setVehicle(vehicle.get());
 
-        // Guardar la reserva en la base de datos
-        return reservaRepository.save(reserva);
+        Reserva savedReserva = reservaRepository.save(reserva);
+
+        // Crear el histórico después de guardar la reserva
+        HistoricReserves historic = new HistoricReserves();
+        historic.setIdReserva(savedReserva.getIdReserva().toString()); // Ahora el ID está disponible
+        historic.setNomClient(savedReserva.getClient().getNom());
+        historic.setCognomClient(savedReserva.getClient().getCognoms());
+        historic.setDNI(savedReserva.getClient().getDni());
+        historic.setMatricula(savedReserva.getVehicle().getMatricula());
+        historic.setDataInici(savedReserva.getDataInici());
+        historic.setDataFi(savedReserva.getDataFi());
+        historic.setTotalCost(calculPreuReserva(savedReserva));
+        historic.setFianca(calculFianca(savedReserva));
+        historic.setEstat(savedReserva.isEstat());
+
+        historicReservesRepository.save(historic);
+
+        return savedReserva;
     }
 
     public List<Reserva> llistarReservas() {
@@ -109,6 +130,11 @@ public class ReservaService {
                 .orElseThrow(() -> new RuntimeException("Reserva " + idReserva + " no trobada: "));
         if (reserva.isEstat()) {
             reserva.setEstat(false); // Marca la reserva como inactiva
+            HistoricReserves historic = historicReservesRepository.findById(reserva.getIdReserva().toString())
+                    .orElseThrow(() -> new RuntimeException(
+                            "Reserva " + idReserva + " no trobada en el historic de reserves: "));
+            historic.setEstat(false);
+            historicReservesRepository.save(historic);
             return reservaRepository.save(reserva);
         } else {
             throw new RuntimeException("La reserva ja està anul·lada");
@@ -211,5 +237,22 @@ public class ReservaService {
         List<String> matriculesVehicles = vehicleRepository.findMatriculesByAgentUsuari(username);
         return reservaRepository.findByAgentAndFilters(username, matriculesVehicles, searchEmail, searchId_reserva,
                 searchMatricula);
+    }
+
+    public List<String> obtenerFechasNoDisponibles(String matricula) {
+        List<Reserva> reservas = reservaRepository.findByVehicleMatriculaEstat(matricula);
+        List<String> fechasNoDisponibles = new ArrayList<>();
+
+        for (Reserva reserva : reservas) {
+            LocalDate fechaInicio = reserva.getDataInici();
+            LocalDate fechaFin = reserva.getDataFi();
+
+            while (!fechaInicio.isAfter(fechaFin)) {
+                fechasNoDisponibles.add(fechaInicio.toString());
+                fechaInicio = fechaInicio.plusDays(1);
+            }
+        }
+
+        return fechasNoDisponibles;
     }
 }

@@ -81,7 +81,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/vehicle/activar/**").hasAnyRole("ADMIN", "AGENT")
                                                 .requestMatchers("/vehicle/consulta/**")
                                                 .hasAnyRole("ADMIN", "CLIENT", "AGENT")
-                                                .requestMatchers("/vehicle/desactivar/**").hasAnyRole("ADMIN", "CLIENT")
+                                                .requestMatchers("/vehicle/desactivar/**").hasAnyRole("ADMIN", "AGENT")
 
                                                 .anyRequest().authenticated()) // El resto requiere autenticación
 

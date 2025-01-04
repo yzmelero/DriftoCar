@@ -7,6 +7,8 @@ package Projecte2.DriftoCar.repository.MySQL;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,11 +18,24 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface IncidenciaRepository extends JpaRepository<Incidencia, Long> {
-    /**
-     * Cerca una llista d'incidències segons el seu estat.
-     *
-     * @param estat l'estat de l'incidència (true = actiu, false = inactiu).
-     * @return una llista d'incidències amb l'estat especificat.
-     */
-    List<Incidencia> findByEstat(boolean estat);
+        /**
+         * Cerca una llista d'incidències segons el seu estat.
+         *
+         * @param estat l'estat de l'incidència (true = actiu, false = inactiu).
+         * @return una llista d'incidències amb l'estat especificat.
+         */
+        List<Incidencia> findByEstat(boolean estat);
+
+        @Query("SELECT i FROM Incidencia i "
+                        + "LEFT JOIN i.matricula v "
+                        + "LEFT JOIN v.localitzacio l "
+                        + "WHERE (:matricula IS NULL OR LOWER(v.matricula) LIKE LOWER(CONCAT('%',:matricula, '%'))) "
+                        + "AND (:codiPostal IS NULL OR l.codiPostal = :codiPostal) "
+                        + "AND (:estat IS NULL OR i.estat = :estat)")
+
+        List<Incidencia> findByFiltres(
+                        @Param("matricula") String matricula,
+                        @Param("codiPostal") String codiPostal,
+                        @Param("estat") Boolean estat);
+
 }

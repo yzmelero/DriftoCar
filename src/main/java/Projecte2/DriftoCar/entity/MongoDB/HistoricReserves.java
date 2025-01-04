@@ -24,8 +24,8 @@ public class HistoricReserves {
      * Identificador únic de la reserva.
      */
     @Id
-    private Long idReserva;
-
+    private String idReserva;
+    
     /**
      * Nom del client que ha realitzat la reserva.
      */
@@ -54,21 +54,25 @@ public class HistoricReserves {
     /**
      * Data de finalització de la reserva.
      */
+    
     private LocalDate dataFi;
 
     /**
      * Cost total de la reserva.
      */
+    
     private double totalCost;
 
     /**
      * Fiança pagada per la reserva.
      */
+    
     private double fianca;
 
     /**
      * Estat de la reserva (true = activa, false = finalitzada o cancel·lada).
      */
+    
     private boolean estat;
 
 }
