@@ -6,8 +6,8 @@ package Projecte2.DriftoCar.service.MongoDB;
 
 
 /**
+ * Servei per gestionar l'historial de reserves.
  *
- * @author Anna
  */
 public class HistoricReservesService {
     

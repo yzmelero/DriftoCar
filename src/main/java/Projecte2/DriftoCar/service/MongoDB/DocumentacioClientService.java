@@ -6,8 +6,8 @@ package Projecte2.DriftoCar.service.MongoDB;
 
 
 /**
+ * Servei per gestionar la documentació associada als clients.
  *
- * @author Anna
  */
 public class DocumentacioClientService {
     
