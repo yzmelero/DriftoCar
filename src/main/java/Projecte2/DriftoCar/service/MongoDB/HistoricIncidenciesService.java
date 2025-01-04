@@ -8,36 +8,64 @@ import Projecte2.DriftoCar.entity.MongoDB.HistoricIncidencies;
 import Projecte2.DriftoCar.entity.MySQL.Incidencia;
 import Projecte2.DriftoCar.repository.MongoDB.HistoricIncidenciaRepository;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * Servei per gestionar l'historial d'incidències.
  *
- * @author Anna
+ * Aquesta classe permet guardar, consultar i gestionar les incidències
+ * històriques
+ * associades a vehicles, incloent-hi les seves dates i estat.
+ *
+ * Dependències principals:
+ * {@link HistoricIncidenciaRepository} - Repositori per accedir a les dades de
+ * l'historial.
+ *
  */
 @Service
 public class HistoricIncidenciesService {
 
+    private static final Logger logger = LoggerFactory.getLogger(HistoricIncidenciesService.class);
+
     @Autowired
     private HistoricIncidenciaRepository historicIncidenciesRepository;
 
-    // Mètode per guardar la incidència a l'historial
+    /**
+     * Guarda una incidència oberta a l'historial.
+     *
+     * @param incidencia la incidència a guardar.
+     */
     public void guardarHistoricIncidencia(Incidencia incidencia) {
+        logger.info("Guardant una incidència oberta a l'historial.");
+
         // Crear una nueva instancia de HistoricIncidencies y llenar los campos
         HistoricIncidencies historicIncidencia = new HistoricIncidencies();
 
         historicIncidencia.setId(String.valueOf(incidencia.getId()));
 
-        historicIncidencia.setEstat(true);  // Estado de la incidencia (abierta/cerrada)
-        historicIncidencia.setMotiu(incidencia.getMotiu());  // Motivo de la incidencia
-        historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia());  // Fecha de inicio de la incidencia
-        historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula());  // Matrícula del vehículo (relacionado con la entidad Vehicle)
+        historicIncidencia.setEstat(true); // Estado de la incidencia (abierta/cerrada)
+        historicIncidencia.setMotiu(incidencia.getMotiu()); // Motivo de la incidencia
+        historicIncidencia.setDataIniciIncidencia(incidencia.getDataIniciIncidencia()); // Fecha de inicio de la
+                                                                                        // incidencia
+        historicIncidencia.setMatricula(incidencia.getMatricula().getMatricula()); // Matrícula del vehículo
+                                                                                   // (relacionado con la entidad
+                                                                                   // Vehicle)
 
         historicIncidenciesRepository.save(historicIncidencia);
+        logger.debug("Incidència guardada correctament amb ID: {}", incidencia.getId());
     }
 
-    // Mètode per guardar la incidència tancada al historial amb una nova ID
+    /**
+     * Guarda una incidència tancada a l'historial amb una nova ID.
+     *
+     * @param incidencia la incidència a guardar com a tancada.
+     */
     public void guardarHistoricIncidenciaTancada(Incidencia incidencia) {
+        logger.info("Guardant una incidència tancada a l'historial.");
         // Obtenir totes les incidències de l'historial
         List<HistoricIncidencies> totesLesIncidencies = obtenirHistoric();
 
@@ -70,20 +98,41 @@ public class HistoricIncidenciesService {
 
         // Guardar la nova incidència tancada a MongoDB
         historicIncidenciesRepository.save(historicIncidencia);
+        logger.debug("Incidència tancada guardada correctament amb nova ID: {}", maximaId + 1);
     }
 
-    // Mètode per obtenir totes les incidències de l'historial
+    /**
+     * Obté totes les incidències de l'historial.
+     *
+     * @return llista d'incidències històriques.
+     */
     public List<HistoricIncidencies> obtenirHistoric() {
+        logger.info("Obtenint totes les incidències de l'historial.");
         return historicIncidenciesRepository.findAll();
     }
 
-    // Mètode per obtenir una incidència històrica per ID
+    /**
+     * Obté una incidència històrica per ID.
+     *
+     * @param id l'ID de la incidència a consultar.
+     * @return l'incidència històrica associada a l'ID, o null si no es troba.
+     */
     public HistoricIncidencies obtenirHistoricoPerId(String id) {
+        logger.info("Obtenint la incidència històrica amb ID: {}", id);
         return historicIncidenciesRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Obté una llista d'incidències històriques filtrades per matrícula.
+     *
+     * @param matricula la matrícula pel qual filtrar les incidències (pot ser
+     *                  parcial).
+     * @return llista d'incidències que coincideixen amb la matrícula indicada.
+     */
     public List<HistoricIncidencies> findByMatricula(String matricula) {
+        logger.info("Buscant incidències històriques per matrícula: {}", matricula);
         if (matricula == null || matricula.isBlank()) {
+            logger.debug("Matrícula no proporcionada o buida. Retornant totes les incidències.");
             return historicIncidenciesRepository.findAll(); // Devuelve todo el listado si no se filtra
         }
         return historicIncidenciesRepository.findByMatriculaContaining(matricula);
