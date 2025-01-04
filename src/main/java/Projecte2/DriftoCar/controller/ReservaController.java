@@ -137,19 +137,29 @@ public class ReservaController {
         return "reserva-llistar";
     }
 
+    /**
+     * Mostra l'històric de reserves, amb opció de filtrar per DNI.
+     *
+     * @param model el model utilitzat per passar dades a la vista.
+     * @param dni   el DNI per filtrar les reserves (opcional).
+     * @return la vista de l'històric de reserves.
+     */
     @GetMapping("/historic")
     public String llistarHistoricReservas(Model model, @RequestParam(value = "dni", required = false) String dni) {
+        log.info("Llistant l'històric de reserves amb filtre DNI: {}", dni);
+
         List<HistoricReserves> historicReserves;
         if (dni != null && !dni.isEmpty()) {
             historicReserves = historicReservesRepository.findByDNIContaining(dni);
+            log.info("S'han trobat {} reserves amb el filtre DNI: {}", historicReserves.size(), dni);
         } else {
             historicReserves = historicReservesRepository.findAll();
+            log.info("S'han trobat {} reserves sense cap filtre.", historicReserves.size());
         }
         model.addAttribute("reservas", historicReserves);
         model.addAttribute("dni", dni);
         return "reserva-historic";
     }
-
 
     /**
      * Mostra el formulari per donar d'alta una nova reserva.
@@ -514,7 +524,6 @@ public class ReservaController {
 
             log.info("Assignats vehicle {} i client {} a la reserva.", reserva.getVehicle(), reserva.getClient());
 
-        
             fianca = reservaService.calculFianca(reserva);
             costTotal = reservaService.calculPreuReserva(reserva);
 
@@ -554,9 +563,17 @@ public class ReservaController {
         return "redirect:/reserva/llistar";
     }
 
+    /**
+     * Obté les dates no disponibles per a un vehicle segons la seva matrícula.
+     *
+     * @param matricula la matrícula del vehicle.
+     * @return una resposta HTTP amb la llista de dates no disponibles.
+     */
     @GetMapping("/no-disponibles/{matricula}")
     public ResponseEntity<List<String>> obtenerFechasNoDisponibles(@PathVariable String matricula) {
+        log.info("Obtenint les dates no disponibles per a la matrícula: {}", matricula);
         List<String> fechasNoDisponibles = reservaService.obtenerFechasNoDisponibles(matricula);
+        log.info("Dates no disponibles per a la matrícula {}: {}", matricula, fechasNoDisponibles);
         return ResponseEntity.ok(fechasNoDisponibles);
     }
 }

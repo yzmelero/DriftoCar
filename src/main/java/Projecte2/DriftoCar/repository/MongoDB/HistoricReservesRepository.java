@@ -17,5 +17,11 @@ import java.util.List;
  */
 @Repository
 public interface HistoricReservesRepository extends MongoRepository<HistoricReserves, String> {
+    /**
+     * Cerca una llista d'històrics de reserves segons un dni.
+     *
+     * @param dni el dni pertenyent a la reserva.
+     * @return una llista de reserves filtrades per un dni.
+     */
     List<HistoricReserves> findByDNIContaining(String dni);
 }
