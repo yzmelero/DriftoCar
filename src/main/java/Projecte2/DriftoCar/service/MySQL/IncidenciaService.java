@@ -11,7 +11,6 @@ import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MongoDB.HistoricIncidenciesService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -51,25 +50,6 @@ public class IncidenciaService {
 
         List<Vehicle> vehicles = vehicleRepository.findVehiclesFiltreIncidencies(searchMatricula);
         return vehicles;
-        /*
-         * List<Incidencia> incidenciesActives = incidenciaRepository.findByEstat(true);
-         * 
-         * List<String> matriculesAmbIncidenciesActives = new ArrayList<>();
-         * for (Incidencia incidencia : incidenciesActives) {
-         * matriculesAmbIncidenciesActives.add(incidencia.getMatricula().getMatricula())
-         * ;
-         * }
-         * 
-         * List<Vehicle> vehicles = vehicleRepository.findAll();
-         * List<Vehicle> vehiclesSenseIncidencies = new ArrayList<>();
-         * for (Vehicle vehicle : vehicles) {
-         * if (!matriculesAmbIncidenciesActives.contains(vehicle.getMatricula())) {
-         * vehiclesSenseIncidencies.add(vehicle);
-         * }
-         * }
-         * 
-         * return vehiclesSenseIncidencies;
-         */
     }
 
     /**

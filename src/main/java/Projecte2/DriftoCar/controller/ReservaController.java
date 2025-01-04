@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import Projecte2.DriftoCar.entity.MongoDB.HistoricReserves;
 import Projecte2.DriftoCar.entity.MySQL.Client;
@@ -33,7 +32,6 @@ import Projecte2.DriftoCar.repository.MySQL.ClientRepository;
 import Projecte2.DriftoCar.repository.MySQL.VehicleRepository;
 import Projecte2.DriftoCar.service.MySQL.ClientService;
 import Projecte2.DriftoCar.service.MySQL.ReservaService;
-import Projecte2.DriftoCar.service.MySQL.VehicleService;
 
 /**
  * Controlador per gestionar les reserves del sistema.
@@ -62,9 +60,6 @@ public class ReservaController {
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private VehicleService vehicleService;
 
     @Autowired
     private HistoricReservesRepository historicReservesRepository;
@@ -217,10 +212,7 @@ public class ReservaController {
     @PostMapping("/alta")
     public String altaReserva(Model model, @ModelAttribute("reserva") Reserva reserva) {
         log.info("Donant d'alta una nova reserva.");
-        Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
-
         // Verificar que el client existeix
-        Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
         reserva.setEstat(true);
         reservaService.altaReserva(reserva);
         log.info("Reserva creada amb èxit: {}", reserva);

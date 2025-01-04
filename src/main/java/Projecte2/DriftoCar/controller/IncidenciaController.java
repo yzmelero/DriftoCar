@@ -236,7 +236,6 @@ public class IncidenciaController {
         log.info("Incidència trobada amb matrícula: {}", incidencia.getMatricula().getMatricula());
         model.addAttribute("incidencia", incidencia);
 
-        DocumentacioIncidencia documentacio = documentacioIncidenciaService.obtenirDocumentacioPerId(id.toString());
         DocumentacioIncidencia documentacioExistent = documentacioIncidenciaService
                 .obtenirDocumentacioAmbBase64PerIncidencia(id.toString());
         model.addAttribute("documentacio", documentacioExistent);
