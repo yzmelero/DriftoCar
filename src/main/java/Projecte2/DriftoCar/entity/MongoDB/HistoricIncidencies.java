@@ -14,27 +14,44 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *
- * @author Anna
+ * Classe que representa l'històric de les incidències registrades.
  */
 @Document(collection = "historic_incidencies")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoricIncidencies {
+    /**
+     * Identificador únic de l'històric de la incidència.
+     */
     @Id
     private String id;
     
-    // 1 = oberta, 0 = tancada
+    /**
+     * Estat de la incidència (1 = oberta, 0 = tancada).
+     */
     private boolean estat;
 
+    /**
+     * Motiu o descripció de la incidència.
+     */
     private String motiu;
 
+    /**
+     * Data i hora en què la incidència va ser registrada.
+     */
     @Field(name="data_inici_incidencia")
     private LocalDateTime dataIniciIncidencia;
     
+    /**
+     * Data i hora en què la incidència es va tancar.
+     */
     @Field(name="data_fi_incidencia")
     private LocalDateTime dataFiIncidencia;
 
+    /**
+     * Matrícula del vehicle afectat per la incidència.
+     */
     private String matricula;
+
 }
