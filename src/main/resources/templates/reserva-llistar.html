@@ -72,7 +72,7 @@
                             <td th:text="${reserva.dataFi}"></td>
                             <td th:text="${#numbers.formatDecimal(reserva.costTotal, 0, 2)}"></td>
                             <td th:text="${#numbers.formatDecimal(reserva.fianca, 0, 2)}"></td>
-                            <td th:text="${reserva.estat ? 'Activo' : 'Inactivo'}"></td>
+                            <td th:text="${reserva.estat ? 'Actiu' : 'Inactiu'}"></td>
                             <td>
                                 <a class="btn btn-info"
                                     th:href="@{/reserva/consulta/{idReserva}(idReserva=${reserva.idReserva})}">Visualitzar</a>

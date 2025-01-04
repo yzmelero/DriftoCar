@@ -62,10 +62,10 @@ public class DriftoCarApplication {
 			localitzacioService.altaLocalitzacio(localitzacio2);
 		}
 
-		Client client = new Client("47544582C", true, "client", "client",
+		Client client = new Client("45985381D", true, "client", "client",
 				"cliente", "apellidoCliente", "clienteDefault@gmail.com", "123456789",
-				"CienteLandia", "c1", LocalDate.parse("2024-12-12"),
-				LocalDate.parse("2024-12-12"), "999316536728", "La calle del cliente",
+				"Espanya", "c1", LocalDate.parse("2025-12-12"),
+				LocalDate.parse("2025-12-12"), "7893562713482934", "La calle del cliente",
 				true, null);
 
 		try {
@@ -76,11 +76,11 @@ public class DriftoCarApplication {
 
 		}
 
-		Agent agent = new Agent("63535312A", "admin", "admin", "administrador",
+		Agent agent = new Agent("47544582V", "admin", "admin", "administrador",
 				"apellidoAdministrador",
-				"adminDefault@gmail.com", "654993670", "AdminLandia", "a1",
-				LocalDate.parse("2024-12-12"),
-				LocalDate.parse("2024-12-12"), "766737631552", "La calle del Admin", false,
+				"adminDefault@gmail.com", "654993670", "Espanya", "a1",
+				LocalDate.parse("2025-12-12"),
+				LocalDate.parse("2025-12-12"), "8937256791027345", "La calle del Admin", false,
 				null, TipusRol.ADMIN,
 				localitzacio);
 		try {
@@ -89,11 +89,11 @@ public class DriftoCarApplication {
 
 		}
 
-		Agent agent2 = new Agent("99462678G", "agent", "agent", "agente",
+		Agent agent2 = new Agent("89123179Z", "agent", "agent", "agente",
 				"apellidoAgente",
-				"agenteDefault@gmail.com", "640189094", "AgenteLandia", "g1",
-				LocalDate.parse("2024-12-12"),
-				LocalDate.parse("2024-12-12"), "38475621001893", "La calle del agente",
+				"agenteDefault@gmail.com", "640189094", "Mèxic", "g1",
+				LocalDate.parse("2025-12-12"),
+				LocalDate.parse("2025-12-12"), "7412369845632178", "La calle del agente",
 				false, null, TipusRol.AGENT,
 				localitzacio2);
 		try {
