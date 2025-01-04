@@ -14,7 +14,7 @@
 <body>
     <div class="container mt-5">
         <h1>Usuaris Pendents de Validació</h1>
-
+        <a th:href="@{/clients/llistar}" class="btn btn-primary">Tornar al llistat general</a>
         <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
 
         <table class="table">
