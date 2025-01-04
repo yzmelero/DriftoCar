@@ -12,8 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.Binary;
 /**
- *
- * @author Anna
+ * Classe que representa la documentació associada a un client.
  */
 @Document(collection = "documentacio_client")
 @Data
@@ -21,12 +20,20 @@ import org.bson.types.Binary;
 @NoArgsConstructor
 public class DocumentacioClient {
     
-    
+    /**
+     * DNI del client, que actua com a identificador únic.
+     */ 
     @Id
     private String dni;
     
+    /**
+     * Imatges del DNI del client, emmagatzemades com a array de bytes.
+     */
     private Binary[] imatgeDni;
     
+    /**
+     * Imatges de la llicència del client, emmagatzemades com a array de bytes.
+     */
     private Binary[] imatgeLlicencia;
 
 }

@@ -5,8 +5,7 @@
 package Projecte2.DriftoCar.entity.MySQL;
 
 /**
- *
- * @author mario
+ * Enum que defineix els tipus de rols disponibles dins del sistema.
  */
 public enum TipusRol {
     ADMIN, AGENT;

@@ -36,7 +36,13 @@ import Projecte2.DriftoCar.service.MySQL.ReservaService;
 import Projecte2.DriftoCar.service.MySQL.VehicleService;
 
 /**
- * @author mario
+ * Controlador per gestionar les reserves del sistema.
+ * Inclou funcionalitats per llistar, crear, modificar, consultar i cancel·lar
+ * reserves.
+ * També permet gestionar el lliurament i retorn de vehicles associats a les
+ * reserves.
+ * 
+ * Aquest controlador està associat a la ruta base "/reserva".
  */
 @Controller
 @RequestMapping("/reserva")
@@ -63,6 +69,17 @@ public class ReservaController {
     @Autowired
     private HistoricReservesRepository historicReservesRepository;
 
+    /**
+     * Llista les reserves segons els filtres proporcionats i el rol de l'usuari
+     * autenticat.
+     *
+     * @param model            Model per passar dades a la vista.
+     * @param searchEmail      Filtre per correu electrònic del client.
+     * @param searchId_reserva Filtre per ID de reserva.
+     * @param searchMatricula  Filtre per matrícula del vehicle.
+     * @param authentication   Informació de l'usuari autenticat.
+     * @return Nom de la vista per mostrar les reserves.
+     */
     @GetMapping("/llistar")
     public String llistarReservas(Model model,
             @RequestParam(value = "searchEmail", required = false) String searchEmail,
@@ -70,6 +87,7 @@ public class ReservaController {
             @RequestParam(value = "searchMatricula", required = false) String searchMatricula,
             Authentication authentication) {
 
+        log.info("Iniciant la llista de reserves amb filtres.");
         if (searchEmail != null && searchEmail.isEmpty()) {
             searchEmail = null;
         }
@@ -87,6 +105,8 @@ public class ReservaController {
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
                 .orElse("UNKNOWN");
+
+        log.info("Usuari autenticat: {}, Rol: {}", username, rol);
 
         List<Reserva> reserves;
         if (rol.equals("ROLE_ADMIN")) {
@@ -108,6 +128,7 @@ public class ReservaController {
 
         reserves.sort((r1, r2) -> Long.compare(r2.getIdReserva(), r1.getIdReserva()));
 
+        log.info("Nombre de reserves trobades: {}", reserves.size());
         model.addAttribute("reservas", reserves);
         model.addAttribute("searchId_reserva", searchId_reserva);
         model.addAttribute("searchEmail", searchEmail);
@@ -116,22 +137,42 @@ public class ReservaController {
         return "reserva-llistar";
     }
 
+    /**
+     * Mostra l'històric de reserves, amb opció de filtrar per DNI.
+     *
+     * @param model el model utilitzat per passar dades a la vista.
+     * @param dni   el DNI per filtrar les reserves (opcional).
+     * @return la vista de l'històric de reserves.
+     */
     @GetMapping("/historic")
     public String llistarHistoricReservas(Model model, @RequestParam(value = "dni", required = false) String dni) {
+        log.info("Llistant l'històric de reserves amb filtre DNI: {}", dni);
+
         List<HistoricReserves> historicReserves;
         if (dni != null && !dni.isEmpty()) {
             historicReserves = historicReservesRepository.findByDNIContaining(dni);
+            log.info("S'han trobat {} reserves amb el filtre DNI: {}", historicReserves.size(), dni);
         } else {
             historicReserves = historicReservesRepository.findAll();
+            log.info("S'han trobat {} reserves sense cap filtre.", historicReserves.size());
         }
         model.addAttribute("reservas", historicReserves);
         model.addAttribute("dni", dni);
         return "reserva-historic";
     }
 
+    /**
+     * Mostra el formulari per donar d'alta una nova reserva.
+     *
+     * @param model          Model per passar dades a la vista.
+     * @param authentication Informació de l'usuari autenticat.
+     * @return Nom de la vista per mostrar el formulari d'alta.
+     */
     @GetMapping("/alta")
     public String mostrarFormulari(Model model, Authentication authentication,
             @RequestParam(value = "vehicle", required = false) String matriculaVehicle) {
+
+        log.info("Mostrant el formulari per crear una nova reserva.");
 
         String username = authentication.getName();
         String rol = authentication.getAuthorities().stream()
@@ -166,38 +207,71 @@ public class ReservaController {
         return "reserva-alta";
     }
 
+    /**
+     * Processa l'alta d'una nova reserva.
+     *
+     * @param model   Model per passar dades a la vista.
+     * @param reserva Reserva a donar d'alta.
+     * @return Redirecció a la pàgina de llistat de reserves.
+     */
     @PostMapping("/alta")
     public String altaReserva(Model model, @ModelAttribute("reserva") Reserva reserva) {
+        log.info("Donant d'alta una nova reserva.");
         Optional<Vehicle> vehicle = vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula());
 
         // Verificar que el client existeix
         Optional<Client> client = clientRepository.findByDni(reserva.getClient().getDni());
         reserva.setEstat(true);
         reservaService.altaReserva(reserva);
+        log.info("Reserva creada amb èxit: {}", reserva);
+
         return "redirect:/reserva/llistar";
     }
 
+    /**
+     * Consulta els detalls d'una reserva específica.
+     * 
+     * @param idReserva ID de la reserva a consultar.
+     * @param model     Model per passar dades a la vista.
+     * @return Vista amb els detalls de la reserva o redirecció si no es troba.
+     */
     @GetMapping("/consulta/{idReserva}")
     public String consultarReserva(@PathVariable Long idReserva, Model model) {
+
+        log.info("Consultant la reserva amb ID: {}", idReserva);
+
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
 
         if (reserva == null) {
+            log.warn("No s'ha trobat la reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat la reserva amb aquest id: " + idReserva);
             return "redirect:/reserva/llistar";
         }
 
         model.addAttribute("reserva", reserva);
+        log.info("Reserva trobada: {}", reserva);
         return "reserva-consulta";
     }
 
+    /**
+     * Mostra el formulari per gestionar el lliurament d'un vehicle associat a una
+     * reserva.
+     *
+     * @param model     Model per passar dades a la vista.
+     * @param idReserva ID de la reserva a gestionar.
+     * @return Nom de la vista del formulari de lliurament.
+     */
     @GetMapping("/lliurar/{idReserva}")
     public String mostrarFormulariLliurament(Model model, @PathVariable Long idReserva) {
+
+        log.info("Accedint al formulari de lliurament per la reserva amb ID: {}", idReserva);
 
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
 
         if (reserva == null) {
+            log.warn("No s'ha trobat cap reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
@@ -208,22 +282,38 @@ public class ReservaController {
 
         if (reserva.getDataLliurar() == null) {
             reserva.setDataLliurar(LocalDate.now());
+            log.info("Assignada data de lliurament automàtica: {}", reserva.getDataLliurar());
         }
 
         model.addAttribute("reserva", reserva);
+        log.info("Formulari preparat per al lliurament de la reserva: {}", reserva);
+
         return "reserva-lliurar";
 
     }
 
+    /**
+     * Processa el lliurament d'un vehicle associat a una reserva.
+     *
+     * @param model           Model per passar dades a la vista.
+     * @param idReserva       ID de la reserva.
+     * @param horaLliurar     Hora del lliurament en format HH:mm.
+     * @param dataLliurar     Data del lliurament en format yyyy-MM-dd.
+     * @param descripcioEstat Descripció de l'estat del vehicle lliurat.
+     * @return Redirecció a la vista de consulta de la reserva.
+     */
     @PostMapping("/lliurar/{idReserva}")
     public String lliurarVehicle(Model model, @PathVariable Long idReserva,
             @RequestParam("horaLliurar") String horaLliurar,
             @RequestParam("dataLliurar") String dataLliurar,
             @RequestParam("descripcioEstat") String descripcioEstat) {
 
+        log.info("Processant lliurament per a la reserva amb ID: {}", idReserva);
+
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
         if (reserva == null) {
+            log.warn("No s'ha trobat cap reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
@@ -242,7 +332,9 @@ public class ReservaController {
             reserva.setEstat(true);
 
             reservaService.modificarReserva(reserva);
+            log.info("Lliurament completat per la reserva amb ID: {}", idReserva);
         } catch (DateTimeParseException e) {
+            log.error("Error en el format de la data/hora de lliurament.");
             model.addAttribute("error", "El format de la data/hora és incorrecte.");
             return "reserva-lliurar"; // Torna a mostrar el formulari amb un missatge d'error
         }
@@ -250,32 +342,58 @@ public class ReservaController {
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
+    /**
+     * Mostra el formulari per gestionar el retorn d'un vehicle associat a una
+     * reserva.
+     *
+     * @param model     Model per passar dades a la vista.
+     * @param idReserva ID de la reserva a gestionar.
+     * @return Nom de la vista del formulari de retorn.
+     */
     @GetMapping("/retornar/{idReserva}")
     public String mostrarFormulariRetornar(Model model, @PathVariable Long idReserva) {
+
+        log.info("Accedint al formulari de retorn per la reserva amb ID: {}", idReserva);
 
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
         if (reserva == null) {
+            log.warn("No s'ha trobat cap reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
 
         model.addAttribute("reserva", reserva);
+        log.info("Formulari preparat per al retorn de la reserva: {}", reserva);
 
         return "reserva-retornar";
 
     }
 
+    /**
+     * Processa el retorn d'un vehicle associat a una reserva.
+     *
+     * @param model      Model per passar dades a la vista.
+     * @param idReserva  ID de la reserva.
+     * @param dataRetorn Data del retorn en format yyyy-MM-dd.
+     * @param horaRetorn Hora del retorn en format HH:mm.
+     * @param action     Acció a realitzar després del retorn (p.e. obrir
+     *                   incidència).
+     * @return Redirecció a la vista de consulta de la reserva o a l'incidència.
+     */
     @PostMapping("/retornar/{idReserva}")
     public String retornarVehicle(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") LocalDate dataRetorn,
             @RequestParam("horaRetorn") LocalTime horaRetorn,
             @RequestParam String action) {
 
+        log.info("Processant retorn per a la reserva amb ID: {}", idReserva);
+
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
 
         if (reserva == null) {
+            log.warn("No s'ha trobat cap reserva amb ID: {}", idReserva);
             model.addAttribute("error", "No s'ha trobat cap reserva amb l'ID especificat.");
             return "error";
         }
@@ -290,22 +408,38 @@ public class ReservaController {
             reserva.setFianca(reservaService.calculFianca(reserva));
 
             reservaService.modificarReserva(reserva);
+            log.info("Retorn completat per la reserva amb ID: {}", idReserva);
+
         } catch (DateTimeParseException e) {
+            log.error("Error en el format de la data/hora de retorn.");
             model.addAttribute("error", "El format de la data/hora és incorrecte.");
             return "reserva-retornar"; // Torna a mostrar el formulari amb un missatge d'error
         }
 
         if ("incidencia".equals(action)) {
+            log.info("Redirigint a l'obertura d'incidència per al vehicle amb matrícula: {}",
+                    reserva.getVehicle().getMatricula());
             return "redirect:/incidencia/obrir/" + reserva.getVehicle().getMatricula();
         }
 
         return "redirect:/reserva/consulta/{idReserva}";
     }
 
+    /**
+     * Calcula el preu total i la fiança d'una reserva en procés de retorn.
+     *
+     * @param model      Model per passar dades a la vista.
+     * @param idReserva  ID de la reserva.
+     * @param dataRetorn Data del retorn en format yyyy-MM-dd.
+     * @param horaRetorn Hora del retorn en format HH:mm.
+     * @return Vista del formulari de retorn actualitzada amb el càlcul del preu.
+     */
     @PostMapping("/retornar/calculPreu/{idReserva}")
     public String calcularPreuRetorn(Model model, @PathVariable Long idReserva,
             @RequestParam("dataRetorn") String dataRetorn,
             @RequestParam("horaRetorn") String horaRetorn) {
+
+        log.info("Iniciant el càlcul de preu per al retorn de la reserva amb ID: {}", idReserva);
 
         Optional<Reserva> reservaOptional = reservaService.cercaPerId(idReserva);
         Reserva reserva = reservaOptional.get();
@@ -326,13 +460,30 @@ public class ReservaController {
             model.addAttribute("reserva", reserva);
             model.addAttribute("fianca", fianca);
             model.addAttribute("costTotal", costTotal);
+            log.info("Càlcul complet per a la reserva amb ID: {}. Fiança: {}, Cost Total: {}", idReserva, fianca,
+                    costTotal);
+
         } catch (DateTimeParseException e) {
+            log.error("Error en el format de la data/hora de retorn.");
             model.addAttribute("error", "Els formats data/hora són incorrectes");
             return "reserva-retornar";
         }
         return "reserva-retornar";
     }
 
+    /**
+     * Calcula el preu total i la fiança d'una reserva en procés d'alta.
+     *
+     * @param model     Model per passar dades a la vista.
+     * @param dataInici Data d'inici de la reserva en format yyyy-MM-dd.
+     * @param horaInici Hora d'inici de la reserva en format HH:mm.
+     * @param dataFi    Data de fi de la reserva en format yyyy-MM-dd.
+     * @param horaFi    Hora de fi de la reserva en format HH:mm.
+     * @param costTotal Cost total calculat (opcional).
+     * @param fianca    Fiança calculada (opcional).
+     * @param reserva   Reserva amb dades inicials.
+     * @return Vista del formulari d'alta actualitzada amb el càlcul del preu.
+     */
     @PostMapping("/alta/calculPreu")
     public String calcularPreu(Model model,
             @RequestParam("dataInici") String dataInici,
@@ -342,6 +493,8 @@ public class ReservaController {
             @RequestParam(required = false, defaultValue = "0") Double costTotal,
             @RequestParam(required = false, defaultValue = "0") Double fianca,
             Reserva reserva) {
+
+        log.info("Iniciant càlcul de preu per a una nova reserva.");
 
         try {
             DateTimeFormatter dataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -359,14 +512,17 @@ public class ReservaController {
             reserva.setHoraFi(horaFiFin);
 
             reserva.setClient(clientRepository.findByDni(reserva.getClient().getDni())
-                    .orElseThrow(() -> new IllegalArgumentException("Client no trobat")));
+                    .orElseThrow(() -> {
+                        log.error("Client no trobat amb DNI: {}", reserva.getClient().getDni());
+                        return new IllegalArgumentException("Client no trobat");
+                    }));
             reserva.setVehicle(vehicleRepository.findByMatricula(reserva.getVehicle().getMatricula())
-                    .orElseThrow(() -> new IllegalArgumentException("Vehicle no trobat")));
+                    .orElseThrow(() -> {
+                        log.error("Vehicle no trobat amb matrícula: {}", reserva.getVehicle().getMatricula());
+                        return new IllegalArgumentException("Vehicle no trobat");
+                    }));
 
-            System.out.println("Vehicle: " + reserva.getVehicle());
-            System.out.println("Client: " + reserva.getClient());
-            System.out.println("Data Inici: " + reserva.getDataInici());
-            System.out.println("Data Fi: " + reserva.getDataFi());
+            log.info("Assignats vehicle {} i client {} a la reserva.", reserva.getVehicle(), reserva.getClient());
 
             fianca = reservaService.calculFianca(reserva);
             costTotal = reservaService.calculPreuReserva(reserva);
@@ -376,26 +532,48 @@ public class ReservaController {
             model.addAttribute("reserva", reserva);
             model.addAttribute("fianca", fianca);
             model.addAttribute("costTotal", costTotal);
+            log.info("Càlcul complet: Fiança: {}, Cost Total: {}", fianca, costTotal);
         } catch (DateTimeParseException e) {
+            log.error("Error en el format de la data/hora.");
             model.addAttribute("error", "Els formats data/hora són incorrectes");
             return "reserva-alta";
         }
         return "reserva-alta";
     }
 
+    /**
+     * Anula una reserva específica pel seu ID.
+     * 
+     * @param id    ID de la reserva a anular.
+     * @param model Model per passar dades a la vista.
+     * @return Redirecció a la vista de llistat de reserves.
+     */
     @PostMapping("/anular/{id}")
     public String anularReserva(@PathVariable Long id, Model model) {
+        log.info("Anul·lant la reserva amb ID: {}", id);
+
         try {
             reservaService.desactivarReserva(id);
+            log.info("Reserva amb ID: {} anul·lada correctament.", id);
+
         } catch (Exception e) {
+            log.error("Error durant l'anul·lació de la reserva amb ID: {}: {}", id, e.getMessage());
             model.addAttribute("error", e.getMessage());
         }
         return "redirect:/reserva/llistar";
     }
 
+    /**
+     * Obté les dates no disponibles per a un vehicle segons la seva matrícula.
+     *
+     * @param matricula la matrícula del vehicle.
+     * @return una resposta HTTP amb la llista de dates no disponibles.
+     */
     @GetMapping("/no-disponibles/{matricula}")
     public ResponseEntity<List<String>> obtenerFechasNoDisponibles(@PathVariable String matricula) {
+        log.info("Obtenint les dates no disponibles per a la matrícula: {}", matricula);
         List<String> fechasNoDisponibles = reservaService.obtenerFechasNoDisponibles(matricula);
+        log.info("Dates no disponibles per a la matrícula {}: {}", matricula, fechasNoDisponibles);
         return ResponseEntity.ok(fechasNoDisponibles);
     }
 }

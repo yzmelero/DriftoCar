@@ -9,10 +9,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- *
- * @author Anna
+ * Repositori per gestionar les operacions CRUD de la col·lecció
+ * DocumentacioIncidencia` a MongoDB.
+ * Extén {@link MongoRepository} per proporcionar funcionalitats predefinides.
  */
 @Repository
 public interface DocumentacioIncidenciaRepository extends MongoRepository<DocumentacioIncidencia, String> {
-    
+
 }
