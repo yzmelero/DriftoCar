@@ -15,7 +15,6 @@
 
 <body>
     <div class="container mt-5">
-        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
         <div class="alert alert-info text-center" role="alert">
             Aquest compte haura de ser activada per un administrador abans que pugui iniciar sessió.
@@ -23,13 +22,15 @@
 
 
         <h1 class="text-center mb-4">Registrar Client</h1>
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
         <form th:action="@{/registre/client-alta}" th:object="${client}" method="POST" enctype="multipart/form-data"
             class="needs-validation">
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="dni" class="form-label">DNI</label>
-                        <input type="text" id="dni" name="dni" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
+                        <input type="text" id="dni" name="dni" th:value="${client?.dni}" class="form-control" required pattern="^[0-9]{8}[A-Z]$"
                             title="El DNI ha de tenir 8 números i una lletra majúscula.">
                         <div id="dniError" class="text-danger" style="display: none;">
                             El DNI ha de tenir 8 números seguits d'una lletra majúscula (exemple: 12345678A).
@@ -79,7 +80,7 @@
 
                     <div class="mb-3">
                         <label for="telefon" class="form-label">Telèfon</label>
-                        <input type="number" id="telefon" name="telefon" class="form-control" required
+                        <input type="number" id="telefon" name="telefon"  th:value="${client?.telefon}" class="form-control" required
                             pattern="^[0-9]{9}$" title="El telèfon ha de tenir 9 dígits.">
                         <div id="telefonError" class="text-danger" style="display: none;">
                             El telèfon ha de tenir exactament 9 dígits numèrics (exemple: 612345678).
@@ -101,7 +102,7 @@
 
                     <div class="mb-3">
                         <label for="dniCaducitat" class="form-label">Data d'expiració del DNI</label>
-                        <input type="date" id="dniCaducitat" name="dniCaducitat" class="form-control" required />
+                        <input type="date" id="dniCaducitat" name="dniCaducitat"  th:value="${client?.dniCaducitat}" class="form-control" required />
                         <div id="dniCaducitatError" class="text-danger mt-1" style="display: none;">
                             La data d'expiració del DNI no és vàlida.
                         </div>
@@ -109,7 +110,7 @@
 
                     <div class="mb-3">
                         <label for="llicCaducitat" class="form-label">Data d'expiració de la llicència</label>
-                        <input type="date" id="llicCaducitat" name="llicCaducitat" class="form-control" required />
+                        <input type="date" id="llicCaducitat" name="llicCaducitat"  th:value="${client?.llicCaducitat}" class="form-control" required />
                         <div id="llicCaducitatError" class="text-danger mt-1" style="display: none;">
                             La data d'expiració de la llicència no és vàlida.
                         </div>
@@ -132,7 +133,7 @@
 
                     <div class="mb-3">
                         <label for="nacionalitat" class="form-label">Nacionalitat</label>
-                        <select id="nacionalitat" name="nacionalitat" class="form-control" required>
+                        <select id="nacionalitat" name="nacionalitat" class="form-control"  th:value="${client?.nacionalitat}" required>
                             <option value="" disabled selected>Seleccioneu una nacionalitat</option>
                         </select>
                     </div>
