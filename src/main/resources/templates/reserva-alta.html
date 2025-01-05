@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta de Reserva</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #ffe6e6; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Alta de Reserva</h1>
+
+        <div class="alert alert-warning" th:if="${error}">
+            No s'ha pogut donar d'alta la reserva perquè hi ha un error amb els clients o vehicles.
+        </div>
+
+        <form th:action="@{/reserva/alta}" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="client" class="form-label">Client</label>
+                        <select id="client" name="client.dni" class="form-select" required>
+                            <option th:each="client : ${clients}" th:value="${client.dni}"
+                                th:text="${client.nom + ' ' + client.cognoms}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="vehicle" class="form-label">Vehicle</label>
+                        <select id="vehicle" name="vehicle.matricula" class="form-select" required>
+                            <option th:each="vehicle : ${vehicles}" th:value="${vehicle.matricula}"
+                                th:text="${vehicle.marca + ' ' + vehicle.model}"></option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dataInici" class="form-label">Data d'Inici</label>
+                        <input type="date" id="dataInici" name="dataInici" class="form-control"
+                            th:value="${reserva?.dataInici}" required>
+                        <div id="dataIniciError" class="text-danger" style="display: none;">
+                            La data d'inici no pot ser anterior a avui.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dataFi" class="form-label">Data de Finalització</label>
+                        <input type="date" id="dataFi" name="dataFi" class="form-control" th:value="${reserva?.dataFi}"
+                            required>
+                        <!--<div id="dataFinalError" class="text-danger" style="display: none;">
+                    La data de finalització no pot ser anterior a la data d'inici.
+                </div>-->
+                        <div id="dateErrorMessage" class="text-danger" style="display: none;"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="horaInici" class="form-label">Hora de lliurar: </label>
+                        <input type="time" id="horaInici" name="horaInici" class="form-control"
+                            th:value="${reserva?.horaInici}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="horaFi" class="form-label">Hora de retorn: </label>
+                        <input type="time" id="horaFi" name="horaFi" class="form-control" th:value="${reserva?.horaFi}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fianca">Fiança:</label>
+                        <input type="text" id="fianca" name="fianca" class="form-control" th:value="${fianca}" readonly>
+                    </div>
+
+                    <!-- Cost Total -->
+                    <div class="mb-3">
+                        <label for="costTotal">Preu total:</label>
+                        <input type="text" id="costTotal" name="costTotal" class="form-control" th:value="${costTotal}"
+                            readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning" th:formaction="@{/reserva/alta/calculPreu}"
+                    formmethod="post">Actualitzar Preus</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="/reserva/llistar" class="btn btn-secondary">Cancel·lar</a>
+            </div>
+
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const vehiculoSelect = document.getElementById("vehicle");
+            const fechaInicioInput = document.getElementById("dataInici");
+            const fechaFinalInput = document.getElementById("dataFi");
+            const saveButton = document.querySelector("button.btn-primary");
+            const errorMessage = document.getElementById("dateErrorMessage");
+
+            let fechasNoDisponibles = [];
+
+            // Función para obtener las fechas no disponibles del backend
+            async function obtenerFechasNoDisponibles(matricula) {
+                if (!matricula) return [];
+                try {
+                    const response = await fetch(`/reserva/no-disponibles/${matricula}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.map(fecha => new Date(fecha));
+                    } else {
+                        console.error("Error al obtener fechas no disponibles:", response.statusText);
+                        return [];
+                    }
+                } catch (error) {
+                    console.error("Error en el fetch:", error);
+                    return [];
+                }
+            }
+
+            // Función para validar fechas seleccionadas
+            function validarFechas() {
+                const fechaInicio = new Date(fechaInicioInput.value);
+                const fechaFinal = new Date(fechaFinalInput.value);
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0); // Limitar el inicio a medianoche
+
+                let isValid = true;
+                let conflictDates = [];
+
+                // Validar que la fecha de inicio no sea anterior a hoy
+                if (fechaInicio < hoy) {
+                    errorMessage.textContent = "La fecha de inicio no puede ser anterior al día actual.";
+                    isValid = false;
+                }
+
+                // Validar que la fecha de final sea al menos un día después de la de inicio
+                if (fechaFinal <= fechaInicio) {
+                    errorMessage.textContent = "La fecha de final debe ser al menos un día posterior a la fecha de inicio.";
+                    isValid = false;
+                }
+
+                // Validar si las fechas entran en conflicto con reservas existentes
+                for (let fecha of fechasNoDisponibles) {
+                    if (fechaInicio <= fecha && fecha <= fechaFinal) {
+                        conflictDates.push(fecha);
+                        isValid = false;
+                    }
+                }
+
+                // Mostrar mensaje de error detallado
+                if (!isValid) {
+                    if (conflictDates.length > 0) {
+                        const formattedConflicts = conflictDates.map(formatDate).join(", ");
+                        errorMessage.textContent = `El rango de fechas seleccionado entra en conflicto con las siguientes fechas: ${formattedConflicts}. Por favor, elige un rango diferente.`;
+                    }
+                    errorMessage.style.display = "block";
+                } else {
+                    errorMessage.style.display = "none";
+                }
+
+                // Habilitar o deshabilitar el botón de guardar
+                saveButton.disabled = !isValid;
+            }
+
+            // Función para formatear fechas en formato legible
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+
+            // Función para bloquear fechas no disponibles en el calendario
+            function bloquearFechasCalendario() {
+                // Convertir las fechas no disponibles en formato ISO
+                const disabledDates = fechasNoDisponibles.map(formatDate);
+
+                fechaInicioInput.addEventListener("input", () => {
+                    const fechaInicio = fechaInicioInput.value;
+                    if (disabledDates.includes(fechaInicio)) {
+                        errorMessage.textContent = `La fecha de inicio ${fechaInicio} no está disponible.`;
+                        errorMessage.style.display = "block";
+                        saveButton.disabled = true;
+                    }
+                });
+
+                fechaFinalInput.addEventListener("input", () => {
+                    const fechaFinal = fechaFinalInput.value;
+                    if (disabledDates.includes(fechaFinal)) {
+                        errorMessage.textContent = `La fecha de final ${fechaFinal} no está disponible.`;
+                        errorMessage.style.display = "block";
+                        saveButton.disabled = true;
+                    }
+                });
+            }
+
+            // Actualizar fechas no disponibles al cambiar el vehículo
+            vehiculoSelect.addEventListener("change", async function () {
+                fechasNoDisponibles = await obtenerFechasNoDisponibles(vehiculoSelect.value);
+                bloquearFechasCalendario();
+                validarFechas();
+            });
+
+            // Validar fechas al cambiar las entradas
+            fechaInicioInput.addEventListener("input", validarFechas);
+            fechaFinalInput.addEventListener("input", validarFechas);
+
+            // Configuración inicial
+            (async function () {
+                fechasNoDisponibles = await obtenerFechasNoDisponibles(vehiculoSelect.value);
+                bloquearFechasCalendario();
+                validarFechas();
+            })();
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const vehiculoSelect = document.getElementById("vehicle");
+            const fechaInicioInput = document.getElementById("dataInici");
+            const fechaFinalInput = document.getElementById("dataFi");
+            const fechaInicioError = document.getElementById("dataIniciError");
+            const fechaFinalError = document.getElementById("dataFinalError");
+            const saveButton = document.querySelector("button.btn-primary");
+            const updatePricesButton = document.querySelector("button[formmethod='post']");
+
+            let fechasNoDisponibles = [];
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0); // Asegurar que hoy comience a medianoche.
+
+            // Estado de precios actualizado
+            let pricesUpdated = localStorage.getItem("pricesUpdated") === "true";
+
+            // Inicializar el estado del botón de guardar
+            saveButton.disabled = !pricesUpdated;
+
+            // Función para formatear fechas en YYYY-MM-DD
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+
+            // Establecer fecha mínima en los inputs
+            fechaInicioInput.setAttribute("min", formatDate(hoy));
+            fechaFinalInput.setAttribute("min", formatDate(hoy));
+
+            // Bloquear fechas en el calendario
+            function bloquearFechasCalendario() {
+                // Configurar fechas no disponibles para fecha de inicio
+                fechaInicioInput.disabledDates = fechasNoDisponibles.map(formatDate);
+                fechaInicioInput.addEventListener("input", function () {
+                    const selectedDate = new Date(fechaInicioInput.value);
+                    if (
+                        fechasNoDisponibles.some(
+                            fecha => formatDate(fecha) === formatDate(selectedDate)
+                        )
+                    ) {
+                        fechaInicioInput.setCustomValidity(
+                            "Esta fecha no está disponible para el vehículo seleccionado."
+                        );
+                    } else {
+                        fechaInicioInput.setCustomValidity("");
+                    }
+                });
+
+                // Configurar fechas no disponibles para fecha final
+                fechaFinalInput.addEventListener("input", function () {
+                    const selectedDate = new Date(fechaFinalInput.value);
+                    if (
+                        fechasNoDisponibles.some(
+                            fecha => formatDate(fecha) === formatDate(selectedDate)
+                        )
+                    ) {
+                        fechaFinalInput.setCustomValidity(
+                            "Esta fecha no está disponible para el vehículo seleccionado."
+                        );
+                    } else {
+                        fechaFinalInput.setCustomValidity("");
+                    }
+                });
+            }
+
+            // Validar fechas seleccionadas
+            function validarFechas() {
+                const fechaInicio = new Date(fechaInicioInput.value);
+                const fechaFinal = new Date(fechaFinalInput.value);
+                let inicioValido = true;
+                let finalValido = true;
+
+                // Validar fecha de inicio
+                if (
+                    !fechaInicioInput.value ||
+                    fechaInicio < hoy ||
+                    fechasNoDisponibles.some(fecha => formatDate(fecha) === formatDate(fechaInicio))
+                ) {
+                    fechaInicioError.textContent = "La fecha de inicio no es válida o está en un rango reservado.";
+                    fechaInicioError.style.display = "block";
+                    inicioValido = false;
+                } else {
+                    fechaInicioError.style.display = "none";
+                }
+
+                // Validar fecha de final
+                if (
+                    !fechaFinalInput.value ||
+                    fechaFinal <= fechaInicio ||
+                    fechasNoDisponibles.some(fecha => formatDate(fecha) === formatDate(fechaFinal))
+                ) {
+                    fechaFinalError.textContent = "La fecha de final no es válida o está en un rango reservado.";
+                    fechaFinalError.style.display = "block";
+                    finalValido = false;
+                } else {
+                    fechaFinalError.style.display = "none";
+                }
+
+                // Actualizar el estado del botón de guardar
+                saveButton.disabled = !(inicioValido && finalValido && pricesUpdated);
+
+                return inicioValido && finalValido;
+            }
+
+            // Obtener fechas no disponibles del backend
+            async function actualizarFechasNoDisponibles() {
+                const matricula = vehiculoSelect.value;
+
+                if (!matricula) {
+                    fechasNoDisponibles = [];
+                    bloquearFechasCalendario();
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/reserva/no-disponibles/${matricula}`);
+                    const data = await response.json();
+
+                    // Convertir fechas del backend (YYYY-MM-DD) a objetos Date
+                    fechasNoDisponibles = data.map(fecha => {
+                        const [year, month, day] = fecha.split("-");
+                        return new Date(year, month - 1, day);
+                    });
+
+                    bloquearFechasCalendario();
+                    validarFechas();
+                } catch (error) {
+                    console.error("Error al obtener las fechas no disponibles:", error);
+                }
+            }
+
+            // Desactivar el botón de guardar al cambiar fechas
+            function handleDateChange() {
+                pricesUpdated = false; // Marcar que los precios ya no están actualizados
+                localStorage.setItem("pricesUpdated", "false"); // Guardar estado en localStorage
+                saveButton.disabled = true; // Desactivar botón de guardar
+                validarFechas(); // Validar las fechas después del cambio
+            }
+
+            // Evento para validar fechas en tiempo real
+            fechaInicioInput.addEventListener("input", function () {
+                fechaFinalInput.setAttribute("min", fechaInicioInput.value);
+                handleDateChange(); // Desactivar botón si se modifica fecha inicio
+            });
+
+            fechaFinalInput.addEventListener("input", handleDateChange);
+
+            // Evento al cambiar de vehículo
+            vehiculoSelect.addEventListener("change", async function () {
+                await actualizarFechasNoDisponibles();
+                handleDateChange(); // Desactivar botón si se modifica vehículo
+            });
+
+            // Evento para actualizar precios
+            updatePricesButton.addEventListener("click", function () {
+                pricesUpdated = true;
+                localStorage.setItem("pricesUpdated", "true"); // Guardar estado en localStorage
+                saveButton.disabled = false; // Activar botón de guardar
+            });
+
+            // Validar antes de enviar el formulario
+            const form = document.getElementById("reservaForm");
+            form.addEventListener("submit", function (event) {
+                if (!validarFechas()) {
+                    event.preventDefault();
+                    alert("Revisa las fechas. Hay errores que deben corregirse antes de guardar.");
+                } else {
+                    // Si se va a guardar, limpiar el estado de precios del localStorage
+                    localStorage.removeItem("pricesUpdated");
+                }
+            });
+
+            // Inicializar fechas no disponibles y validación al cargar la página
+            actualizarFechasNoDisponibles();
+        });
+
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

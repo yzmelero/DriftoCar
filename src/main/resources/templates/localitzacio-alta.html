@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Alta de Localització</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffe6e6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Alta de Localització</h1>
+
+        <div th:if="${error}" class="alert alert-danger text-center">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/localitzacio/alta}" th:object="${localitzacio}" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="codiPostal" class="form-label">Codi Postal</label>
+                        <input type="number" id="codiPostal" class="form-control" th:field="*{codiPostal}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ciutat" class="form-label">Ciutat</label>
+                        <input type="text" id="ciutat" class="form-control" th:field="*{ciutat}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="adrecaLocalitzacio" class="form-label">Adreça</label>
+                        <input type="text" id="adrecaLocalitzacio" class="form-control" th:field="*{adrecaLocalitzacio}"
+                            required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="horaObertura" class="form-label">Hora d'obertura</label>
+                        <input type="time" id="horaObertura" name="horaObertura" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Si us plau, introdueix l'hora d'obertura.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="horaTancament" class="form-label">Hora de tancament</label>
+                        <input type="time" id="horaTancament" name="horaTancament" class="form-control" required>
+                        <div class="invalid-feedback">
+                            Si us plau, introdueix l'hora de tancament.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="condicions" class="form-label">Condicions</label>
+                        <input type="text" id="condicions" class="form-control" th:field="*{condicions}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Crear Localització</button>
+                <a href="/localitzacio/llistar" class="btn btn-secondary">Cancel·lar</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const horaObertura = document.getElementById("horaObertura");
+            const horaTancament = document.getElementById("horaTancament");
+
+            horaTancament.addEventListener("change", function () {
+                if (horaObertura.value && horaTancament.value && horaObertura.value >= horaTancament.value) {
+                    alert("L'hora de tancament ha de ser posterior a l'hora d'obertura.");
+                    horaTancament.value = ""; // Resetear el valor
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
