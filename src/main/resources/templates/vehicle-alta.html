@@ -21,6 +21,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 <body>
     <div class="container text-center mt-5">
         <h1>Alta Vehicles</h1>
+        <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
         <form th:action="@{/vehicle/afegir}" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6">

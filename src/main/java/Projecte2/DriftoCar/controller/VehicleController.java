@@ -109,7 +109,7 @@ public class VehicleController {
      */
     @PostMapping("/afegir")
     public String guardarNouVehicle(@ModelAttribute("vehicle") Vehicle vehicle,
-            @RequestParam("imatgeFile") MultipartFile imatgeFile) {
+            @RequestParam("imatgeFile") MultipartFile imatgeFile, Model model) {
 
         log.info("Iniciant procés per guardar un nou vehicle amb matrícula: {}", vehicle.getMatricula());
 
@@ -121,8 +121,11 @@ public class VehicleController {
             }
             vehicleService.altaVehicle(vehicle);
             log.info("S'ha afegit correctament el vehicle amb matrícula: {}", vehicle.getMatricula());
-        } catch (IOException e) {
-            log.error("Error al convertir la imatge: " + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("vehicle", vehicle);
+            model.addAttribute("error", e.getMessage());
+            log.error("Error en alta de vehicle" + e.getMessage());
+            return "vehicle-alta";
         }
         return "redirect:/vehicle/llistar";
     }
