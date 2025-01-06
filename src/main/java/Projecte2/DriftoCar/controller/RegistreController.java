@@ -31,11 +31,14 @@ import org.springframework.web.multipart.MultipartFile;
  * Aquesta classe s'encarrega de:
  * - Mostrar el formulari d'alta de clients.
  * - Validar les dades introduïdes pel client.
- * - Registrar un nou client al sistema, incloent la seva documentació associada.
+ * - Registrar un nou client al sistema, incloent la seva documentació
+ * associada.
  * 
  * Dependències:
- * - {@code ClientService}: Per gestionar la lògica de negoci del registre de clients.
- * - {@code DocumentacioClientRepository}: Per emmagatzemar les imatges de documentació del client.
+ * - {@code ClientService}: Per gestionar la lògica de negoci del registre de
+ * clients.
+ * - {@code DocumentacioClientRepository}: Per emmagatzemar les imatges de
+ * documentació del client.
  * 
  */
 @Controller
@@ -70,15 +73,18 @@ public class RegistreController {
     /**
      * Registra un nou client al sistema.
      * 
-     * Aquest mètode valida les dades del client, incloent la data d'expiració del DNI 
-     * i la llicència, la confirmació de la contrasenya i guarda la documentació associada.
+     * Aquest mètode valida les dades del client, incloent la data d'expiració del
+     * DNI
+     * i la llicència, la confirmació de la contrasenya i guarda la documentació
+     * associada.
      * 
-     * @param client                Objecte que conté les dades del client.
-     * @param imatgeDni             Imatge del DNI del client.
-     * @param imatgeLlicencia       Imatge de la llicència de conduir del client.
+     * @param client                 Objecte que conté les dades del client.
+     * @param imatgeDni              Imatge del DNI del client.
+     * @param imatgeLlicencia        Imatge de la llicència de conduir del client.
      * @param confirmacioContrasenya Confirmació de la contrasenya.
-     * @param model                 Model per passar dades a la vista.
-     * @return Redirecció a la vista de llista de clients si té èxit, o torna al formulari en cas d'error.
+     * @param model                  Model per passar dades a la vista.
+     * @return Redirecció a la vista de llista de clients si té èxit, o torna al
+     *         formulari en cas d'error.
      * @throws Exception Si hi ha un error durant el procés.
      */
     @PostMapping("/client-alta")
@@ -108,7 +114,9 @@ public class RegistreController {
         }
         if (!client.getContrasenya().equals(confirmacioContrasenya)) {
             log.error("La contrasenya no coincideix.");
-            throw new IllegalArgumentException("La contrasenya no coincideix.");
+            model.addAttribute("error", "La contrasenya no coincideix.");
+            model.addAttribute("client", client);
+            return "client-alta";
         }
         try {
             clientService.altaClient(client);
